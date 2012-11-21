@@ -13,12 +13,15 @@ class Button extends Sprite {
   private static var NORMAL:Int = 1;
   private static var CLICKED:Int = 2;
 
+  // Size and style
   private var uWidth:Int;
   private var uHeight:Int;
+  private var bevel:Int;
 
   // Button state vars
   private var state:Int;
   private var oldState:Int;
+  private var constructed:Bool;
 
   // Button state images
   private var hover:Sprite;
@@ -32,11 +35,18 @@ class Button extends Sprite {
   // Button actions
   public var clickAction:Void->Void;
 
-  public function new(width:Int, height:Int) {
+  public function new(width:Int, height:Int, ?bevel:Int = 8) {
     super();
+
+    constructed = false;
 
     uWidth = width;
     uHeight = height;
+
+    if (bevel < 0) {
+      throw "Bevel must be greater than 0";
+    }
+    this.bevel = bevel;
 
     hover = new Sprite();
     addChild(hover);
@@ -73,7 +83,6 @@ class Button extends Sprite {
   public function setText(string:String) {
     buttonText = string;
 		buttonTextField.text = string;
-    trace(uWidth/2 - buttonTextField.textWidth/2);
     buttonTextField.x = uWidth / 2 - buttonTextField.textWidth / 2;
     buttonTextField.y = uHeight / 2 - buttonTextField.textHeight / 2 - 2;
   }
@@ -95,30 +104,32 @@ class Button extends Sprite {
       // Clicked
       { dark : 0x666666, light : 0x888888, front : 0xAAAAAA }
     ];
-    var offset = 8;
+    var offset = bevel;
     var gfx = canvas.graphics;
     gfx.lineStyle(2, 0x000000);
     gfx.beginFill(colors[state].dark);
     gfx.drawRect(0, 0, uWidth, uHeight);
     gfx.endFill();
 
-    gfx.beginFill(colors[state].light);
-    gfx.moveTo(uWidth, 0);
-    gfx.lineTo(uWidth - offset, offset);
-    gfx.lineTo(offset, uHeight - offset);
-    gfx.lineTo(0, uHeight);
-    gfx.lineTo(uWidth, uHeight);
-    gfx.lineTo(uWidth, 0);
-    gfx.endFill();
+    if (offset > 0) {
+      gfx.beginFill(colors[state].light);
+      gfx.moveTo(uWidth, 0);
+      gfx.lineTo(uWidth - offset, offset);
+      gfx.lineTo(offset, uHeight - offset);
+      gfx.lineTo(0, uHeight);
+      gfx.lineTo(uWidth, uHeight);
+      gfx.lineTo(uWidth, 0);
+      gfx.endFill();
 
-    gfx.moveTo(0, 0);
-    gfx.lineTo(offset, offset);
-    gfx.lineTo(uWidth - offset, uHeight - offset);
-    gfx.lineTo(uWidth, uHeight);
+      gfx.moveTo(0, 0);
+      gfx.lineTo(offset, offset);
+      gfx.lineTo(uWidth - offset, uHeight - offset);
+      gfx.lineTo(uWidth, uHeight);
 
-    gfx.beginFill(colors[state].front);
-    gfx.drawRect(offset, offset, uWidth - offset * 2, uHeight - offset * 2);
-    gfx.endFill();
+      gfx.beginFill(colors[state].front);
+      gfx.drawRect(offset, offset, uWidth - offset * 2, uHeight - offset * 2);
+      gfx.endFill();
+    }
 
     gfx.lineStyle();
   }
@@ -151,9 +162,9 @@ class Button extends Sprite {
   //
 
   private function addedToStage(event:Event):Void {
-    //if (Type.getClassName(Type.getClass(event.target)) == "Main") {
-    if (Std.is(event.target, Main)) {
+    if (!constructed) {
       construct();
+      constructed = true;
     }
   }
 

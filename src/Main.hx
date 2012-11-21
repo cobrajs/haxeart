@@ -19,6 +19,7 @@ class Main extends Sprite {
   public function new() {
     super();
 
+    //trace("TEST");
     addEventListener(Event.ADDED_TO_STAGE, addedToStage);
   }
 
@@ -36,7 +37,7 @@ class Main extends Sprite {
     addChild(button);
     buttons.push(button);
 
-    var button = new Button(128, tempHeight);
+    var button = new Button(128, tempHeight, 0);
     button.x = 128;
     button.y = stage.stageHeight - tempHeight;
     button.clickAction = drawGreenCircle;
@@ -44,13 +45,15 @@ class Main extends Sprite {
     addChild(button);
     buttons.push(button);
 
-    var button = new Button(128, tempHeight);
+    var button = new Button(128, tempHeight, 12);
     button.x = 256;
     button.y = stage.stageHeight - tempHeight;
     button.clickAction = drawBlueCircle;
     button.setText("Blue Circle");
     addChild(button);
     buttons.push(button);
+
+    drawGreenCircle();
 
     stage.addEventListener(KeyboardEvent.KEY_DOWN, stageKeyDown);
     stage.addEventListener(MouseEvent.MOUSE_MOVE, stageMouseMove);
@@ -66,8 +69,11 @@ class Main extends Sprite {
   private function drawBlueCircle():Void { drawCircle(0x0000FF); }
   private function drawCircle(color:Int):Void {
     var gfx = this.graphics;
+    var tempX = Math.random() * stage.stageWidth;
+    var tempY = Math.random() * (stage.stageHeight - 64);
+    //trace(tempX + "  " + tempY);
     gfx.beginFill(color);
-    gfx.drawCircle(Math.random() * stage.stageWidth, Math.random() * (stage.stageHeight - 64), 30);
+    gfx.drawCircle(tempX, tempY, 30);
     gfx.endFill();
   }
 
@@ -91,8 +97,18 @@ class Main extends Sprite {
   }
 
   private function stageKeyDown(event:KeyboardEvent):Void {
-    if (event.keyCode == Keyboard.ESCAPE) {
+    var keyCode = event.keyCode;
+#if (cpp || neko)
+    if (event.keyCode >= 97 && event.keyCode <= 123) {
+      keyCode -= 32;
+    }
+#end
+    trace(keyCode);
+    if (keyCode == Keyboard.ESCAPE) {
       System.exit(0);
+    }
+    else if (keyCode == Keyboard.V) {
+      drawBlueCircle();
     }
   }
 }

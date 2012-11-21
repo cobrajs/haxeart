@@ -13,14 +13,16 @@
   />
 
   <window
-     width="640" 
-     height="480" 
+     width="0" 
+     height="0" 
 		 orientation="landscape" 
 		 fps="60"
 		 background="0xffffff"
      resizable="false"
 		 hardware="true"
 	/>
+
+  <window width="640" height="480" resizable="false" unless="mobile" />
 
   <set name="BUILD_DIR" value="bin" />
   
