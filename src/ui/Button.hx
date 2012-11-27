@@ -1,6 +1,8 @@
 package ui;
 
 import nme.display.Sprite;
+import nme.display.Bitmap;
+import nme.display.Graphics;
 import nme.events.Event;
 import nme.events.KeyboardEvent;
 import nme.events.MouseEvent;
@@ -31,6 +33,10 @@ class Button extends Sprite {
   // Button Text
   private var buttonText:String;
   private var buttonTextField:TextField;
+
+  // Button Image
+  private var buttonImage:Bitmap;
+  private var buttonOverlay:Sprite;
 
   // Button actions
   public var clickAction:Void->Void;
@@ -74,10 +80,35 @@ class Button extends Sprite {
 		//buttonTextField.height = 40;
 		buttonTextField.x = 20;
 		buttonTextField.y = 20;
-		
+
 		addChild (buttonTextField);
 
     addEventListener(Event.ADDED_TO_STAGE, addedToStage);
+  }
+
+  public function setImage(location:String) {
+    try {
+      buttonImage = new Bitmap(Assets.getBitmapData("assets/" + location));
+      buttonImage.x = uWidth / 2 - buttonImage.width / 2;
+      buttonImage.y = uHeight / 2 - buttonImage.height / 2;
+
+      addChild(buttonImage);
+    }
+    catch(e:Dynamic) {
+    }
+  }
+
+  public function drawImage(width:Int, height:Int):Graphics {
+    if (buttonOverlay == null) {
+      buttonOverlay = new Sprite();
+
+      addChild(buttonOverlay);
+    }
+
+    buttonOverlay.x = uWidth / 2 - width / 2;
+    buttonOverlay.y = uHeight / 2 - height / 2;
+
+    return buttonOverlay.graphics;
   }
 
   public function setText(string:String) {

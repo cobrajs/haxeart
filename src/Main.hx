@@ -2,6 +2,8 @@ package ;
 
 // UI Elements
 import ui.Button;
+import ui.Toolbox;
+import ui.Canvas;
 
 // Libraries
 import nme.display.Sprite;
@@ -15,6 +17,9 @@ import nme.ui.Keyboard;
 class Main extends Sprite {
 
   private var buttons:Array<Button>;
+  private var toolbox:Toolbox;
+
+  private var canvas:Canvas;
   
   public function new() {
     super();
@@ -26,6 +31,24 @@ class Main extends Sprite {
   private function construct():Void {
     addEventListener(Event.ENTER_FRAME, enterFrame);
 
+    toolbox = new Toolbox(200, stage.stageHeight,   2, 4,   4);
+    toolbox.x = 0;
+    toolbox.y = 0;
+
+    toolbox.setTilesheet("toolbox.png", 4, 4, 0xFF00FF);
+    toolbox.addButton(drawRedCircle, 0);
+    toolbox.addButton(drawBlueCircle, 0);
+    toolbox.addButton(drawGreenCircle, 1);
+    toolbox.addButton(clearCanvas, 2);
+
+    addChild(toolbox);
+
+    canvas = new Canvas(stage.stageWidth - 200, stage.stageHeight);
+    canvas.x = 200;
+
+    addChild(canvas);
+    
+    /*
     buttons = new Array<Button>();
 
     var tempHeight = 64;
@@ -53,7 +76,22 @@ class Main extends Sprite {
     addChild(button);
     buttons.push(button);
 
-    drawGreenCircle();
+    var button = new Button(128, tempHeight, 12);
+    button.x = 384;
+    button.y = stage.stageHeight - tempHeight;
+    button.clickAction = drawBlueCircle;
+    button.setImage("percent.png");
+    addChild(button);
+    buttons.push(button);
+
+    var button = new Button(128, tempHeight, 12);
+    button.x = 512;
+    button.y = stage.stageHeight - tempHeight;
+    button.clickAction = clearCanvas;
+    button.setText("Clear");
+    addChild(button);
+    buttons.push(button);
+    */
 
     stage.addEventListener(KeyboardEvent.KEY_DOWN, stageKeyDown);
     stage.addEventListener(MouseEvent.MOUSE_MOVE, stageMouseMove);
@@ -75,6 +113,10 @@ class Main extends Sprite {
     gfx.beginFill(color);
     gfx.drawCircle(tempX, tempY, 30);
     gfx.endFill();
+  }
+
+  private function clearCanvas():Void {
+    this.graphics.clear();
   }
 
 
@@ -103,7 +145,7 @@ class Main extends Sprite {
       keyCode -= 32;
     }
 #end
-    trace(keyCode);
+    //trace(keyCode);
     if (keyCode == Keyboard.ESCAPE) {
       System.exit(0);
     }
