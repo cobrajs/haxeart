@@ -4,6 +4,7 @@ import nme.display.Sprite;
 import nme.display.Bitmap;
 import nme.display.BitmapData;
 import nme.events.MouseEvent;
+import nme.geom.Rectangle;
 
 class Canvas extends Sprite {
   private var data:BitmapData;
@@ -48,5 +49,13 @@ class Canvas extends Sprite {
       }
     }
     data.unlock();
+  }
+
+  public function clearCanvas(?color:Int = 0xFFFFFF) {
+#if neko
+    data.fillRect(new Rectangle(0, 0, data.width, data.height), {rgb: color, a: 0xFF});
+#else
+    data.fillRect(new Rectangle(0, 0, data.width, data.height), color);
+#end
   }
 }

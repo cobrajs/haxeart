@@ -52,7 +52,11 @@ class Toolbox extends Sprite {
         for (y in 0...cast(imageSetBitmap.height, Int)) {
           for (x in 0...cast(imageSetBitmap.width, Int)) {
             if (imageSetBitmapData.getPixel(x, y) == transparentKey) {
+#if neko
               imageSetBitmapData.setPixel32(x, y, {rgb: 0, a: 0});
+#else
+              imageSetBitmapData.setPixel32(x, y, 0x00000000);
+#end
             }
           }
         }

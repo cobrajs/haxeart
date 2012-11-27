@@ -102,6 +102,10 @@ class Main extends Sprite {
 
   }
 
+  private function clearCanvas():Void {
+    canvas.clearCanvas();
+  }
+
   private function drawRedCircle():Void { drawCircle(0xFF0000); }
   private function drawGreenCircle():Void { drawCircle(0x00FF00); }
   private function drawBlueCircle():Void { drawCircle(0x0000FF); }
@@ -115,9 +119,11 @@ class Main extends Sprite {
     gfx.endFill();
   }
 
+  /*
   private function clearCanvas():Void {
     this.graphics.clear();
   }
+  */
 
 
   // -------------------------------------------------- 
