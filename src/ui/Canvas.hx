@@ -9,6 +9,8 @@ import nme.geom.Rectangle;
 class Canvas extends Sprite {
   private var data:BitmapData;
   private var display:Bitmap;
+  private var zoomDisplayData:BitmapData;
+  private var zoomDisplay:Bitmap;
 
   private var uWidth:Int;
   private var uHeight:Int;
@@ -51,7 +53,7 @@ class Canvas extends Sprite {
     data.unlock();
   }
 
-  public function clearCanvas(?color:Int = 0xFFFFFF) {
+  public function clearCanvas(?color:Int = 0xFFFFFFFF) {
 #if neko
     data.fillRect(new Rectangle(0, 0, data.width, data.height), {rgb: color, a: 0xFF});
 #else

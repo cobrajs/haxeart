@@ -206,9 +206,9 @@ class Button extends Sprite {
   }
 
   private function mouseOut(event:MouseEvent):Void {
-    if (state != CLICKED) {
+    //if (state != CLICKED) {
       changeState(NORMAL);
-    }
+    //}
   }
 
   private function mouseDown(event:MouseEvent):Void {

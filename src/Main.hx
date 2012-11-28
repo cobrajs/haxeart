@@ -31,7 +31,7 @@ class Main extends Sprite {
   private function construct():Void {
     addEventListener(Event.ENTER_FRAME, enterFrame);
 
-    toolbox = new Toolbox(200, stage.stageHeight,   2, 4,   4);
+    toolbox = new Toolbox(200, stage.stageHeight,   2, 4,   8);
     toolbox.x = 0;
     toolbox.y = 0;
 
@@ -48,51 +48,6 @@ class Main extends Sprite {
 
     addChild(canvas);
     
-    /*
-    buttons = new Array<Button>();
-
-    var tempHeight = 64;
-    var button = new Button(128, tempHeight);
-    button.x = 0;
-    button.y = stage.stageHeight - tempHeight;
-    button.clickAction = drawRedCircle;
-    button.setText("Red Circle");
-    addChild(button);
-    buttons.push(button);
-
-    var button = new Button(128, tempHeight, 0);
-    button.x = 128;
-    button.y = stage.stageHeight - tempHeight;
-    button.clickAction = drawGreenCircle;
-    button.setText("Green Circle");
-    addChild(button);
-    buttons.push(button);
-
-    var button = new Button(128, tempHeight, 12);
-    button.x = 256;
-    button.y = stage.stageHeight - tempHeight;
-    button.clickAction = drawBlueCircle;
-    button.setText("Blue Circle");
-    addChild(button);
-    buttons.push(button);
-
-    var button = new Button(128, tempHeight, 12);
-    button.x = 384;
-    button.y = stage.stageHeight - tempHeight;
-    button.clickAction = drawBlueCircle;
-    button.setImage("percent.png");
-    addChild(button);
-    buttons.push(button);
-
-    var button = new Button(128, tempHeight, 12);
-    button.x = 512;
-    button.y = stage.stageHeight - tempHeight;
-    button.clickAction = clearCanvas;
-    button.setText("Clear");
-    addChild(button);
-    buttons.push(button);
-    */
-
     stage.addEventListener(KeyboardEvent.KEY_DOWN, stageKeyDown);
     stage.addEventListener(MouseEvent.MOUSE_MOVE, stageMouseMove);
     stage.addEventListener(MouseEvent.MOUSE_UP, stageMouseUp);
