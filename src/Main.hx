@@ -4,6 +4,7 @@ package ;
 import ui.Button;
 import ui.Toolbox;
 import ui.Canvas;
+import ui.PaletteBox;
 
 // Libraries
 import nme.display.Sprite;
@@ -18,6 +19,7 @@ class Main extends Sprite {
 
   private var buttons:Array<Button>;
   private var toolbox:Toolbox;
+  private var paletteBox:PaletteBox;
 
   private var canvas:Canvas;
   
@@ -31,7 +33,15 @@ class Main extends Sprite {
   private function construct():Void {
     addEventListener(Event.ENTER_FRAME, enterFrame);
 
-    toolbox = new Toolbox(200, stage.stageHeight,   2, 4,   8);
+    var halfHeight = Math.floor(stage.stageHeight / 2);
+
+    canvas = new Canvas(200, 200);
+    canvas.x = 200 + ((stage.stageWidth - 200) / 2) - canvas.uWidth / 2;
+    canvas.y = stage.stageHeight / 2 - canvas.uHeight / 2;
+
+    addChild(canvas);
+
+    toolbox = new Toolbox(200, halfHeight,   2, 4,   8);
     toolbox.x = 0;
     toolbox.y = 0;
 
@@ -40,17 +50,42 @@ class Main extends Sprite {
     toolbox.addButton(drawBlueCircle, 0);
     toolbox.addButton(drawGreenCircle, 1);
     toolbox.addButton(clearCanvas, 2);
+    toolbox.addButton(zoomInCanvas, 6);
+    toolbox.addButton(zoomOutCanvas, 7);
+    toolbox.addButton(brushIncrease, 4);
+    toolbox.addButton(brushDecrease, 5);
 
     addChild(toolbox);
 
-    canvas = new Canvas(stage.stageWidth - 200, stage.stageHeight);
-    canvas.x = 200;
+    paletteBox = new PaletteBox(200, halfHeight, 3, 4, setCanvasBrushColor);
+    paletteBox.x = 0;
+    paletteBox.y = halfHeight;
 
-    addChild(canvas);
-    
+    // Greyscale
+    paletteBox.addColor(0xFFFFFF);
+    paletteBox.addColor(0xCCCCCC);
+    paletteBox.addColor(0x999999);
+    paletteBox.addColor(0x666666);
+    paletteBox.addColor(0x333333);
+    paletteBox.addColor(0x000000);
+
+    // Colors
+    paletteBox.addColor(0xFF0000);
+    paletteBox.addColor(0x00FF00);
+    paletteBox.addColor(0x0000FF);
+    paletteBox.addColor(0xFF00FF);
+    paletteBox.addColor(0xFFFF00);
+    paletteBox.addColor(0x00FFFF);
+
+    addChild(paletteBox);
+
     stage.addEventListener(KeyboardEvent.KEY_DOWN, stageKeyDown);
     stage.addEventListener(MouseEvent.MOUSE_MOVE, stageMouseMove);
     stage.addEventListener(MouseEvent.MOUSE_UP, stageMouseUp);
+  }
+
+  private function setCanvasBrushColor(color:Int):Void {
+    canvas.changeBrushColor(color);
   }
   
   private function update():Void {
@@ -59,6 +94,22 @@ class Main extends Sprite {
 
   private function clearCanvas():Void {
     canvas.clearCanvas();
+  }
+
+  private function zoomInCanvas():Void {
+    canvas.changeZoom(2);
+  }
+
+  private function zoomOutCanvas():Void {
+    canvas.changeZoom(0.5);
+  }
+
+  private function brushIncrease():Void {
+    canvas.changeBrushSize(1);
+  }
+
+  private function brushDecrease():Void {
+    canvas.changeBrushSize(-1);
   }
 
   private function drawRedCircle():Void { drawCircle(0xFF0000); }
@@ -112,6 +163,18 @@ class Main extends Sprite {
     }
     else if (keyCode == Keyboard.V) {
       drawBlueCircle();
+    }
+    else if (keyCode == Keyboard.LEFT) {
+      canvas.x += 10 * canvas.zoom;
+    }
+    else if (keyCode == Keyboard.RIGHT) {
+      canvas.x -= 10 * canvas.zoom;
+    }
+    else if (keyCode == Keyboard.UP) {
+      canvas.y += 10 * canvas.zoom;
+    }
+    else if (keyCode == Keyboard.DOWN) {
+      canvas.y -= 10 * canvas.zoom;
     }
   }
 }

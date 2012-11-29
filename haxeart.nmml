@@ -17,7 +17,7 @@
      height="0" 
 		 orientation="landscape" 
 		 fps="60"
-		 background="0xffffff"
+		 background="0xdddddd"
      resizable="false"
 		 hardware="true"
 	/>

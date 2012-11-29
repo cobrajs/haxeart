@@ -79,7 +79,10 @@ class Toolbox extends Sprite {
     }
   }
 
-  public function addButton(action:Void->Void, ?image:Int) {
+  public function addButton(action:Void->Void, ?image:Int, ?group:Int) {
+    if (buttons.length >= columns * rows) {
+      throw "Adding too many buttons to the toolbox";
+    }
     var button = new Button(buttonWidth, buttonHeight, commonBevel);
     button.x = buttonWidth * (buttons.length % columns);
     button.y = buttonHeight * Math.floor(buttons.length / columns);
