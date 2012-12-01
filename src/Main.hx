@@ -5,6 +5,13 @@ import ui.Button;
 import ui.Toolbox;
 import ui.Canvas;
 import ui.PaletteBox;
+import ui.Cursor;
+
+// Graphical Helpers
+import graphics.BrushFactory;
+
+// Iterators
+import util.LineIter;
 
 // Libraries
 import nme.display.Sprite;
@@ -14,6 +21,7 @@ import nme.events.MouseEvent;
 import nme.geom.Point;
 import nme.system.System;
 import nme.ui.Keyboard;
+import nme.ui.Mouse;
 
 class Main extends Sprite {
 
@@ -21,12 +29,15 @@ class Main extends Sprite {
   private var toolbox:Toolbox;
   private var paletteBox:PaletteBox;
 
+  private var brushFactory:BrushFactory;
+
   private var canvas:Canvas;
+
+  private var cursor:Cursor;
   
   public function new() {
     super();
 
-    //trace("TEST");
     addEventListener(Event.ADDED_TO_STAGE, addedToStage);
   }
 
@@ -35,9 +46,13 @@ class Main extends Sprite {
 
     var halfHeight = Math.floor(stage.stageHeight / 2);
 
-    canvas = new Canvas(200, 200);
-    canvas.x = 200 + ((stage.stageWidth - 200) / 2) - canvas.uWidth / 2;
-    canvas.y = stage.stageHeight / 2 - canvas.uHeight / 2;
+    brushFactory = new BrushFactory("brushes.png", 7, 7, 0xFF00FF);
+
+    canvas = new Canvas(200, 200, brushFactory);
+    canvas.moveTo(
+        Math.floor(200 + ((stage.stageWidth - 200) / 2) - canvas.uWidth / 2), 
+        Math.floor(stage.stageHeight / 2 - canvas.uHeight / 2)
+    );
 
     addChild(canvas);
 
@@ -46,9 +61,9 @@ class Main extends Sprite {
     toolbox.y = 0;
 
     toolbox.setTilesheet("toolbox.png", 4, 4, 0xFF00FF);
-    toolbox.addButton(drawRedCircle, 0);
-    toolbox.addButton(drawBlueCircle, 0);
-    toolbox.addButton(drawGreenCircle, 1);
+    toolbox.addButton(canvas.redShift, 0);
+    toolbox.addButton(drawLine, 0);
+    toolbox.addButton(canvas.noise, 1);
     toolbox.addButton(clearCanvas, 2);
     toolbox.addButton(zoomInCanvas, 6);
     toolbox.addButton(zoomOutCanvas, 7);
@@ -79,17 +94,39 @@ class Main extends Sprite {
 
     addChild(paletteBox);
 
+    cursor = new Cursor();
+    cursor.addTypeCursor("canvas", brushFactory.getBrushImage());
+    addChild(cursor);
+
     stage.addEventListener(KeyboardEvent.KEY_DOWN, stageKeyDown);
     stage.addEventListener(MouseEvent.MOUSE_MOVE, stageMouseMove);
     stage.addEventListener(MouseEvent.MOUSE_UP, stageMouseUp);
+
+    canvas.addEventListener(MouseEvent.MOUSE_OVER, canvasMouseOver);
+    canvas.addEventListener(MouseEvent.MOUSE_OUT, canvasMouseOut);
+  }
+
+  private function canvasMouseOver(event:MouseEvent) {
+    cursor.setCursor("canvas");
+  }
+
+  private function canvasMouseOut(event:MouseEvent) {
+    cursor.setCursor("default");
   }
 
   private function setCanvasBrushColor(color:Int):Void {
-    canvas.changeBrushColor(color);
+    brushFactory.changeColor(color);
+    cursor.updateTypeCursor("canvas", brushFactory.getBrushImage());
   }
   
   private function update():Void {
 
+  }
+
+  private function drawLine():Void {
+    for (p in (new LineIter(10, 10, 100, 80))) {
+      canvas.drawDot(p[0], p[1]);
+    }
   }
 
   private function clearCanvas():Void {
@@ -119,17 +156,10 @@ class Main extends Sprite {
     var gfx = this.graphics;
     var tempX = Math.random() * stage.stageWidth;
     var tempY = Math.random() * (stage.stageHeight - 64);
-    //trace(tempX + "  " + tempY);
     gfx.beginFill(color);
     gfx.drawCircle(tempX, tempY, 30);
     gfx.endFill();
   }
-
-  /*
-  private function clearCanvas():Void {
-    this.graphics.clear();
-  }
-  */
 
 
   // -------------------------------------------------- 
@@ -145,6 +175,7 @@ class Main extends Sprite {
   }
 
   private function stageMouseMove(event:MouseEvent):Void {
+    cursor.update(event.stageX, event.stageY);
   }
 
   private function stageMouseUp(event:MouseEvent):Void {
@@ -157,7 +188,6 @@ class Main extends Sprite {
       keyCode -= 32;
     }
 #end
-    //trace(keyCode);
     if (keyCode == Keyboard.ESCAPE) {
       System.exit(0);
     }

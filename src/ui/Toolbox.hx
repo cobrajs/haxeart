@@ -1,6 +1,7 @@
 package ui;
 
 import ui.Button;
+import graphics.Color;
 
 import nme.display.Sprite;
 import nme.Assets;
@@ -48,19 +49,7 @@ class Toolbox extends Sprite {
       imageSetBitmapData.draw(imageSetBitmap);
 
       if (transparentKey != null) {
-        imageSetBitmapData.lock();
-        for (y in 0...cast(imageSetBitmap.height, Int)) {
-          for (x in 0...cast(imageSetBitmap.width, Int)) {
-            if (imageSetBitmapData.getPixel(x, y) == transparentKey) {
-#if neko
-              imageSetBitmapData.setPixel32(x, y, {rgb: 0, a: 0});
-#else
-              imageSetBitmapData.setPixel32(x, y, 0x00000000);
-#end
-            }
-          }
-        }
-        imageSetBitmapData.unlock();
+        Color.keyImage(imageSetBitmapData, transparentKey);
       }
 
       imageSet = new Tilesheet(imageSetBitmapData);
