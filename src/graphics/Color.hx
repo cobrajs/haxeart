@@ -39,4 +39,28 @@ class Color {
         color & 0xFF                  // B
       );
   }
+
+  public static function stringToColor(color:String, ?parts:Int = 3) {
+    if (color.length != parts * 2) {
+      throw "Invalid color for part size";
+    }
+
+    var retColor:Int = 0;
+    var use:Int = 0, charCode:Int = 0;
+    for (i in 0...parts * 2) {
+      charCode = color.charCodeAt(i);
+      if (charCode >= 48 && charCode <= 57) {
+        use = charCode - 48;
+      }
+      else if (charCode >= 65 && charCode <= 70) {
+        use = charCode - 65 + 10;
+      }
+      else if (charCode >= 97 && charCode <= 102) {
+        use = charCode - 97 + 10;
+      }
+      retColor |= use << (i * 4);
+    }
+    
+    return retColor;
+  }
 }

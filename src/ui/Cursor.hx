@@ -81,4 +81,11 @@ class Cursor extends Sprite {
     this.y = y;
 #end
   }
+
+  public function changeZoom(zoom:Int) {
+#if desktop
+    this.scaleX = zoom;
+    this.scaleY = zoom;
+#end
+  }
 }

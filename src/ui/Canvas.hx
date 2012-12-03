@@ -32,7 +32,9 @@ class Canvas extends Sprite {
 
   private var brushFactory:BrushFactory;
 
-  public function new(width:Int, height:Int, brushFactory:BrushFactory) {
+  public var currentTool:Dynamic;
+
+  public function new(width:Int, height:Int, brushFactory:BrushFactory, currentTool:Dynamic) {
     super();
 
     this.brushFactory = brushFactory;
@@ -54,6 +56,8 @@ class Canvas extends Sprite {
     lastMousePoint = new Point(-1, -1);
     zoomPoint = new Point(this.x + width / 2, this.y + height / 2);
 
+    this.currentTool = currentTool;
+
     addEventListener(MouseEvent.MOUSE_DOWN, onClick);
     addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
     addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
@@ -74,6 +78,7 @@ class Canvas extends Sprite {
     brushFactory.drawBrush(data, x, y);
   }
 
+  // Really bad line drawing. Really.
   public function drawLine(x1:Int, y1:Int, x2:Int, y2:Int) {
     if (y1 == y2) { drawHLine(x1, x2, y1); }
     else if (x1 == x2) { drawVLine(x1, y1, y2); }
@@ -148,41 +153,21 @@ class Canvas extends Sprite {
   // Event Handlers
   //
   public function onClick(event:MouseEvent) {
-    drawDot(Math.floor(event.localX / zoom), Math.floor(event.localY / zoom));
+    currentTool.mouseDownAction(this, event);
   }
 
   public function onMouseMove(event:MouseEvent) {
-    if (event.buttonDown) {
-      if (lastMousePoint.x >= 0 && lastMousePoint.y >= 0) {
-        for (p in (new LineIter(
-            Math.floor(event.localX / zoom), Math.floor(event.localY / zoom),
-            Math.floor(lastMousePoint.x / zoom), Math.floor(lastMousePoint.y / zoom)
-        ))) {
-          drawDot(p[0], p[1]);
-        }
-      }
-      else {
-        drawDot(Math.floor(event.localX / zoom), Math.floor(event.localY / zoom));
-      }
-      lastMousePoint.x = event.localX;
-      lastMousePoint.y = event.localY;
-    }
-    else {
-      lastMousePoint.x = -1;
-      lastMousePoint.y = -1;
-    }
+    currentTool.mouseMoveAction(this, event);
   }
 
   public function onMouseUp(event:MouseEvent) {
-    zoomPoint.x = event.localX;
-    zoomPoint.y = event.localY;
-    lastMousePoint.x = -1;
-    lastMousePoint.y = -1;
+    currentTool.mouseUpAction(this, event);
+    //zoomPoint.x = event.localX;
+    //zoomPoint.y = event.localY;
   }
 
   private function onMouseOut(event:MouseEvent) {
-    lastMousePoint.x = -1;
-    lastMousePoint.y = -1;
+    currentTool.mouseUpAction(this, event);
   }
 
 }

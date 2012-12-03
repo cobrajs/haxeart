@@ -9,9 +9,18 @@ import ui.Cursor;
 
 // Graphical Helpers
 import graphics.BrushFactory;
+import graphics.PaletteFactory;
+import graphics.Color;
+
+// Tools
+import tools.Pencil;
+import tools.Move;
 
 // Iterators
 import util.LineIter;
+
+// Other Utils
+import util.Utils;
 
 // Libraries
 import nme.display.Sprite;
@@ -34,6 +43,9 @@ class Main extends Sprite {
   private var canvas:Canvas;
 
   private var cursor:Cursor;
+
+  private var pencil:Pencil;
+  private var move:Move;
   
   public function new() {
     super();
@@ -48,7 +60,17 @@ class Main extends Sprite {
 
     brushFactory = new BrushFactory("brushes.png", 7, 7, 0xFF00FF);
 
-    canvas = new Canvas(200, 200, brushFactory);
+    // 
+    // Setup Tools
+    //
+    pencil = new Pencil();
+    move = new Move();
+
+
+    //
+    // Setup Canvas
+    //
+    canvas = new Canvas(200, 200, brushFactory, pencil);
     canvas.moveTo(
         Math.floor(200 + ((stage.stageWidth - 200) / 2) - canvas.uWidth / 2), 
         Math.floor(stage.stageHeight / 2 - canvas.uHeight / 2)
@@ -56,48 +78,64 @@ class Main extends Sprite {
 
     addChild(canvas);
 
+
+    //
+    // Setup Palette Box
+    //
+    paletteBox = new PaletteBox(200, halfHeight, 3, 4, setCanvasBrushColor);
+    paletteBox.x = 0;
+    paletteBox.y = halfHeight;
+
+    var paletteFactory = new PaletteFactory();
+    paletteFactory.load("colors.dat");
+
+    for (color in paletteFactory.getColors()) {
+      paletteBox.addColor(color);
+    }
+
+    addChild(paletteBox);
+
+
+
+    //
+    // Setup Toolbox
+    //
     toolbox = new Toolbox(200, halfHeight,   2, 4,   8);
     toolbox.x = 0;
     toolbox.y = 0;
 
     toolbox.setTilesheet("toolbox.png", 4, 4, 0xFF00FF);
-    toolbox.addButton(canvas.redShift, 0);
-    toolbox.addButton(drawLine, 0);
-    toolbox.addButton(canvas.noise, 1);
-    toolbox.addButton(clearCanvas, 2);
-    toolbox.addButton(zoomInCanvas, 6);
-    toolbox.addButton(zoomOutCanvas, 7);
-    toolbox.addButton(brushIncrease, 4);
-    toolbox.addButton(brushDecrease, 5);
+    toolbox.addButton(function():Void { canvas.currentTool = pencil; }, 0);
+    toolbox.addButton(function():Void { canvas.currentTool = move; }, 1);
+    toolbox.addButton(canvas.noise, 3);
+    toolbox.addButton(Utils.curry(canvas.clearCanvas, null), 2);
+    //toolbox.addButton(Utils.curry(canvas.changeZoom, 2), 6);
+    //toolbox.addButton(Utils.curry(canvas.changeZoom, 0.5), 7);
+    toolbox.addButton(function():Void {
+      canvas.changeZoom(2);
+      cursor.changeZoom(Math.floor(canvas.zoom));
+    }, 6);
+    toolbox.addButton(function():Void {
+      canvas.changeZoom(0.5);
+      cursor.changeZoom(Math.floor(canvas.zoom));
+    }, 7);
+    toolbox.addButton(Utils.curry(paletteBox.scroll, -1), 4);
+    toolbox.addButton(Utils.curry(paletteBox.scroll, 1), 5);
 
     addChild(toolbox);
 
-    paletteBox = new PaletteBox(200, halfHeight, 3, 4, setCanvasBrushColor);
-    paletteBox.x = 0;
-    paletteBox.y = halfHeight;
 
-    // Greyscale
-    paletteBox.addColor(0xFFFFFF);
-    paletteBox.addColor(0xCCCCCC);
-    paletteBox.addColor(0x999999);
-    paletteBox.addColor(0x666666);
-    paletteBox.addColor(0x333333);
-    paletteBox.addColor(0x000000);
-
-    // Colors
-    paletteBox.addColor(0xFF0000);
-    paletteBox.addColor(0x00FF00);
-    paletteBox.addColor(0x0000FF);
-    paletteBox.addColor(0xFF00FF);
-    paletteBox.addColor(0xFFFF00);
-    paletteBox.addColor(0x00FFFF);
-
-    addChild(paletteBox);
-
+    //
+    /// Setup Cursor
+    //
     cursor = new Cursor();
     cursor.addTypeCursor("canvas", brushFactory.getBrushImage());
     addChild(cursor);
 
+
+    //
+    // Add Events
+    //
     stage.addEventListener(KeyboardEvent.KEY_DOWN, stageKeyDown);
     stage.addEventListener(MouseEvent.MOUSE_MOVE, stageMouseMove);
     stage.addEventListener(MouseEvent.MOUSE_UP, stageMouseUp);
@@ -129,24 +167,7 @@ class Main extends Sprite {
     }
   }
 
-  private function clearCanvas():Void {
-    canvas.clearCanvas();
-  }
-
-  private function zoomInCanvas():Void {
-    canvas.changeZoom(2);
-  }
-
-  private function zoomOutCanvas():Void {
-    canvas.changeZoom(0.5);
-  }
-
-  private function brushIncrease():Void {
-    canvas.changeBrushSize(1);
-  }
-
-  private function brushDecrease():Void {
-    canvas.changeBrushSize(-1);
+  private function paletteBoxScrollUp():Void {
   }
 
   private function drawRedCircle():Void { drawCircle(0xFF0000); }

@@ -7,6 +7,7 @@ class PaletteBox extends Sprite {
   private var columns:Int;
   private var rows:Int;
 
+  private var scrollBox:Sprite;
   private var colorBoxes:Array<Sprite>;
   private var colorLookups:Array<Int>;
 
@@ -15,11 +16,19 @@ class PaletteBox extends Sprite {
 
   private var clickFunction:Int->Void;
 
+  public var uWidth:Int;
+  public var uHeight:Int;
+
   public function new(width:Int, height:Int,  columns:Int, rows:Int, clickFunction:Int->Void) {
     super();
 
     this.columns = columns;
     this.rows = rows;
+
+    scrollBox = new Sprite();
+    scrollBox.x = 0;
+    scrollBox.y = 0;
+    addChild(scrollBox);
 
     colorBoxes = new Array<Sprite>();
     colorLookups = new Array<Int>();
@@ -33,12 +42,12 @@ class PaletteBox extends Sprite {
 
     tileWidth = Math.floor(width / columns);
     tileHeight = Math.floor(height / rows);
+
+    uWidth = width;
+    uHeight = height;
   }
 
   public function addColor(color:Int) {
-    if (colorBoxes.length >= columns * rows) {
-      throw "Cannot add any more colors to the PaletteBox";
-    }
     var colorBox = new Sprite();
     var gfx = colorBox.graphics;
     gfx.beginFill(color);
@@ -46,7 +55,7 @@ class PaletteBox extends Sprite {
     gfx.endFill();
     colorBox.x = tileWidth * (colorBoxes.length % columns);
     colorBox.y = tileHeight * Math.floor(colorBoxes.length / columns);
-    addChild(colorBox);
+    scrollBox.addChild(colorBox);
     colorBoxes.push(colorBox);
     colorLookups.push(color);
 
@@ -60,6 +69,16 @@ class PaletteBox extends Sprite {
         clickFunction(colorLookups[i]);
         break;
       }
+    }
+  }
+  
+  public function scroll(delta:Int) {
+    scrollBox.y += delta * tileHeight;
+    if (scrollBox.y > 0) {
+      scrollBox.y = 0;
+    }
+    if (scrollBox.y + scrollBox.height < uHeight) {
+      scrollBox.y = uHeight - scrollBox.height;
     }
   }
 }

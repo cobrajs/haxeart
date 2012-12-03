@@ -24,7 +24,6 @@ class BrushFactory {
   public function new(brushFile:String, tilesX:Int, tilesY:Int, ?transparentKey:Int) {
 
     brushBitmap = new Bitmap(Assets.getBitmapData("assets/" + brushFile));
-    //brushData = Assets.getBitmapData("assets/" + brushFile);
     brushData = new BitmapData(Math.floor(brushBitmap.width), Math.floor(brushBitmap.height));
     coloredBrushData = new BitmapData(brushData.width, brushData.height);
     coloredBrushData.fillRect(new Rectangle(0, 0, brushData.width, brushData.height), Color.transparent);

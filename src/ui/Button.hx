@@ -80,6 +80,7 @@ class Button extends Sprite {
 		//buttonTextField.height = 40;
 		buttonTextField.x = 20;
 		buttonTextField.y = 20;
+    buttonTextField.visible = false;
 
 		addChild (buttonTextField);
 
@@ -116,6 +117,7 @@ class Button extends Sprite {
 		buttonTextField.text = string;
     buttonTextField.x = uWidth / 2 - buttonTextField.textWidth / 2;
     buttonTextField.y = uHeight / 2 - buttonTextField.textHeight / 2 - 2;
+    buttonTextField.visible = true;
   }
 
   private function construct() {
