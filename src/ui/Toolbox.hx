@@ -91,6 +91,7 @@ class Toolbox extends Sprite {
             }
           }
         }
+        action();
       }
     }
     else {
@@ -104,6 +105,5 @@ class Toolbox extends Sprite {
     addChild(button);
     buttons.push(button);
     buttonGroups.push(group);
-    trace(buttonGroups);
   }
 }

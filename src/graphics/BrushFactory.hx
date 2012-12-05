@@ -1,4 +1,4 @@
-ackage graphics;
+package graphics;
 
 import graphics.Color;
 

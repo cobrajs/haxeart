@@ -17,7 +17,8 @@ class BrushPopup extends Popup {
     this.pickAction = pickAction;
   }
 
-  private function onMouseUp(event:MouseEvent) {
+
+  override function onMouseUp(event:MouseEvent) {
     pickAction();
     var tempX = Math.floor(event.localX / (uWidth / 5));
     var tempY = Math.floor(event.localY / (uHeight / 5));
