@@ -11,9 +11,9 @@ import nme.text.TextField;
 import nme.Assets;
 
 class Button extends Sprite {
-  private static var HOVERING:Int = 0;
-  private static var NORMAL:Int = 1;
-  private static var CLICKED:Int = 2;
+  public static var HOVERING:Int = 0;
+  public static var NORMAL:Int = 1;
+  public static var CLICKED:Int = 2;
 
   // Size and style
   private var uWidth:Int;
@@ -24,6 +24,7 @@ class Button extends Sprite {
   private var state:Int;
   private var oldState:Int;
   private var constructed:Bool;
+  private var stayPressed:Bool;
 
   // Button state images
   private var hover:Sprite;
@@ -41,13 +42,15 @@ class Button extends Sprite {
   // Button actions
   public var clickAction:Void->Void;
 
-  public function new(width:Int, height:Int, ?bevel:Int = 8) {
+  public function new(width:Int, height:Int, ?bevel:Int = 8, ?stayPressed:Bool = false) {
     super();
 
     constructed = false;
 
     uWidth = width;
     uHeight = height;
+
+    this.stayPressed = stayPressed;
 
     if (bevel < 0) {
       throw "Bevel must be greater than 0";
@@ -121,8 +124,8 @@ class Button extends Sprite {
   }
 
   private function construct() {
-    addEventListener(MouseEvent.MOUSE_OVER, mouseOver);
-    addEventListener(MouseEvent.MOUSE_OUT, mouseOut);
+    //addEventListener(MouseEvent.MOUSE_OVER, mouseOver);
+    //addEventListener(MouseEvent.MOUSE_OUT, mouseOut);
     addEventListener(MouseEvent.MOUSE_DOWN, mouseDown);
     addEventListener(MouseEvent.MOUSE_UP, mouseUp);
     stage.addEventListener(MouseEvent.MOUSE_UP, stageMouseUp);
@@ -201,18 +204,6 @@ class Button extends Sprite {
     }
   }
 
-  private function mouseOver(event:MouseEvent):Void {
-    if (state != CLICKED) {
-      changeState(HOVERING);
-    }
-  }
-
-  private function mouseOut(event:MouseEvent):Void {
-    //if (state != CLICKED) {
-      changeState(NORMAL);
-    //}
-  }
-
   private function mouseDown(event:MouseEvent):Void {
     changeState(CLICKED);
   }
@@ -221,14 +212,18 @@ class Button extends Sprite {
     if (clickAction != null) {
       clickAction();
     }
-    changeState();
+    if (!stayPressed) {
+      changeState();
+    }
   }
 
   private function stageMouseUp(event:MouseEvent):Void {
     if (state == CLICKED && clickAction != null) {
       clickAction();
     }
-    changeState(NORMAL);
+    if (!stayPressed) {
+      changeState(NORMAL);
+    }
   }
 }
 

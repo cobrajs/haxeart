@@ -1,4 +1,4 @@
-package graphics;
+ackage graphics;
 
 import graphics.Color;
 
@@ -21,6 +21,8 @@ class BrushFactory {
   private var tileWidth:Int;
   private var tileHeight:Int;
 
+  public var color:Int;
+
   public function new(brushFile:String, tilesX:Int, tilesY:Int, ?transparentKey:Int) {
 
     brushBitmap = new Bitmap(Assets.getBitmapData("assets/" + brushFile));
@@ -28,6 +30,8 @@ class BrushFactory {
     coloredBrushData = new BitmapData(brushData.width, brushData.height);
     coloredBrushData.fillRect(new Rectangle(0, 0, brushData.width, brushData.height), Color.transparent);
     brushData.draw(brushBitmap);
+
+    color = 0x000000;
 
     if (transparentKey != null) {
       Color.keyImage(brushData, transparentKey);
@@ -48,6 +52,7 @@ class BrushFactory {
   }
 
   public function changeColor(color:Int) {
+    this.color = color;
     coloredBrushData.draw(
       brushData,
       null,

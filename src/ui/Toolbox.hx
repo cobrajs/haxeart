@@ -20,6 +20,7 @@ class Toolbox extends Sprite {
   private var commonBevel:Int;
 
   private var buttons:Array<Button>;
+  private var buttonGroups:Array<Int>;
 
   private var imageSetBitmap:Bitmap;
   private var imageSetBitmapData:BitmapData;
@@ -31,6 +32,8 @@ class Toolbox extends Sprite {
     super();
 
     buttons = new Array<Button>();
+    buttonGroups = new Array<Int>();
+
     uWidth = width;
     uHeight = height;
     this.columns = columns;
@@ -68,18 +71,39 @@ class Toolbox extends Sprite {
     }
   }
 
-  public function addButton(action:Void->Void, ?image:Int, ?group:Int) {
+  public function addButton(action:Void->Void, ?image:Int, ?group:Int = 0, ?groupDefault = false) {
     if (buttons.length >= columns * rows) {
       throw "Adding too many buttons to the toolbox";
     }
-    var button = new Button(buttonWidth, buttonHeight, commonBevel);
+    var button = new Button(buttonWidth, buttonHeight, commonBevel, group != 0);
     button.x = buttonWidth * (buttons.length % columns);
     button.y = buttonHeight * Math.floor(buttons.length / columns);
-    button.clickAction = action;
+    if (groupDefault) {
+      button.changeState(Button.CLICKED);
+    }
+
+    if (group != 0) {
+      button.clickAction = function():Void {
+        for (i in 0...buttons.length) {
+          if (buttons[i] != button) {
+            if (buttonGroups[i] == group) {
+              buttons[i].changeState(Button.NORMAL);
+            }
+          }
+        }
+      }
+    }
+    else {
+      button.clickAction = action;
+    }
+
     if (image != null) {
       imageSet.drawTiles(button.drawImage(tileWidth, tileHeight), [0, 0, image]);
     }
+
     addChild(button);
     buttons.push(button);
+    buttonGroups.push(group);
+    trace(buttonGroups);
   }
 }

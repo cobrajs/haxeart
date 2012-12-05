@@ -111,15 +111,19 @@ class Canvas extends Sprite {
     return data.getPixel(x, y);
   }
 
-  public function fill(startX:Int, startY:Int, color:Int) {
+  public function fill(startX:Int, startY:Int, ?color:Int) {
     data.lock();
     var queue = new List<SimplePoint>();
+    var replaceColor:Int = data.getPixel(startX, startY);
+    if (color == null) {
+      color = brushFactory.color;
+    }
     var dirs = [new SimplePoint(1, 0), new SimplePoint(0, 1), new SimplePoint(-1, 0), new SimplePoint(0, -1)];
     var temp:SimplePoint;
     queue.add(new SimplePoint(startX, startY));
     while (queue.length > 0) {
       temp = queue.pop();
-      if (data.getPixel(temp.x, temp.y) != color) {
+      if (data.getPixel(temp.x, temp.y) == replaceColor) {
         data.setPixel(temp.x, temp.y, color);
         for (dir in dirs) {
           queue.push(new SimplePoint(temp.x + dir.x, temp.y + dir.y));

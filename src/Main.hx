@@ -6,7 +6,7 @@ import ui.Toolbox;
 import ui.Canvas;
 import ui.PaletteBox;
 import ui.Cursor;
-import ui.Popup;
+import ui.BrushPopup;
 
 // Graphical Helpers
 import graphics.BrushFactory;
@@ -47,7 +47,7 @@ class Main extends Sprite {
 
   private var cursor:Cursor;
 
-  private var popupBox:Popup;
+  private var brushPopup:BrushPopup;
 
   private var pencil:Pencil;
   private var move:Move;
@@ -111,7 +111,7 @@ class Main extends Sprite {
     //
     // Popup Box
     //
-    popupBox = new Popup(200, 160);
+    brushPopup = new BrushPopup(200, 160, brushFactory, function():Void {});
 
 
     //
@@ -124,19 +124,19 @@ class Main extends Sprite {
     toolbox.setTilesheet("toolbox.png", 4, 4, 0xFF00FF);
     toolbox.addButton(function():Void { 
       canvas.currentTool = pencil; 
-    }, 0);
+    }, pencil.imageIndex, 1, true);
     toolbox.addButton(function():Void { 
       canvas.currentTool = move; 
-    }, 1);
+    }, move.imageIndex, 1);
     toolbox.addButton(function():Void { 
       canvas.previousTool = canvas.currentTool;
       canvas.currentTool = picker; 
-    }, 2);
+    }, picker.imageIndex, 1);
     toolbox.addButton(function():Void {
       canvas.currentTool = filler;
-    }, 3);
+    }, filler.imageIndex, 1);
     toolbox.addButton(function():Void {
-      popupBox.popup(100, 100);
+      brushPopup.popup(100, 100);
     }, 3);
     toolbox.addButton(Utils.curry(canvas.clearCanvas, null), 3);
     toolbox.addButton(function():Void {
@@ -153,7 +153,7 @@ class Main extends Sprite {
     addChild(toolbox);
 
     // Put Popup Box on Top
-    addChild(popupBox);
+    addChild(brushPopup);
 
     //
     /// Setup Cursor
