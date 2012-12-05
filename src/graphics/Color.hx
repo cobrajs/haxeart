@@ -13,8 +13,8 @@ class Color {
 
   public static function keyImage(imageData:BitmapData, ?colorKey:Int = 0xFF00FF) {
     imageData.lock();
-    for (y in 0...cast(imageData.height, Int)) {
-      for (x in 0...cast(imageData.width, Int)) {
+    for (y in 0...Math.floor(imageData.height)) {
+      for (x in 0...Math.floor(imageData.width)) {
         if (imageData.getPixel(x, y) == colorKey) {
           imageData.setPixel32(x, y, transparent);
         }
@@ -27,7 +27,7 @@ class Color {
 #if neko
     return {rgb: color, a:alpha};
 #else
-    return (alpha << 24) & color;
+    return (alpha << 24) | color;
 #end
   }
 

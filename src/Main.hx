@@ -6,6 +6,7 @@ import ui.Toolbox;
 import ui.Canvas;
 import ui.PaletteBox;
 import ui.Cursor;
+import ui.Popup;
 
 // Graphical Helpers
 import graphics.BrushFactory;
@@ -15,6 +16,8 @@ import graphics.Color;
 // Tools
 import tools.Pencil;
 import tools.Move;
+import tools.Picker;
+import tools.Filler;
 
 // Iterators
 import util.LineIter;
@@ -44,8 +47,12 @@ class Main extends Sprite {
 
   private var cursor:Cursor;
 
+  private var popupBox:Popup;
+
   private var pencil:Pencil;
   private var move:Move;
+  private var picker:Picker;
+  private var filler:Filler;
   
   public function new() {
     super();
@@ -65,7 +72,12 @@ class Main extends Sprite {
     //
     pencil = new Pencil();
     move = new Move();
-
+    picker = new Picker(function(color:Int):Void {
+      setCanvasBrushColor(color);
+      canvas.currentTool = canvas.previousTool;
+      canvas.previousTool = picker;
+    });
+    filler = new Filler();
 
     //
     // Setup Canvas
@@ -82,9 +94,9 @@ class Main extends Sprite {
     //
     // Setup Palette Box
     //
-    paletteBox = new PaletteBox(200, halfHeight, 3, 4, setCanvasBrushColor);
+    paletteBox = new PaletteBox(200, halfHeight - 50, 3, 3, setCanvasBrushColor);
     paletteBox.x = 0;
-    paletteBox.y = halfHeight;
+    paletteBox.y = halfHeight + 50;
 
     var paletteFactory = new PaletteFactory();
     paletteFactory.load("colors.dat");
@@ -96,21 +108,37 @@ class Main extends Sprite {
     addChild(paletteBox);
 
 
+    //
+    // Popup Box
+    //
+    popupBox = new Popup(200, 160);
+
 
     //
     // Setup Toolbox
     //
-    toolbox = new Toolbox(200, halfHeight,   2, 4,   8);
+    toolbox = new Toolbox(200, halfHeight + 50,   3, 4,   8);
     toolbox.x = 0;
     toolbox.y = 0;
 
     toolbox.setTilesheet("toolbox.png", 4, 4, 0xFF00FF);
-    toolbox.addButton(function():Void { canvas.currentTool = pencil; }, 0);
-    toolbox.addButton(function():Void { canvas.currentTool = move; }, 1);
-    toolbox.addButton(canvas.noise, 3);
-    toolbox.addButton(Utils.curry(canvas.clearCanvas, null), 2);
-    //toolbox.addButton(Utils.curry(canvas.changeZoom, 2), 6);
-    //toolbox.addButton(Utils.curry(canvas.changeZoom, 0.5), 7);
+    toolbox.addButton(function():Void { 
+      canvas.currentTool = pencil; 
+    }, 0);
+    toolbox.addButton(function():Void { 
+      canvas.currentTool = move; 
+    }, 1);
+    toolbox.addButton(function():Void { 
+      canvas.previousTool = canvas.currentTool;
+      canvas.currentTool = picker; 
+    }, 2);
+    toolbox.addButton(function():Void {
+      canvas.currentTool = filler;
+    }, 3);
+    toolbox.addButton(function():Void {
+      popupBox.popup(100, 100);
+    }, 3);
+    toolbox.addButton(Utils.curry(canvas.clearCanvas, null), 3);
     toolbox.addButton(function():Void {
       canvas.changeZoom(2);
       cursor.changeZoom(Math.floor(canvas.zoom));
@@ -124,6 +152,8 @@ class Main extends Sprite {
 
     addChild(toolbox);
 
+    // Put Popup Box on Top
+    addChild(popupBox);
 
     //
     /// Setup Cursor

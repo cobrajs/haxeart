@@ -33,6 +33,7 @@ class Canvas extends Sprite {
   private var brushFactory:BrushFactory;
 
   public var currentTool:Dynamic;
+  public var previousTool:Dynamic;
 
   public function new(width:Int, height:Int, brushFactory:BrushFactory, currentTool:Dynamic) {
     super();
@@ -106,6 +107,27 @@ class Canvas extends Sprite {
     }
   }
 
+  public function getPoint(x:Int, y:Int):Int {
+    return data.getPixel(x, y);
+  }
+
+  public function fill(startX:Int, startY:Int, color:Int) {
+    data.lock();
+    var queue = new List<SimplePoint>();
+    var dirs = [new SimplePoint(1, 0), new SimplePoint(0, 1), new SimplePoint(-1, 0), new SimplePoint(0, -1)];
+    var temp:SimplePoint;
+    queue.add(new SimplePoint(startX, startY));
+    while (queue.length > 0) {
+      temp = queue.pop();
+      if (data.getPixel(temp.x, temp.y) != color) {
+        data.setPixel(temp.x, temp.y, color);
+        for (dir in dirs) {
+          queue.push(new SimplePoint(temp.x + dir.x, temp.y + dir.y));
+        }
+      }
+    }
+  }
+
   public function changeZoom(multiplier:Float) {
     zoom *= multiplier;
     if (zoom < 1) {
@@ -138,17 +160,6 @@ class Canvas extends Sprite {
     data.fillRect(new Rectangle(0, 0, data.width, data.height), Color.getARGB(color, 0xFF));
   }
 
-  public function redShift() {
-    data.colorTransform(
-        new Rectangle(0, 0, data.width, data.height), 
-        new ColorTransform(1, 1, 1, 1, 50, 0, 0, 0)
-    );
-  }
-
-  public function noise() {
-    data.noise(Math.floor(Math.random() * 1000));
-  }
-
   //
   // Event Handlers
   //
@@ -162,12 +173,19 @@ class Canvas extends Sprite {
 
   public function onMouseUp(event:MouseEvent) {
     currentTool.mouseUpAction(this, event);
-    //zoomPoint.x = event.localX;
-    //zoomPoint.y = event.localY;
   }
 
   private function onMouseOut(event:MouseEvent) {
     currentTool.mouseUpAction(this, event);
   }
 
+}
+
+class SimplePoint {
+  public var x:Int;
+  public var y:Int;
+  public function new(x:Int, y:Int) {
+    this.x = x;
+    this.y = y;
+  }
 }
