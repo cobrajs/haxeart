@@ -1,5 +1,7 @@
 package ui;
 
+import com.eclecticdesignstudio.motion.Actuate;
+
 import nme.display.Sprite;
 import nme.display.Bitmap;
 import nme.display.Graphics;
@@ -21,10 +23,11 @@ class Button extends Sprite {
   private var bevel:Int;
 
   // Button state vars
-  private var state:Int;
+  public var state:Int;
   private var oldState:Int;
   private var constructed:Bool;
   private var stayPressed:Bool;
+  private var clickHandled:Bool;
 
   // Button state images
   private var hover:Sprite;
@@ -40,7 +43,7 @@ class Button extends Sprite {
   private var buttonOverlay:Sprite;
 
   // Button actions
-  public var clickAction:Void->Void;
+  public var clickAction:Button->Void;
 
   public function new(width:Int, height:Int, ?bevel:Int = 8, ?stayPressed:Bool = false) {
     super();
@@ -51,6 +54,7 @@ class Button extends Sprite {
     uHeight = height;
 
     this.stayPressed = stayPressed;
+    this.clickHandled = false;
 
     if (bevel < 0) {
       throw "Bevel must be greater than 0";
@@ -206,24 +210,48 @@ class Button extends Sprite {
 
   private function mouseDown(event:MouseEvent):Void {
     changeState(CLICKED);
+    var scale = 0.8;
+    Actuate.tween(this, 0.4, {
+      x: this.x + (this.uWidth - this.uWidth * scale) / 2, 
+      y: this.y + (this.uHeight - this.uHeight * scale) / 2,
+      scaleX: scale,
+      scaleY: scale
+    }, true);
   }
 
   private function mouseUp(event:MouseEvent):Void {
     if (clickAction != null) {
-      clickAction();
+      clickAction(this);
+      this.clickHandled = true;
     }
     if (!stayPressed) {
       changeState();
     }
+    Actuate.tween(this, 0.4, {
+      x: this.x + (this.uWidth * this.scaleX - this.uWidth) / 2, 
+      y: this.y + (this.uHeight * this.scaleY - this.uHeight) / 2,
+      scaleX: 1,
+      scaleY: 1
+    }, true);
+    event.stopPropagation();
   }
 
   private function stageMouseUp(event:MouseEvent):Void {
-    if (state == CLICKED && clickAction != null) {
-      clickAction();
+    if (state == CLICKED) {
+      if (clickAction != null && !this.clickHandled) {
+        clickAction(this);
+      }
+      if (!stayPressed) {
+        changeState(NORMAL);
+      }
+      Actuate.tween(this, 0.4, {
+        x: this.x + (this.uWidth * this.scaleX - this.uWidth) / 2, 
+        y: this.y + (this.uHeight * this.scaleY - this.uHeight) / 2,
+        scaleX: 1,
+        scaleY: 1
+      }, true);
     }
-    if (!stayPressed) {
-      changeState(NORMAL);
-    }
+    this.clickHandled = false;
   }
 }
 

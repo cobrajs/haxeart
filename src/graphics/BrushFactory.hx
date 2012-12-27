@@ -33,12 +33,15 @@ class BrushFactory {
 
     color = 0x000000;
 
+    trace(brushData);
+    trace(brushData.width);
+    trace(brushData.height);
     if (transparentKey != null) {
       Color.keyImage(brushData, transparentKey);
     }
     coloredBrushData.draw(brushData);
 
-    currentBrush = 11;
+    currentBrush = 2;
     clipRects = new Array<Rectangle>();
 
     tileWidth = Math.floor(brushData.width / tilesX);
@@ -60,10 +63,10 @@ class BrushFactory {
     );
   }
 
-  public function drawBrush(canvas:BitmapData, x:Int, y:Int):Void {
+  public function drawBrush(canvas:BitmapData, x:Int, y:Int, ?brush:Int):Void {
     canvas.copyPixels(
       coloredBrushData, 
-      clipRects[currentBrush], 
+      clipRects[brush != null ? brush : currentBrush], 
       new Point(x - tileWidth / 2, y - tileHeight / 2),
       null,
       null,
@@ -83,6 +86,10 @@ class BrushFactory {
       true
     );
     return ret;
+  }
+
+  public function changeBrush(newBrush:Int):Void {
+    currentBrush = newBrush;
   }
 }
 

@@ -5,9 +5,15 @@ import graphics.Color;
 
 import util.LineIter;
 
+import tools.ITool;
+
 import nme.display.Sprite;
 import nme.display.Bitmap;
 import nme.display.BitmapData;
+import nme.display.Shape;
+import nme.display.LineScaleMode;
+
+
 import nme.events.MouseEvent;
 import nme.geom.Rectangle;
 import nme.geom.Point;
@@ -16,6 +22,7 @@ import nme.geom.ColorTransform;
 class Canvas extends Sprite {
   private var data:BitmapData;
   private var display:Bitmap;
+  private var grid:Shape;
   private var zoomDisplayData:BitmapData;
   private var zoomDisplay:Bitmap;
 
@@ -32,10 +39,10 @@ class Canvas extends Sprite {
 
   private var brushFactory:BrushFactory;
 
-  public var currentTool:Dynamic;
-  public var previousTool:Dynamic;
+  public var currentTool:ITool;
+  public var previousTool:ITool;
 
-  public function new(width:Int, height:Int, brushFactory:BrushFactory, currentTool:Dynamic) {
+  public function new(width:Int, height:Int, brushFactory:BrushFactory, currentTool:ITool) {
     super();
 
     this.brushFactory = brushFactory;
@@ -52,7 +59,22 @@ class Canvas extends Sprite {
     display = new Bitmap(data);
     display.smoothing = false;
 
+    grid = new Shape();
+    grid.visible = false;
+    var gfx = grid.graphics;
+    gfx.lineStyle(1, 0x000000, 1, null, LineScaleMode.NONE);
+    for (y in 0...height) {
+      gfx.moveTo(0, y);
+      gfx.lineTo(width, y);
+    }
+    for (x in 0...width) {
+      gfx.moveTo(x, 0);
+      gfx.lineTo(x, height);
+    }
+
     addChild(display);
+
+    addChild(grid);
 
     lastMousePoint = new Point(-1, -1);
     zoomPoint = new Point(this.x + width / 2, this.y + height / 2);
@@ -147,6 +169,9 @@ class Canvas extends Sprite {
     }
     display.scaleX = zoom;
     display.scaleY = zoom;
+    grid.scaleX = zoom;
+    grid.scaleY = zoom;
+    grid.visible = zoom >= 4;
     this.x = zoomPoint.x - width / 2;
     this.y = zoomPoint.y - height / 2;
   }
@@ -172,6 +197,9 @@ class Canvas extends Sprite {
     data.fillRect(new Rectangle(0, 0, data.width, data.height), Color.getARGB(color, 0xFF));
   }
 
+  public function getCanvas():BitmapData {
+    return data;
+  }
   //
   // Event Handlers
   //

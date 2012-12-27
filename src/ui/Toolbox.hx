@@ -9,6 +9,8 @@ import nme.display.Bitmap;
 import nme.display.BitmapData;
 import nme.display.Tilesheet;
 import nme.geom.Rectangle;
+import nme.events.MouseEvent;
+
 
 class Toolbox extends Sprite {
   private var uWidth:Int;
@@ -21,6 +23,8 @@ class Toolbox extends Sprite {
 
   private var buttons:Array<Button>;
   private var buttonGroups:Array<Int>;
+  // Matches the button's name to the button's index
+  private var buttonNames:Hash<Int>;
 
   private var imageSetBitmap:Bitmap;
   private var imageSetBitmapData:BitmapData;
@@ -33,6 +37,7 @@ class Toolbox extends Sprite {
 
     buttons = new Array<Button>();
     buttonGroups = new Array<Int>();
+    buttonNames = new Hash<Int>();
 
     uWidth = width;
     uHeight = height;
@@ -71,7 +76,7 @@ class Toolbox extends Sprite {
     }
   }
 
-  public function addButton(action:Void->Void, ?image:Int, ?group:Int = 0, ?groupDefault = false) {
+  public function addButton(name:String, action:Button->Void, ?image:Int, ?group:Int = 0, ?groupDefault = false) {
     if (buttons.length >= columns * rows) {
       throw "Adding too many buttons to the toolbox";
     }
@@ -83,7 +88,7 @@ class Toolbox extends Sprite {
     }
 
     if (group != 0) {
-      button.clickAction = function():Void {
+      button.clickAction = function(thisButton):Void {
         for (i in 0...buttons.length) {
           if (buttons[i] != button) {
             if (buttonGroups[i] == group) {
@@ -91,7 +96,7 @@ class Toolbox extends Sprite {
             }
           }
         }
-        action();
+        action(button);
       }
     }
     else {
@@ -105,5 +110,18 @@ class Toolbox extends Sprite {
     addChild(button);
     buttons.push(button);
     buttonGroups.push(group);
+    buttonNames.set(name, buttons.length - 1);
+  }
+
+  public function clickButtonByName(name:String):Void {
+    clickButton(buttonNames.get(name));
+  }
+
+  public function clickButton(buttonIndex:Int):Void {
+    var button = buttons[buttonIndex];
+    var downEvent = new MouseEvent(MouseEvent.MOUSE_DOWN, false, false, button.width / 2, button.height / 2);
+    var upEvent = new MouseEvent(MouseEvent.MOUSE_UP, false, false, button.width / 2, button.height / 2);
+    button.dispatchEvent(downEvent);
+    button.dispatchEvent(upEvent);
   }
 }

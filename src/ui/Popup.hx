@@ -1,5 +1,7 @@
 package ui;
 
+import com.eclecticdesignstudio.motion.Actuate;
+
 import nme.display.Sprite;
 import nme.events.MouseEvent;
 
@@ -33,9 +35,32 @@ class Popup extends Sprite {
     if (y + uHeight > stage.stageHeight) {
       popupY = y - uHeight;
     }
-    this.x = popupX;
-    this.y = popupY;
+    this.x = 0;
+    this.y = 0;
+    this.scaleX = 0.5;
+    this.scaleY = 0.5;
+    this.alpha = 0;
     this.visible = true;
+    Actuate.tween(this, 0.5, {
+      x      : popupX,
+      y      : popupY,
+      scaleX : 1,
+      scaleY : 1,
+      alpha  : 1
+    }, true);
+  }
+
+  public function hide():Void {
+    var scale = 1.5;
+    Actuate.tween(this, 0.3, {
+      x      : x - ((this.width * scale) - this.width) / 2,
+      y      : y - ((this.height * scale) - this.height) / 2,
+      scaleX : scale,
+      scaleY : scale,
+      alpha  : 0
+    }, true).onComplete(function():Void {
+      this.visible = false;
+    });
   }
 
   private function onMouseUp(event:MouseEvent) {

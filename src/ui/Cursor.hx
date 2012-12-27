@@ -12,6 +12,9 @@ class Cursor extends Sprite {
   private var image:Sprite;
 
   private var images:Hash<BitmapData>;
+  private var useZoom:Hash<Bool>;
+
+  private var zoomLevel:Float;
 
   public var currentCursor:String;
 
@@ -20,11 +23,12 @@ class Cursor extends Sprite {
 #if desktop
 
     images = new Hash<BitmapData>();
+    useZoom = new Hash<Bool>();
 
     image = new Sprite();
     addChild(image);
-    image.x = -width / 2;
-    image.y = -height / 2;
+    image.x = -Math.floor(width / 2);
+    image.y = -Math.floor(height / 2);
     image.mouseEnabled = false;
 
     var imageBitmapData = new BitmapData(width, height);
@@ -32,20 +36,22 @@ class Cursor extends Sprite {
     imageBitmapData.fillRect(new Rectangle(0, 1, imageBitmapData.width, imageBitmapData.height - 2), Color.getARGB(0x000000, 0xFF));
     imageBitmapData.fillRect(new Rectangle(1, 0, imageBitmapData.width - 2, imageBitmapData.height), Color.getARGB(0x000000, 0xFF));
 
-    addTypeCursor("default", imageBitmapData);
+    addTypeCursor("default", imageBitmapData, false);
     setCursor("default");
 
     this.x = 0;
     this.y = 0;
     this.visible = true;
+    this.zoomLevel = 1;
     this.mouseEnabled = false;
     Mouse.hide();
 #end
   } 
 
-  public function addTypeCursor(name:String, imageData:BitmapData) {
+  public function addTypeCursor(name:String, imageData:BitmapData, ?useZoom:Bool = false) {
 #if desktop
     images.set(name, imageData);
+    this.useZoom.set(name, useZoom);
 #end
   }
 
@@ -66,6 +72,15 @@ class Cursor extends Sprite {
 
     currentCursor = name;
 
+    if (useZoom.get(currentCursor)) {
+      this.scaleX = this.zoomLevel;
+      this.scaleY = this.zoomLevel;
+    }
+    else {
+      this.scaleX = 1;
+      this.scaleY = 1;
+    }
+
     var bitmapData = imageData == null ? images.get(name) : imageData;
     var gfx = image.graphics;
     gfx.clear();
@@ -77,6 +92,8 @@ class Cursor extends Sprite {
 
   public function update(x:Float, y:Float) {
 #if desktop
+    //this.x = Math.ceil(x / this.scaleX) * this.scaleX;
+    //this.y = Math.ceil(y / this.scaleY) * this.scaleY;
     this.x = x;
     this.y = y;
 #end
@@ -84,8 +101,12 @@ class Cursor extends Sprite {
 
   public function changeZoom(zoom:Int) {
 #if desktop
-    this.scaleX = zoom;
-    this.scaleY = zoom;
+    this.zoomLevel = zoom;
+    trace(this.zoomLevel);
+    if (useZoom.get(currentCursor)) {
+      this.scaleX = this.zoomLevel;
+      this.scaleY = this.zoomLevel;
+    }
 #end
   }
 }

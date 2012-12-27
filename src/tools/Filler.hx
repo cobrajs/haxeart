@@ -8,10 +8,16 @@ import nme.events.MouseEvent;
 class Filler implements ITool {
   public var imageFile:String;
   public var imageIndex:Int;
+  public var name:String;
 
   public function new() {
+    name = "filler";
     imageIndex = 3;
     imageFile = "toolbox.png";
+  }
+
+  public function isMomentary():Bool {
+    return false;
   }
 
   public function mouseDownAction(canvas:Canvas, event:MouseEvent):Void {
