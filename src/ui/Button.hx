@@ -21,6 +21,8 @@ class Button extends Sprite {
   private var uWidth:Int;
   private var uHeight:Int;
   private var bevel:Int;
+  private var origX:Float;
+  private var origY:Float;
 
   // Button state vars
   public var state:Int;
@@ -130,6 +132,8 @@ class Button extends Sprite {
   private function construct() {
     //addEventListener(MouseEvent.MOUSE_OVER, mouseOver);
     //addEventListener(MouseEvent.MOUSE_OUT, mouseOut);
+    origX = x;
+    origY = y;
     addEventListener(MouseEvent.MOUSE_DOWN, mouseDown);
     addEventListener(MouseEvent.MOUSE_UP, mouseUp);
     stage.addEventListener(MouseEvent.MOUSE_UP, stageMouseUp);
@@ -228,8 +232,8 @@ class Button extends Sprite {
       changeState();
     }
     Actuate.tween(this, 0.4, {
-      x: this.x + (this.uWidth * this.scaleX - this.uWidth) / 2, 
-      y: this.y + (this.uHeight * this.scaleY - this.uHeight) / 2,
+      x: origX, 
+      y: origY,
       scaleX: 1,
       scaleY: 1
     }, true);
@@ -245,8 +249,8 @@ class Button extends Sprite {
         changeState(NORMAL);
       }
       Actuate.tween(this, 0.4, {
-        x: this.x + (this.uWidth * this.scaleX - this.uWidth) / 2, 
-        y: this.y + (this.uHeight * this.scaleY - this.uHeight) / 2,
+        x: origX, 
+        y: origY,
         scaleX: 1,
         scaleY: 1
       }, true);

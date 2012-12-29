@@ -8,6 +8,7 @@ import nme.Assets;
 import nme.display.Bitmap;
 import nme.display.BitmapData;
 import nme.display.Tilesheet;
+import nme.display.Shape;
 import nme.geom.Rectangle;
 import nme.events.MouseEvent;
 
@@ -32,6 +33,8 @@ class Toolbox extends Sprite {
   private var tileWidth:Int;
   private var tileHeight:Int;
 
+  private var background:Shape;
+
   public function new(width:Int, height:Int, columns:Int, rows:Int, ?bevel:Int = 0) {
     super();
 
@@ -48,6 +51,9 @@ class Toolbox extends Sprite {
 
     buttonWidth = Math.floor(width / columns);
     buttonHeight = Math.floor(height / rows);
+
+    background = new Shape();
+    addChild(background);
   }
 
   public function setTilesheet(filename:String, tilesX:Int, tilesY:Int, ?transparentKey:Int) {
@@ -111,6 +117,11 @@ class Toolbox extends Sprite {
     buttons.push(button);
     buttonGroups.push(group);
     buttonNames.set(name, buttons.length - 1);
+
+    var gfx = background.graphics;
+    gfx.beginFill(0xFFFFFF);
+    gfx.drawRect(0, 0, buttonWidth * columns, buttonHeight * Math.ceil(buttons.length / columns));
+    gfx.endFill();
   }
 
   public function clickButtonByName(name:String):Void {

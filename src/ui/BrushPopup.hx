@@ -27,11 +27,12 @@ class BrushPopup extends Popup {
     yGrid = 4;
     for (y in 0...yGrid) {
       for (x in 0...xGrid) {
-        brushFactory.drawBrush(
+        brushFactory.drawBrushScale(
           background, 
-          Math.floor(xGrid + x * (width / xGrid)), 
-          Math.floor(yGrid + y * (height / yGrid)), 
-          (y * xGrid) + x
+          Math.floor(xGrid + x * (width / xGrid) + brushFactory.tileWidth), 
+          Math.floor(yGrid + y * (height / yGrid)) + brushFactory.tileHeight, 
+          (y * xGrid) + x,
+          2
         );
       }
     }
@@ -44,9 +45,14 @@ class BrushPopup extends Popup {
 
 
   override function onMouseUp(event:MouseEvent) {
-    var tempX = Math.floor(event.localX / (uWidth / xGrid));
-    var tempY = Math.floor(event.localY / (uHeight / yGrid));
-    pickAction(tempY * xGrid + tempX);
-    hide();
+    if (event.target == this) {
+      var tempX = Math.floor(event.localX / (uWidth / xGrid));
+      var tempY = Math.floor(event.localY / (uHeight / yGrid));
+      pickAction(tempY * xGrid + tempX);
+      hide();
+    }
+    else {
+      hide();
+    }
   }
 }

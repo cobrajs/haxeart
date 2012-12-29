@@ -12,6 +12,7 @@ class Pencil implements ITool {
   public var imageFile:String;
   public var imageIndex:Int;
   public var name:String;
+  public var canvasModifySet:Bool;
 
   public function new() {
     name = "pencil";
@@ -19,6 +20,7 @@ class Pencil implements ITool {
     imageFile = "toolbox.png";
 
     lastMousePoint = new Point(-1, -1);
+    canvasModifySet = false;
   }
 
   public function isMomentary():Bool {
@@ -26,6 +28,10 @@ class Pencil implements ITool {
   }
 
   public function mouseDownAction(canvas:Canvas, event:MouseEvent):Void {
+    if (!canvasModifySet) {
+      canvas.canvasModified();
+      canvasModifySet = true;
+    }
     canvas.drawDot(Math.ceil(event.localX / canvas.zoom), Math.ceil(event.localY / canvas.zoom));
   }
 
@@ -41,6 +47,10 @@ class Pencil implements ITool {
       }
       else {
         canvas.drawDot(Math.ceil(event.localX / canvas.zoom), Math.ceil(event.localY / canvas.zoom));
+        if (!canvasModifySet) {
+          canvas.canvasModified();
+          canvasModifySet = true;
+        }
       }
       lastMousePoint.x = event.localX;
       lastMousePoint.y = event.localY;
@@ -50,6 +60,7 @@ class Pencil implements ITool {
   public function mouseUpAction(canvas:Canvas, event:MouseEvent):Void {
     lastMousePoint.x = -1;
     lastMousePoint.y = -1;
+    canvasModifySet = false;
   }
 }
 

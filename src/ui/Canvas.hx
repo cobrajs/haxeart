@@ -20,6 +20,9 @@ import nme.geom.Point;
 import nme.geom.ColorTransform;
 
 class Canvas extends Sprite {
+  private var undoSteps:Array<BitmapData>;
+  private var redoSteps:Array<BitmapData>;
+  private var maxUndoSteps:Int;
   private var data:BitmapData;
   private var display:Bitmap;
   private var grid:Shape;
@@ -56,18 +59,22 @@ class Canvas extends Sprite {
     brushColor = 0x000000;
 
     data = new BitmapData(width, height);
+    undoSteps = new Array<BitmapData>();
+    redoSteps = new Array<BitmapData>();
+    maxUndoSteps = 5;
+
     display = new Bitmap(data);
     display.smoothing = false;
 
     grid = new Shape();
     grid.visible = false;
     var gfx = grid.graphics;
-    gfx.lineStyle(1, 0x000000, 1, null, LineScaleMode.NONE);
-    for (y in 0...height) {
+    gfx.lineStyle(1, 0x444444, 1, false, LineScaleMode.NONE);
+    for (y in 0...height + 1) {
       gfx.moveTo(0, y);
       gfx.lineTo(width, y);
     }
-    for (x in 0...width) {
+    for (x in 0...width + 1) {
       gfx.moveTo(x, 0);
       gfx.lineTo(x, height);
     }
@@ -200,6 +207,42 @@ class Canvas extends Sprite {
   public function getCanvas():BitmapData {
     return data;
   }
+
+  // 
+  // Undo stuff
+  //
+  public function canvasModified():Void {
+    undoSteps.push(data.clone());
+    if (undoSteps.length > maxUndoSteps) {
+      undoSteps.shift();
+    }
+    trace(undoSteps);
+  }
+
+  public function undoStep():Void {
+    if (undoSteps.length > 0) {
+      var temp = undoSteps.pop();
+      redoSteps.push(data.clone());
+      data.copyPixels(
+          temp, 
+          new Rectangle(0, 0, temp.width, temp.height),
+          new Point(0,0)
+      );
+    }
+  }
+
+  public function redoStep():Void {
+    if (redoSteps.length > 0) {
+      var temp = redoSteps.pop();
+      undoSteps.push(data.clone());
+      data.copyPixels(
+          temp, 
+          new Rectangle(0, 0, temp.width, temp.height),
+          new Point(0,0)
+      );
+    }
+  }
+
   //
   // Event Handlers
   //

@@ -5,9 +5,13 @@ import graphics.Color;
 import nme.display.Bitmap;
 import nme.display.BitmapData;
 import nme.display.BitmapInt32;
+import nme.display.BlendMode;
+
 import nme.geom.ColorTransform;
 import nme.geom.Rectangle;
 import nme.geom.Point;
+import nme.geom.Matrix;
+
 import nme.Assets;
 
 class BrushFactory {
@@ -18,8 +22,10 @@ class BrushFactory {
   private var currentBrush:Int;
   private var clipRects:Array<Rectangle>;
 
-  private var tileWidth:Int;
-  private var tileHeight:Int;
+  public var tileWidth:Int;
+  public var tileHeight:Int;
+  public var tilesX:Int;
+  public var tilesY:Int;
 
   public var color:Int;
 
@@ -33,9 +39,6 @@ class BrushFactory {
 
     color = 0x000000;
 
-    trace(brushData);
-    trace(brushData.width);
-    trace(brushData.height);
     if (transparentKey != null) {
       Color.keyImage(brushData, transparentKey);
     }
@@ -46,6 +49,8 @@ class BrushFactory {
 
     tileWidth = Math.floor(brushData.width / tilesX);
     tileHeight = Math.floor(brushData.height / tilesY);
+    this.tilesX = tilesX;
+    this.tilesY = tilesY;
 
     for (y in 0...tilesY) {
       for (x in 0...tilesX) {
@@ -71,6 +76,23 @@ class BrushFactory {
       null,
       null,
       true
+    );
+  }
+
+  public function drawBrushScale(canvas:BitmapData, x:Int, y:Int, ?brush:Int, ?scale:Int = 1):Void {
+    var tempTileNum = brush != null ? brush : currentBrush;
+    var tempTileX = Math.floor(tempTileNum % tilesX);
+    var tempTileY = Math.floor(tempTileNum / tilesY);
+    var tempBrushRect = clipRects[tempTileNum];
+    var tempX = x - (tileWidth * scale) / 2;
+    var tempY = y - (tileHeight * scale) / 2;
+    canvas.draw(
+      coloredBrushData,
+      new Matrix(scale, 0, 0, scale, tempX - tempTileX * tempBrushRect.width * scale, tempY - tempTileY * tempBrushRect.height * scale),
+      null,
+      null,
+      new Rectangle(tempX, tempY, tempBrushRect.width * scale, tempBrushRect.height * scale), 
+      false
     );
   }
 

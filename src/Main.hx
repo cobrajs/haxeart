@@ -123,8 +123,7 @@ class Main extends Sprite {
     //
     // Popup Box
     //
-    brushPopup = new BrushPopup(200, 160, brushFactory, function(picked:Int):Void {
-      trace("clicka: " + picked);
+    brushPopup = new BrushPopup(400, 300, brushFactory, function(picked:Int):Void {
       brushFactory.changeBrush(picked);
       cursor.updateTypeCursor("canvas", brushFactory.getBrushImage());
     });
@@ -160,6 +159,12 @@ class Main extends Sprite {
       ['clear', function(button):Void {
         canvas.clearCanvas();
       }, 8,                 null, null],
+      ['undo', function(button):Void {
+        canvas.undoStep();
+      }, 10,                null, null],
+      ['redo', function(button):Void {
+        canvas.redoStep();
+      }, 11,                null, null],
       ['zoomin', function(button):Void {
         canvas.changeZoom(2);
         cursor.changeZoom(Math.floor(canvas.zoom));

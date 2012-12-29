@@ -3,10 +3,13 @@ package ui;
 import com.eclecticdesignstudio.motion.Actuate;
 
 import nme.display.Sprite;
+import nme.display.Bitmap;
+import nme.Assets;
 import nme.events.MouseEvent;
 
 class Popup extends Sprite {
 
+  private var closeButton:Sprite;
   public var uWidth:Int;
   public var uHeight:Int;
 
@@ -22,6 +25,12 @@ class Popup extends Sprite {
     gfx.drawRect(0, 0, width, height);
 
     this.visible = false;
+
+    closeButton = new Sprite();
+    var tempBitmap = new Bitmap(Assets.getBitmapData("assets/close_button.png"));
+    closeButton.addChild(tempBitmap);
+    closeButton.x = width;
+    addChild(closeButton);
 
     addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
   }
