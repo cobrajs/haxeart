@@ -164,7 +164,7 @@ class Canvas extends Sprite {
     while (queue.length > 0) {
       temp = queue.pop();
       if (temp.x >= 0 && temp.x < data.width && temp.y >= 0 && temp.y < data.height) {
-        if (data.getPixel(temp.x, temp.y) == replaceColor) {
+        if (cast(data.getPixel(temp.x, temp.y), Int) == replaceColor) {
           data.setPixel(temp.x, temp.y, color);
           for (dir in dirs) {
             queue.push(new SimplePoint(temp.x + dir.x, temp.y + dir.y));
