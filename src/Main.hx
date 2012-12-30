@@ -36,6 +36,8 @@ import nme.system.System;
 import nme.ui.Keyboard;
 import nme.ui.Mouse;
 
+import nme.filesystem.File;
+
 class Main extends Sprite {
 
   private var buttons:Array<Button>;
@@ -178,6 +180,21 @@ class Main extends Sprite {
       }, 4,                 null, null],
       ['paldown', function(button) {
         paletteBox.scroll(1);
+        // Stuff for FS browsing
+        //trace(sys.FileSystem.readDirectory("/mnt/sdcard"));
+        //trace(sys.FileSystem.stat("/mnt/sdcard/test.png"));
+        //sys.FileSystem.rename("/mnt/sdcard/test.png", "/mnt/sdcard/test2.png");
+        //trace(sys.FileSystem.readDirectory("/mnt/sdcard"));
+        //trace(File.documentsDirectory.nativePath);
+        //trace(File.documentsDirectory.url);
+        //trace(File.userDirectory.nativePath);
+        //trace(File.userDirectory.url);
+        //trace(File.applicationStorageDirectory.nativePath);
+        //trace(File.applicationStorageDirectory.url);
+        var tempBytes = canvas.getCanvas().encode('png');
+        var f = sys.io.File.write(File.documentsDirectory.nativePath + '/knitter.png', true); 
+        f.writeString(tempBytes.asString());
+        f.close();
       }, 5,                 null, null]
     ];
 
