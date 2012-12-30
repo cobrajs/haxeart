@@ -102,7 +102,6 @@ class Cursor extends Sprite {
   public function changeZoom(zoom:Int) {
 #if desktop
     this.zoomLevel = zoom;
-    trace(this.zoomLevel);
     if (useZoom.get(currentCursor)) {
       this.scaleX = this.zoomLevel;
       this.scaleY = this.zoomLevel;

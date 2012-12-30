@@ -23,6 +23,7 @@ class Zoom implements ITool {
 
   public function mouseUpAction(canvas:Canvas, event:MouseEvent):Void {
     canvas.stopDrag();
+    canvas.setZoomPoint();
   }
 }
 

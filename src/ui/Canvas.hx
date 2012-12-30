@@ -1,5 +1,7 @@
 package ui;
 
+import com.eclecticdesignstudio.motion.Actuate;
+
 import graphics.BrushFactory;
 import graphics.Color;
 
@@ -28,6 +30,7 @@ class Canvas extends Sprite {
   private var grid:Shape;
   private var zoomDisplayData:BitmapData;
   private var zoomDisplay:Bitmap;
+  public var originalPos:Point;
 
   private var zoomPoint:Point;
   private var lastMousePoint:Point;
@@ -84,7 +87,9 @@ class Canvas extends Sprite {
     addChild(grid);
 
     lastMousePoint = new Point(-1, -1);
-    zoomPoint = new Point(this.x + width / 2, this.y + height / 2);
+    //zoomPoint = new Point(this.x + width / 2, this.y + height / 2);
+    //zoomPoint = new Point(this.x + width, this.y + height);
+    zoomPoint = localToGlobal(new Point(width / 2, height / 2));
 
     this.currentTool = currentTool;
 
@@ -97,8 +102,9 @@ class Canvas extends Sprite {
   public function moveTo(x:Int, y:Int):Void {
     this.x = x;
     this.y = y;
-    zoomPoint.x = this.x + this.width / 2;
-    zoomPoint.y = this.y + this.height / 2;
+    zoomPoint = localToGlobal(new Point(width / 2, height / 2));
+    //zoomPoint.x = this.x + this.width / 2;
+    //zoomPoint.y = this.y + this.height / 2;
   }
 
   //
@@ -173,14 +179,23 @@ class Canvas extends Sprite {
     zoom *= multiplier;
     if (zoom < 1) {
       zoom = 1;
+      return;
     }
+    var tempPoint = globalToLocal(zoomPoint);
+    var tempX = originalPos.x + (((tempPoint.x) - (tempPoint.x) * multiplier) - (originalPos.x - this.x));
+    var tempY = originalPos.y + (((tempPoint.y) - (tempPoint.y) * multiplier) - (originalPos.y - this.y));
     display.scaleX = zoom;
     display.scaleY = zoom;
     grid.scaleX = zoom;
     grid.scaleY = zoom;
     grid.visible = zoom >= 4;
-    this.x = zoomPoint.x - width / 2;
-    this.y = zoomPoint.y - height / 2;
+    //this.x = zoomPoint.x - width / 2;
+    //this.y = zoomPoint.y - height / 2;
+    //Actuate.tween(this, 0.5, {x:tempX, y:tempY});
+    //Actuate.tween(display, 0.5, {scaleX: zoom, scaleY:zoom});
+    //Actuate.tween(grid, 0.5, {scaleX:zoom, scaleY:zoom});
+    this.x = tempX;
+    this.y = tempY;
   }
 
   //
@@ -212,11 +227,15 @@ class Canvas extends Sprite {
   // Undo stuff
   //
   public function canvasModified():Void {
+    if (redoSteps.length > 0) {
+      for (i in 0...redoSteps.length) {
+        redoSteps.pop();
+      }
+    }
     undoSteps.push(data.clone());
     if (undoSteps.length > maxUndoSteps) {
       undoSteps.shift();
     }
-    trace(undoSteps);
   }
 
   public function undoStep():Void {

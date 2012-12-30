@@ -69,6 +69,7 @@ class Main extends Sprite {
     addEventListener(Event.ENTER_FRAME, enterFrame);
 
     var halfHeight = Math.floor(stage.stageHeight / 2);
+    var toolboxWidth = 200;
 
     brushFactory = new BrushFactory("brushes.png", 7, 7, 0xFF00FF);
 
@@ -94,6 +95,7 @@ class Main extends Sprite {
     // Setup Canvas
     //
     canvas = new Canvas(64, 64, brushFactory, pencil);
+    canvas.originalPos = new Point(toolboxWidth, 0);
     canvas.moveTo(
         Math.floor(200 + ((stage.stageWidth - 200) / 2) - canvas.uWidth / 2), 
         Math.floor(stage.stageHeight / 2 - canvas.uHeight / 2)
@@ -108,7 +110,7 @@ class Main extends Sprite {
     //
     // Setup Palette Box
     //
-    paletteBox = new PaletteBox(200, halfHeight - 50, 3, 3, setCanvasBrushColor);
+    paletteBox = new PaletteBox(toolboxWidth, halfHeight - 50, 3, 3, setCanvasBrushColor);
     paletteBox.x = 0;
     paletteBox.y = halfHeight + 50;
 
@@ -134,7 +136,7 @@ class Main extends Sprite {
     //
     // Setup Toolbox
     //
-    toolbox = new Toolbox(200, halfHeight + 50,   3, 4,   8);
+    toolbox = new Toolbox(toolboxWidth, halfHeight + 50,   3, 4,   8);
     toolbox.x = 0;
     toolbox.y = 0;
 
@@ -159,6 +161,7 @@ class Main extends Sprite {
         brushPopup.popup(100, 100);
       }, 9,                 null, null],
       ['clear', function(button):Void {
+        canvas.canvasModified();
         canvas.clearCanvas();
       }, 8,                 null, null],
       ['undo', function(button):Void {
@@ -317,7 +320,7 @@ class Main extends Sprite {
     else if (keyCode == Keyboard.MINUS) {
       toolbox.clickButtonByName("zoomout");
     }
-    trace(keyCode);
+    //trace(keyCode);
   }
 }
 
