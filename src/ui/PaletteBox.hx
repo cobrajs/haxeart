@@ -1,9 +1,11 @@
 package ui;
 
+import ui.ScrollBox;
+
 import nme.display.Sprite;
 import nme.events.MouseEvent;
 
-class PaletteBox extends Sprite {
+class PaletteBox extends ScrollBox {
   private var columns:Int;
   private var rows:Int;
 
@@ -20,7 +22,7 @@ class PaletteBox extends Sprite {
   public var uHeight:Int;
 
   public function new(width:Int, height:Int,  columns:Int, rows:Int, clickFunction:Int->Void) {
-    super();
+    super(width, height, 5);
 
     this.columns = columns;
     this.rows = rows;

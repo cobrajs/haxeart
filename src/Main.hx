@@ -136,7 +136,7 @@ class Main extends Sprite {
     //
     // Setup Toolbox
     //
-    toolbox = new Toolbox(toolboxWidth, halfHeight + 50,   3, 4,   8);
+    toolbox = new Toolbox(toolboxWidth, halfHeight + 50,   3, 4,   4);
     toolbox.x = 0;
     toolbox.y = 0;
 
@@ -177,7 +177,7 @@ class Main extends Sprite {
       ['zoomout', function(button):Void {
         canvas.changeZoom(0.5);
         cursor.changeZoom(Math.floor(canvas.zoom));
-      }, 7,                 null, null],
+      }, 7,                 null, null]/*,
       ['palup', function(button) {
         paletteBox.scroll(-1);
       }, 4,                 null, null],
@@ -194,11 +194,18 @@ class Main extends Sprite {
         //trace(File.userDirectory.url);
         //trace(File.applicationStorageDirectory.nativePath);
         //trace(File.applicationStorageDirectory.url);
+#if (linux || android)
         var tempBytes = canvas.getCanvas().encode('png');
+#if linux 
+        var f = sys.io.File.write(File.userDirectory.nativePath + '/knitter.png', true); 
+#else if android
         var f = sys.io.File.write(File.documentsDirectory.nativePath + '/knitter.png', true); 
+#end
         f.writeString(tempBytes.asString());
         f.close();
+#end
       }, 5,                 null, null]
+      */
     ];
 
     for (button in buttons) {

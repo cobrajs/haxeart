@@ -214,7 +214,7 @@ class Button extends Sprite {
 
   private function mouseDown(event:MouseEvent):Void {
     changeState(CLICKED);
-    var scale = 0.8;
+    var scale = 0.9;
     Actuate.tween(this, 0.4, {
       x: this.x + (this.uWidth - this.uWidth * scale) / 2, 
       y: this.y + (this.uHeight - this.uHeight * scale) / 2,
