@@ -1,5 +1,9 @@
 package ;
 
+// TODO: Fix issue with buttons when clicked and dragged off
+// TODO: Fix issue with canvas dragging when dragged over buttons
+// TODO: Make button so mouseUp only works when it had a mouse down event
+
 // UI Elements
 import ui.Button;
 import ui.Toolbox;
@@ -31,10 +35,12 @@ import nme.display.Sprite;
 import nme.events.Event;
 import nme.events.KeyboardEvent;
 import nme.events.MouseEvent;
+import nme.events.TouchEvent;
 import nme.geom.Point;
 import nme.system.System;
 import nme.ui.Keyboard;
 import nme.ui.Mouse;
+import nme.ui.Multitouch;
 
 import nme.filesystem.File;
 
@@ -72,6 +78,8 @@ class Main extends Sprite {
     var toolboxWidth = 200;
 
     brushFactory = new BrushFactory("brushes.png", 7, 7, 0xFF00FF);
+
+    trace("Supports touchiness: " + Multitouch.supportsTouchEvents);
 
     // 
     // Setup Tools

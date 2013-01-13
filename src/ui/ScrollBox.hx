@@ -1,5 +1,7 @@
 package ui;
 
+// TODO: Allow scrolling to work if held down outside of box
+
 import nme.display.Sprite;
 import nme.geom.Rectangle;
 import nme.geom.Point;
