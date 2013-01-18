@@ -12,6 +12,7 @@ import ui.PaletteBox;
 import ui.Cursor;
 import ui.BrushPopup;
 import ui.BitmapFont;
+import ui.TouchManager;
 
 // Graphical Helpers
 import graphics.BrushFactory;
@@ -64,6 +65,16 @@ class Main extends Sprite {
   private var filler:Filler;
 
   private var font:BitmapFont;
+
+  // TouchEvent stuff
+  private var touchManager:TouchManager;
+  private var supportsTouchEvents:Bool;
+
+  private var originPoints:IntHash<Point>;
+  private var touchPoints:IntHash<Point>;
+  private var touchCount:Int;
+
+  private var touchOverlay:Sprite;
   
   public function new() {
     super();
@@ -74,12 +85,31 @@ class Main extends Sprite {
   private function construct():Void {
     addEventListener(Event.ENTER_FRAME, enterFrame);
 
+    supportsTouchEvents = Multitouch.supportsTouchEvents; 
+    originPoints = new IntHash<Point>();
+    touchPoints = new IntHash<Point>();
+    touchCount = 0;
+
+    //
+    // Add Events for Stage
+    //
+    stage.addEventListener(KeyboardEvent.KEY_DOWN, stageKeyDown);
+
+    stage.addEventListener(MouseEvent.MOUSE_MOVE, stageMouseMove);
+    stage.addEventListener(MouseEvent.MOUSE_UP, stageMouseUp);
+    stage.addEventListener(MouseEvent.MOUSE_DOWN, stageMouseDown);
+
+    if (supportsTouchEvents) {
+      stage.addEventListener(TouchEvent.TOUCH_BEGIN, stageTouchBegin);
+      stage.addEventListener(TouchEvent.TOUCH_MOVE, stageTouchMove);
+      stage.addEventListener(TouchEvent.TOUCH_END, stageTouchEnd);
+    }
+
+
     var halfHeight = Math.floor(stage.stageHeight / 2);
     var toolboxWidth = 200;
 
     brushFactory = new BrushFactory("brushes.png", 7, 7, 0xFF00FF);
-
-    trace("Supports touchiness: " + Multitouch.supportsTouchEvents);
 
     // 
     // Setup Tools
@@ -235,15 +265,24 @@ class Main extends Sprite {
     //toolbox.clickButton(6);
 
 
-    //
-    // Add Events
-    //
-    stage.addEventListener(KeyboardEvent.KEY_DOWN, stageKeyDown);
-    stage.addEventListener(MouseEvent.MOUSE_MOVE, stageMouseMove);
-    stage.addEventListener(MouseEvent.MOUSE_UP, stageMouseUp);
-
     canvas.addEventListener(MouseEvent.MOUSE_OVER, canvasMouseOver);
     canvas.addEventListener(MouseEvent.MOUSE_OUT, canvasMouseOut);
+
+    /*
+    touchOverlay = new Sprite();
+    touchOverlay.x = 0;
+    touchOverlay.y = 0;
+    var gfx = touchOverlay.graphics;
+    gfx.beginFill(0x000000, 1);
+    gfx.drawRect(0, 0, stage.stageWidth, stage.stageHeight);
+    gfx.endFill();
+    addChild(touchOverlay);
+    touchOverlay.addEventListener(TouchEvent.TOUCH_BEGIN, touchTouchBegin);
+    */
+  }
+
+  private function touchTouchBegin(event:MouseEvent) {
+    trace("touch fired");
   }
 
   private function canvasMouseOver(event:MouseEvent) {
@@ -297,11 +336,72 @@ class Main extends Sprite {
     update();
   }
 
+  //
+  // Mouse Events
+  //
   private function stageMouseMove(event:MouseEvent):Void {
-    cursor.update(event.stageX, event.stageY);
   }
 
   private function stageMouseUp(event:MouseEvent):Void {
+  }
+  
+  private function stageMouseDown(event:MouseEvent):Void {
+  }
+
+  //
+  // Touch Events
+  //
+  private function stageTouchBegin(event:TouchEvent):Void {
+    trace("stage fired");
+    trace("Target: " + event.target + ", current target: " + event.currentTarget);
+    if (touchCount < 2) {
+      originPoints.set(event.touchPointID, new Point(event.stageX, event.stageY));
+      touchPoints.set(event.touchPointID, new Point(event.stageX, event.stageY));
+      touchCount++;
+
+      canvas.touchCount = touchCount;
+    }
+  }
+
+  private function stageTouchMove(event:TouchEvent):Void {
+    if (touchPoints.exists(event.touchPointID)) {
+      var point = touchPoints.get(event.touchPointID);
+      point.x = event.stageX;
+      point.y = event.stageY;
+
+      if (touchCount == 2) {
+        var dif:Float = 0;
+        var firstKey = -1;
+        var secondKey = -1;
+        for (key in touchPoints.keys()) {
+          if (firstKey == -1) {
+            firstKey = key;
+            continue;
+          } else if (secondKey == -1) {
+            secondKey = key;
+            break;
+          }
+        }
+        var originDist = Point.distance(originPoints.get(firstKey), originPoints.get(secondKey));
+        var newDist    = Point.distance(touchPoints.get(firstKey), touchPoints.get(secondKey));
+        var newScale = 1 + (newDist - originDist) / 100;
+        canvas.changeZoom(newScale);
+        cursor.changeZoom(Math.floor(canvas.zoom));
+      }
+
+      var point = originPoints.get(event.touchPointID);
+      point.x = event.stageX;
+      point.y = event.stageY;
+    }
+  }
+
+  private function stageTouchEnd(event:TouchEvent):Void {
+    if (touchPoints.exists(event.touchPointID)) {
+      touchPoints.remove(event.touchPointID);
+      originPoints.remove(event.touchPointID);
+      touchCount--;
+      canvas.touchCount = touchCount;
+    }
   }
 
   private function stageKeyDown(event:KeyboardEvent):Void {
