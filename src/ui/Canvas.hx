@@ -1,14 +1,16 @@
 package ui;
 
+// Actuate
 import com.eclecticdesignstudio.motion.Actuate;
 
+// Project Files
 import graphics.BrushFactory;
 import graphics.Color;
-
 import util.LineIter;
-
 import tools.ITool;
+import Registry;
 
+// NME stuffs
 import nme.display.Sprite;
 import nme.display.Bitmap;
 import nme.display.BitmapData;
@@ -49,12 +51,14 @@ class Canvas extends Sprite {
   public var previousTool:ITool;
 
   public var ignoreMouse:Bool;
+
+  public var oldZoom:Float;
   
   // Touch Gesture stuff
   public var threshold:Int;
   public var originPoint:Point;
-  public var touchCount:Int;
   public var allowDraw:Bool;
+  public var noTouchUpEvent:Bool;
 
   public function new(width:Int, height:Int, brushFactory:BrushFactory, currentTool:ITool) {
     super();
@@ -65,6 +69,7 @@ class Canvas extends Sprite {
     uHeight = height;
 
     zoom = 1;
+    oldZoom = 1;
 
     brushSize = 5;
     brushColor = 0x000000;
@@ -104,14 +109,18 @@ class Canvas extends Sprite {
 
     threshold = 20;
     originPoint = new Point(0, 0);
-    touchCount = 0;
     allowDraw = false;
 
+    noTouchUpEvent = false;
+
     if (Multitouch.supportsTouchEvents) {
+      addEventListener(TouchEvent.TOUCH_BEGIN, Registry.touchManager.onTouchBegin);
+      addEventListener(TouchEvent.TOUCH_MOVE, Registry.touchManager.onTouchMove);
+      addEventListener(TouchEvent.TOUCH_END, Registry.touchManager.onTouchEnd);
       addEventListener(TouchEvent.TOUCH_BEGIN, onTouchBegin);
       addEventListener(TouchEvent.TOUCH_END, onTouchEnd);
       addEventListener(TouchEvent.TOUCH_MOVE, onTouchMove);
-      addEventListener(TouchEvent.TOUCH_OUT, onTouchOut);
+      //addEventListener(TouchEvent.TOUCH_OUT, onTouchOut);
     }
     else {
       addEventListener(MouseEvent.MOUSE_DOWN, onClick);
@@ -122,12 +131,24 @@ class Canvas extends Sprite {
 
   }
 
-  public function moveTo(x:Int, y:Int):Void {
+  public function moveTo(x:Float, y:Float):Void {
     this.x = x;
     this.y = y;
+    if (this.x < 0) {
+      this.x = 0;
+    }
+    if (this.y < 0) {
+      this.y = 0;
+    }
+
     zoomPoint = localToGlobal(new Point(width / 2, height / 2));
-    //zoomPoint.x = this.x + this.width / 2;
-    //zoomPoint.y = this.y + this.height / 2;
+  }
+
+  public function moveBy(x:Float, y:Float):Void {
+    moveTo(this.x + x, this.y + y);
+    //this.x += x;
+    //this.y += y;
+    //zoomPoint = localToGlobal(new Point(width / 2, height / 2));
   }
 
   //
@@ -198,15 +219,31 @@ class Canvas extends Sprite {
     data.unlock();
   }
 
+  public function quickView() {
+    if (Math.abs(1 - zoom) > 0.2) {
+      oldZoom = zoom;
+      changeZoom(1 / zoom);
+    }
+    else {
+      zoom = 1;
+      changeZoom(oldZoom);
+      oldZoom = 1;
+    }
+  }
+
   public function changeZoom(multiplier:Float) {
     if (multiplier == 1) {
       return;
     }
-    zoom *= multiplier;
     if (zoom < 1) {
       zoom = 1;
       return;
     }
+    if (zoom > 128) {
+      zoom = 128;
+      return;
+    }
+    zoom *= multiplier;
     var tempPoint = globalToLocal(zoomPoint);
     var tempX = originalPos.x + (((tempPoint.x) - (tempPoint.x) * multiplier) - (originalPos.x - this.x));
     var tempY = originalPos.y + (((tempPoint.y) - (tempPoint.y) * multiplier) - (originalPos.y - this.y));
@@ -220,8 +257,9 @@ class Canvas extends Sprite {
     //Actuate.tween(this, 0.5, {x:tempX, y:tempY});
     //Actuate.tween(display, 0.5, {scaleX: zoom, scaleY:zoom});
     //Actuate.tween(grid, 0.5, {scaleX:zoom, scaleY:zoom});
-    this.x = tempX;
-    this.y = tempY;
+    moveTo(tempX, tempY);
+    //this.x = tempX;
+    //this.y = tempY;
   }
 
   //
@@ -291,52 +329,45 @@ class Canvas extends Sprite {
   //
   // Event Handlers
   //
-  // TODO: Add touch event stuff in here to detect and pass on gestures
   public function onClick(event:MouseEvent) {
-    trace("fired canvas");
-    if (!ignoreMouse) {
-      currentTool.mouseDownAction(this, event);
-    }
+    currentTool.mouseDownAction(this, event);
   }
 
   public function onMouseMove(event:MouseEvent) {
-    if (!ignoreMouse) {
-      currentTool.mouseMoveAction(this, event);
-    }
+    currentTool.mouseMoveAction(this, event);
   }
 
   public function onMouseUp(event:MouseEvent) {
-    if (!ignoreMouse) {
-      currentTool.mouseUpAction(this, event);
-    }
+    currentTool.mouseUpAction(this, event);
   }
 
   private function onMouseOut(event:MouseEvent) {
-    if (!ignoreMouse) {
-      currentTool.mouseUpAction(this, event);
-    }
+    currentTool.mouseUpAction(this, event);
   }
 
   private function onTouchBegin(event:TouchEvent) {
-    trace("canvas fired");
-    trace("Target: " + event.target + ", current target: " + event.currentTarget);
-    //trace("TouchID: " + event.touchPointID);
-    if (touchCount < 2) {
+    if (Registry.touchManager.touchCount < 2) {
       originPoint.x = event.stageX;
       originPoint.y = event.stageY;
     }
     allowDraw = false;
-    //trace("TouchPoints Down: " + touchCount);
   }
 
   private function onTouchMove(event:TouchEvent) {
-    if (touchCount <= 1) {
+    if (Registry.touchManager.touchCount <= 1) {
+      if (Registry.touchManager.wasZooming) {
+        originPoint.x = event.stageX;
+        originPoint.y = event.stageY;
+        Registry.touchManager.wasZooming = false;
+        noTouchUpEvent = true;
+      }
       if (allowDraw) {
         currentTool.mouseMoveAction(this, event);
       }
       else {
         if (Point.distance(originPoint, new Point(event.stageX, event.stageY)) > threshold) {
           allowDraw = true;
+          currentTool.mouseDownAction(this, event);
           currentTool.mouseMoveAction(this, event);
         }
       }
@@ -344,33 +375,17 @@ class Canvas extends Sprite {
   }
 
   private function onTouchEnd(event:TouchEvent) {
-    if (touchCount <= 0) {
-      if (allowDraw) {
-        currentTool.mouseUpAction(this, event);
-      }
-      else if (Point.distance(originPoint, new Point(event.stageX, event.stageY)) < threshold) {
+    if (Registry.touchManager.touchCount <= 0) {
+      if (!allowDraw && Point.distance(originPoint, new Point(event.stageX, event.stageY)) < threshold && !Registry.touchManager.wasZooming && !noTouchUpEvent) {
         currentTool.mouseDownAction(this, event);
         currentTool.mouseUpAction(this, event);
       }
-      allowDraw = false;
-    }
-    //trace("TouchPoints Up: " + touchCount);
-  }
-
-  private function onTouchOut(event:TouchEvent) {
-    /*
-    if (--touchCount <= 0) {
-      if (allowDraw) {
-        currentTool.mouseUpAction(this, event);
-      }
-      else if (Point.distance(originPoint, new Point(event.stageX, event.stageY)) < threshold) {
-        currentTool.mouseDownAction(this, event);
+      else {
         currentTool.mouseUpAction(this, event);
       }
       allowDraw = false;
+      noTouchUpEvent = false;
     }
-    trace("TouchPoints: " + touchCount);
-    */
   }
 
 }

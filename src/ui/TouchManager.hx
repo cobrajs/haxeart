@@ -1,5 +1,6 @@
-package ;
+package ui;
 
+import nme.events.Event;
 import nme.events.TouchEvent;
 import nme.ui.Multitouch;
 import nme.geom.Point;
@@ -12,29 +13,40 @@ class TouchManager {
   public var originPoints:IntHash<Point>;
   public var touchPoints:IntHash<Point>;
   public var touchCount:Int;
+  public var lastPointID:Int;
 
+  public var wasZooming:Bool;
   public var newScale:Float;
+  public var translateX:Float;
+  public var translateY:Float;
+
+  private inline function checkCurrent(event:Event) {
+    return event.target != event.currentTarget;
+  }
 
   public function new() {
     originPoints = new IntHash<Point>();
     touchPoints = new IntHash<Point>();
     touchCount = 0;
+    wasZooming = false;
   }
 
   public function onTouchBegin(event:TouchEvent) {
-    if (event.target != event.currentTarget) {
+    if (checkCurrent(event)) {
       return;
     }
 
     if (touchCount < 2) {
       originPoints.set(event.touchPointID, new Point(event.stageX, event.stageY));
       touchPoints.set(event.touchPointID, new Point(event.stageX, event.stageY));
+      lastPointID = event.touchPointID;
       touchCount++;
     }
+    trace("Points: " + touchCount);
   }
 
   public function onTouchMove(event:TouchEvent) {
-    if (event.target != event.currentTarget) {
+    if (checkCurrent(event)) {
       return;
     }
 
@@ -58,7 +70,17 @@ class TouchManager {
         }
         var originDist = Point.distance(originPoints.get(firstKey), originPoints.get(secondKey));
         var newDist    = Point.distance(touchPoints.get(firstKey), touchPoints.get(secondKey));
+
         newScale = 1 + (newDist - originDist) / 100;
+
+        var trans1x = touchPoints.get(firstKey).x - originPoints.get(firstKey).x;
+        var trans1y = touchPoints.get(firstKey).y - originPoints.get(firstKey).y;
+        var trans2x = touchPoints.get(secondKey).x - originPoints.get(secondKey).x;
+        var trans2y = touchPoints.get(secondKey).y - originPoints.get(secondKey).y;
+        translateX = (trans1x + trans2x) / 2;
+        translateY = (trans1y + trans2y) / 2; 
+
+        wasZooming = true;
       }
 
       var point = originPoints.get(event.touchPointID);
@@ -67,8 +89,8 @@ class TouchManager {
     }
   }
 
-  private function onTouchEnd(event:TouchEvent):Void {
-    if (event.target != event.currentTarget) {
+  public function onTouchEnd(event:TouchEvent):Void {
+    if (checkCurrent(event)) {
       return;
     }
 
@@ -76,7 +98,13 @@ class TouchManager {
       touchPoints.remove(event.touchPointID);
       originPoints.remove(event.touchPointID);
       touchCount--;
+
+      if (touchCount == 0) {
+        wasZooming = false;
+      }
     }
+
+    trace("Points: " + touchCount);
   }
 
 }
