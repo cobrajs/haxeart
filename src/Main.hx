@@ -171,7 +171,7 @@ class Main extends Sprite {
     //
     // Setup Toolbox
     //
-    toolbox = new Toolbox(toolboxWidth, halfHeight + 50,   3, 4,   4);
+    toolbox = new Toolbox(toolboxWidth, halfHeight + 50,   3, 4,   5);
     toolbox.x = 0;
     toolbox.y = 0;
 

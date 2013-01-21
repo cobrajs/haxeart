@@ -150,13 +150,13 @@ class Button extends Sprite {
     ];
     var offset = bevel;
     var gfx = canvas.graphics;
-    gfx.lineStyle(2, 0x000000);
-    gfx.beginFill(offset == 0 ? colors[state].light : colors[state].dark);
+    gfx.lineStyle(1, 0x000000);
+    gfx.beginFill(offset == 0 ? colors[state].light : colors[state].light);
     gfx.drawRect(0, 0, uWidth, uHeight);
     gfx.endFill();
 
     if (offset > 0) {
-      gfx.beginFill(colors[state].light);
+      gfx.beginFill(colors[state].dark);
       gfx.moveTo(uWidth, 0);
       gfx.lineTo(uWidth - offset, offset);
       gfx.lineTo(offset, uHeight - offset);
