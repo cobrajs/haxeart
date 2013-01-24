@@ -230,6 +230,12 @@ class Main extends Sprite {
         //trace(File.userDirectory.url);
         //trace(File.applicationStorageDirectory.nativePath);
         //trace(File.applicationStorageDirectory.url);
+        var useDir = File.userDirectory.nativePath + '/docs/art/';
+        var files = sys.FileSystem.readDirectory(useDir);
+        for (file in files) {
+          trace(file + ": " + (sys.FileSystem.isDirectory(useDir + '/' + file)));
+          trace(sys.FileSystem.stat(useDir + '/' + file));
+        }
 #if (linux || android)
         var tempBytes = canvas.getCanvas().encode('png');
 #if linux 
