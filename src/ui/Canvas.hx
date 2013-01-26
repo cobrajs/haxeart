@@ -84,16 +84,7 @@ class Canvas extends Sprite {
 
     grid = new Shape();
     grid.visible = false;
-    var gfx = grid.graphics;
-    gfx.lineStyle(1, 0x444444, 1, false, LineScaleMode.NONE);
-    for (y in 0...height + 1) {
-      gfx.moveTo(0, y);
-      gfx.lineTo(width, y);
-    }
-    for (x in 0...width + 1) {
-      gfx.moveTo(x, 0);
-      gfx.lineTo(x, height);
-    }
+    renderGrid();
 
     addChild(display);
 
@@ -131,15 +122,49 @@ class Canvas extends Sprite {
 
   }
 
+  public function loadFromData(imageData:BitmapData) {
+    display.scaleX = 1;
+    display.scaleY = 1;
+    zoom = 1;
+
+    data = new BitmapData(imageData.width, imageData.height);
+    data.draw(imageData);
+
+    display.bitmapData = data;
+    undoSteps = new Array<BitmapData>();
+    redoSteps = new Array<BitmapData>();
+
+    renderGrid();
+
+    zoomPoint = localToGlobal(new Point(width / 2, height / 2));
+  }
+
+
+  private function renderGrid() {
+    var gfx = grid.graphics;
+    gfx.lineStyle(1, 0x444444, 1, false, LineScaleMode.NONE);
+    for (y in 0...Std.int(uHeight + 1)) {
+      gfx.moveTo(0, y);
+      gfx.lineTo(uWidth, y);
+    }
+    for (x in 0...Std.int(uWidth + 1)) {
+      gfx.moveTo(x, 0);
+      gfx.lineTo(x, uHeight);
+    }
+  }
+
   public function moveTo(x:Float, y:Float):Void {
     this.x = x;
     this.y = y;
+
+    /*
     if (this.x < 0) {
       this.x = 0;
     }
     if (this.y < 0) {
       this.y = 0;
     }
+    */
 
     zoomPoint = localToGlobal(new Point(width / 2, height / 2));
   }
@@ -235,15 +260,21 @@ class Canvas extends Sprite {
     if (multiplier == 1) {
       return;
     }
-    if (zoom < 1) {
+    if (multiplier < 1 && zoom == 1) {
+      return;
+    }
+    else if (multiplier > 1 && zoom == 128) {
+      return;
+    }
+    if (zoom < 1 || zoom * multiplier < 1) {
       zoom = 1;
-      return;
     }
-    if (zoom > 128) {
+    else if (zoom > 128 || zoom * multiplier > 128) {
       zoom = 128;
-      return;
     }
-    zoom *= multiplier;
+    else {
+      zoom *= multiplier;
+    }
     var tempPoint = globalToLocal(zoomPoint);
     var tempX = originalPos.x + (((tempPoint.x) - (tempPoint.x) * multiplier) - (originalPos.x - this.x));
     var tempY = originalPos.y + (((tempPoint.y) - (tempPoint.y) * multiplier) - (originalPos.y - this.y));
@@ -251,7 +282,7 @@ class Canvas extends Sprite {
     display.scaleY = zoom;
     grid.scaleX = zoom;
     grid.scaleY = zoom;
-    grid.visible = zoom >= 4;
+    grid.visible = zoom >= 8;
     //this.x = zoomPoint.x - width / 2;
     //this.y = zoomPoint.y - height / 2;
     //Actuate.tween(this, 0.5, {x:tempX, y:tempY});

@@ -1,6 +1,6 @@
-package ui;
+package dialog;
 
-import ui.Popup;
+import dialog.Popup;
 
 import graphics.BrushFactory;
 
@@ -37,7 +37,7 @@ class BrushPopup extends Popup {
       }
     }
 
-    var gfx = this.graphics;
+    var gfx = window.graphics;
     gfx.beginBitmapFill(background);
     gfx.drawRect(0, 0, width, height);
     gfx.endFill();
@@ -45,14 +45,16 @@ class BrushPopup extends Popup {
 
 
   override function onMouseUp(event:MouseEvent) {
-    if (event.target == this) {
+    if (event.target == window) {
       var tempX = Math.floor(event.localX / (uWidth / xGrid));
       var tempY = Math.floor(event.localY / (uHeight / yGrid));
       pickAction(tempY * xGrid + tempX);
       hide();
     }
-    else {
+    else if (event.target == closeButton) {
       hide();
+    }
+    else {
     }
   }
 }

@@ -28,6 +28,11 @@ class ScrollBox extends Sprite {
     addEventListener(Event.ADDED_TO_STAGE, addedToStage);
   }
 
+  public function scrollTop() {
+    scrollBoxRect.y = 0;
+    refreshScrollRect();
+  }
+
   private function addedToStage(event:Event) {
     stage.addEventListener(MouseEvent.MOUSE_MOVE, stageMouseMove);
     stage.addEventListener(MouseEvent.MOUSE_UP, stageMouseUp);

@@ -2,6 +2,7 @@ package ui;
 
 import com.eclecticdesignstudio.motion.Actuate;
 
+import nme.display.GradientType;
 import nme.display.Sprite;
 import nme.display.Bitmap;
 import nme.display.Graphics;
@@ -146,10 +147,13 @@ class Button extends Sprite {
       // Normal
       { dark : 0xBBBBBB, light : 0xDDDDDD, front : 0xEEEEEE },
       // Clicked
-      { dark : 0x666666, light : 0x888888, front : 0xAAAAAA }
+      { dark : 0x888888, light : 0x555555, front : 0xAAAAAA }
     ];
     var offset = bevel;
     var gfx = canvas.graphics;
+    //gfx.beginGradientFill(GradientType.LINEAR, [0x444444, 0xEEEEEE], [1, 1], [0x00, 0xFF]);
+    //gfx.drawRect(0, 0, uWidth, uHeight);
+    //gfx.endFill();
     gfx.lineStyle(1, 0x000000);
     gfx.beginFill(offset == 0 ? colors[state].light : colors[state].light);
     gfx.drawRect(0, 0, uWidth, uHeight);
@@ -214,6 +218,7 @@ class Button extends Sprite {
 
   private function mouseDown(event:MouseEvent):Void {
     changeState(CLICKED);
+    /*
     var scale = 0.9;
     Actuate.tween(this, 0.4, {
       x: this.x + (this.uWidth - this.uWidth * scale) / 2, 
@@ -221,6 +226,7 @@ class Button extends Sprite {
       scaleX: scale,
       scaleY: scale
     }, true);
+    */
   }
 
   private function mouseUp(event:MouseEvent):Void {
@@ -231,12 +237,14 @@ class Button extends Sprite {
     if (!stayPressed) {
       changeState();
     }
+    /*
     Actuate.tween(this, 0.4, {
       x: origX, 
       y: origY,
       scaleX: 1,
       scaleY: 1
     }, true);
+    */
     event.stopPropagation();
   }
 
@@ -248,12 +256,14 @@ class Button extends Sprite {
       if (!stayPressed) {
         changeState(NORMAL);
       }
+      /*
       Actuate.tween(this, 0.4, {
         x: origX, 
         y: origY,
         scaleX: 1,
         scaleY: 1
       }, true);
+      */
     }
     this.clickHandled = false;
   }
