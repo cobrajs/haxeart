@@ -5,7 +5,9 @@ package ;
 // TODO: Make button so mouseUp only works when it had a mouse down event
 
 // UI Elements
-import ui.Button;
+import ui.components.Button;
+import ui.components.Label;
+import ui.components.Selector;
 import ui.Toolbox;
 import ui.Canvas;
 import ui.PaletteBox;
@@ -70,9 +72,6 @@ class Main extends Sprite {
   private var picker:Picker;
   private var filler:Filler;
 
-  // TouchEvent stuff
-  private var supportsTouchEvents:Bool;
-
   // FileManager
   private var fileManager:FileManager;
 
@@ -86,29 +85,12 @@ class Main extends Sprite {
     addEventListener(Event.ENTER_FRAME, enterFrame);
 
     Registry.fileManager = new FileManager();
-#if linux
-    //Registry.fileManager.changeDir('haxeart_test');
-#end
-    /*
-    trace(fileManager.currentDir);
-    var printFiles = function() {
-      var files = fileManager.listDir();
-      for (file in files) {
-        trace((file.isDir ? "D: " : "") + file.name);
-      }
-    };
-    printFiles();
-    fileManager.changeDir('doc');
-    printFiles();
-    Sys.exit(0);
-    */
 
     Registry.stage = stage;
     Registry.stageWidth = stage.stageWidth;
     Registry.stageHeight = stage.stageHeight;
 
     Registry.touchManager = new TouchManager();
-    supportsTouchEvents = Multitouch.supportsTouchEvents; 
 
     //
     // Add Events for Stage
@@ -119,7 +101,7 @@ class Main extends Sprite {
     stage.addEventListener(MouseEvent.MOUSE_UP, stageMouseUp);
     stage.addEventListener(MouseEvent.MOUSE_DOWN, stageMouseDown);
 
-    if (supportsTouchEvents) {
+    if (Multitouch.supportsTouchEvents) {
       stage.addEventListener(TouchEvent.TOUCH_BEGIN, Registry.touchManager.onTouchBegin);
       stage.addEventListener(TouchEvent.TOUCH_MOVE, Registry.touchManager.onTouchMove);
       stage.addEventListener(TouchEvent.TOUCH_END, Registry.touchManager.onTouchEnd);
@@ -164,7 +146,7 @@ class Main extends Sprite {
     addChild(Registry.canvas);
 
     Registry.font = new BitmapFont("profont_2x.png", 16, 8);
-    Registry.font.drawTextBitmap(Registry.canvas.getCanvas(), 10, 10, "ABCDE");
+    //Registry.font.drawTextBitmap(Registry.canvas.getCanvas(), 10, 10, "ABCDE");
 
 
     //

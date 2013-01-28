@@ -1,6 +1,6 @@
 package ui;
 
-import ui.Button;
+import ui.components.Button;
 import graphics.Color;
 
 import nme.display.Sprite;
