@@ -72,6 +72,8 @@ class Main extends Sprite {
   private var picker:Picker;
   private var filler:Filler;
 
+  private var selector:Selector<BitmapData>;
+
   // FileManager
   private var fileManager:FileManager;
 
@@ -266,6 +268,7 @@ class Main extends Sprite {
     }
 
     addChild(toolbox);
+
 
     // Put Popup Box on Top
     addChild(brushPopup);

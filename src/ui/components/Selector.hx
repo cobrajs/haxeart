@@ -4,12 +4,12 @@ import ui.components.Label;
 
 import nme.events.MouseEvent;
 
-class Selector extends Label {
-  public var options(default, setOptions):Array<String>;
-  public var selected(getSelected, setSelected):String;
+class Selector<T> extends Label<T> {
+  public var options(default, setOptions):Array<T>;
+  public var selected(getSelected, setSelected):T;
   public var selectedIndex(default, setSelectedIndex):Int;
 
-  public function new(options:Array<String>, ?defaultOption:Int = 0) {
+  public function new(options:Array<T>, ?defaultOption:Int = 0) {
     super(options[defaultOption], 0);
 
     this.options = options;
@@ -22,17 +22,17 @@ class Selector extends Label {
     selectedIndex++;
   }
 
-  private function setOptions(o:Array<String>):Array<String> {
+  private function setOptions(o:Array<T>):Array<T> {
     options = o;
     selectedIndex = 0;
     return options;
   }
 
-  private function getSelected():String {
+  private function getSelected():T {
     return options[selectedIndex];
   }
 
-  private function setSelected(s:String):String {
+  private function setSelected(s:T):T {
     for (i in 0...options.length) {
       if (options[i] == s) {
         selectedIndex = i;
@@ -46,10 +46,9 @@ class Selector extends Label {
     selectedIndex = i;
     if (selectedIndex >= options.length) {
       selectedIndex = 0;
-      return selectedIndex;
     }
 
-    text = options[selectedIndex];
+    content = options[selectedIndex];
     return selectedIndex;
   }
 
