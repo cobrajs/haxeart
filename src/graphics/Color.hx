@@ -10,6 +10,10 @@ class Color {
 #else
   public static var transparent:BitmapInt32 = 0x00000000;
 #end
+  
+  public var colorInt:Int;
+  public var alpha:Int;
+  public var colorARGB(getARGBcolor, setARGBcolor):BitmapInt32;
 
   public static function keyImage(imageData:BitmapData, ?colorKey:Int = 0xFF00FF) {
     imageData.lock();
@@ -62,5 +66,35 @@ class Color {
     }
     
     return retColor;
+  }
+
+  //
+  // Instance methods
+  //
+
+  public function new(colorInt:Int, ?alpha:Int = 0xFF) {
+    this.colorInt = colorInt;
+    this.alpha = alpha;
+  }
+
+  //
+  // Property getter/setters
+  // 
+  
+  private function getARGBcolor():BitmapInt32 {
+    return Color.getARGB(this.colorInt, this.alpha);
+  }
+
+  private function setARGBcolor(color:BitmapInt32):BitmapInt32 {
+#if neko
+    // BitmapInt32: {rgb: rgb, a: a}
+    this.colorInt = color.rgb;
+    this.alpha = color.a;
+#else
+    // BitmapInt: 0xAARRGGBB
+    this.alpha = color >> 24;
+    this.colorInt = color & (0xFFFFFF);
+#end
+    return color;
   }
 }

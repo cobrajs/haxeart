@@ -3,29 +3,27 @@ package ui.components;
 // Get the BitmapFont from the Registry
 import Registry;
 
+import ui.components.Component;
+
 import nme.display.Sprite;
 import nme.display.BitmapData;
 
-class Label<T> extends Sprite {
+class Label<T> extends Component {
   public var content(default, setContent):T;
-  public var margin(default, setMargin):Int;
-  private var ready:Bool;
 
   public function new(content:T, ?margin:Int = 0) {
     super();
 
-    ready = false;
     this.content = content;
     this.margin = margin;
-    ready = true;
     redraw();
   }
 
   private function predraw(){}
 
-  public function redraw() {
+  override public function redraw() {
     if (ready) {
-      this.graphics.clear();
+      super.redraw();
       predraw();
       if (Std.is(content, String)) { 
         Registry.font.drawText(this.graphics, margin, margin, cast(content, String));
@@ -37,6 +35,9 @@ class Label<T> extends Sprite {
         gfx.drawRect(0, 0, temp.width, temp.height);
         gfx.endFill();
       }
+      if (uWidth != width || uHeight != height) {
+        resize(width, height);
+      }
     }
   }
 
@@ -46,7 +47,7 @@ class Label<T> extends Sprite {
     return content;
   }
 
-  private function setMargin(m:Int):Int {
+  override private function setMargin(m:Int):Int {
     margin = m;
     redraw();
     return margin;

@@ -72,8 +72,7 @@ class Main extends Sprite {
   private var picker:Picker;
   private var filler:Filler;
 
-  private var selector:Selector<BitmapData>;
-
+  private var label:Label<String>;
   // FileManager
   private var fileManager:FileManager;
 
@@ -268,6 +267,12 @@ class Main extends Sprite {
     }
 
     addChild(toolbox);
+
+    label = new Label<String>("Hey there");
+    label.x = 10;
+    label.y = 10;
+    label.background = null;
+    addChild(label);
 
 
     // Put Popup Box on Top
