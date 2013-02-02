@@ -8,6 +8,7 @@ package ;
 import ui.components.Button;
 import ui.components.Label;
 import ui.components.Selector;
+import ui.components.SimpleButton;
 import ui.Toolbox;
 import ui.Canvas;
 import ui.PaletteBox;
@@ -18,6 +19,7 @@ import ui.TouchManager;
 // Dialog Boxes
 import dialog.BrushPopup;
 import dialog.FilePopup;
+import dialog.MenuPopup;
 
 // Graphical Helpers
 import graphics.BrushFactory;
@@ -39,6 +41,7 @@ import util.FileManager;
 import Registry;
 
 // Libraries
+import nme.display.Graphics;
 import nme.display.Sprite;
 import nme.events.Event;
 import nme.events.KeyboardEvent;
@@ -66,6 +69,7 @@ class Main extends Sprite {
 
   private var brushPopup:BrushPopup;
   private var filePopup:FilePopup;
+  private var menuPopup:MenuPopup;
 
   private var pencil:Pencil;
   private var move:Move;
@@ -177,6 +181,33 @@ class Main extends Sprite {
 
     filePopup = new FilePopup(stage.stageWidth - 90, stage.stageHeight - 20);
 
+    menuPopup = new MenuPopup();
+    var tempLabel = new Label<String>("Hey");
+    tempLabel.borderWidth = 1;
+    tempLabel.background = null;
+    menuPopup.addComponent(tempLabel);
+    tempLabel = new Label<String>("Che");
+    tempLabel.borderWidth = 1;
+    tempLabel.vAlign = middle;
+    tempLabel.hAlign = center;
+    menuPopup.addComponent(tempLabel);
+    var tempButton = new SimpleButton<String>("Click");
+    tempButton.borderWidth = 2;
+    tempButton.vAlign = middle;
+    tempButton.hAlign = center;
+    tempButton.clickBackground = new Color(0x888888);
+    tempButton.onClick = function() {
+      trace("yeah man");
+    };
+    /*
+    tempLabel = new Label<String>("Wey");
+    tempLabel.borderWidth = 1;
+    tempLabel.vAlign = bottom;
+    tempLabel.hAlign = right;
+    */
+    menuPopup.addComponent(tempButton);
+    menuPopup.layout.pack();
+
     //
     // Setup Toolbox
     //
@@ -227,7 +258,7 @@ class Main extends Sprite {
         //paletteBox.scroll(-1);
       }, 4,                 null, null],
       ['paldown', function(button) {
-        filePopup.popup();
+        menuPopup.popup();
       }, 4,                 null, null]/*,
       ['paldown', function(button) {
         paletteBox.scroll(1);
@@ -268,16 +299,10 @@ class Main extends Sprite {
 
     addChild(toolbox);
 
-    label = new Label<String>("Hey there");
-    label.x = 10;
-    label.y = 10;
-    label.background = null;
-    addChild(label);
-
-
     // Put Popup Box on Top
     addChild(brushPopup);
     addChild(filePopup);
+    addChild(menuPopup);
 
     //
     // Setup Cursor
@@ -386,26 +411,23 @@ class Main extends Sprite {
       keyCode -= 32;
     }
 #end
-    if (keyCode == Keyboard.ESCAPE) {
-      System.exit(0);
-    }
-    else if (keyCode == Keyboard.LEFT) {
-      Registry.canvas.x += 10 * Registry.canvas.zoom;
-    }
-    else if (keyCode == Keyboard.RIGHT) {
-      Registry.canvas.x -= 10 * Registry.canvas.zoom;
-    }
-    else if (keyCode == Keyboard.UP) {
-      Registry.canvas.y += 10 * Registry.canvas.zoom;
-    }
-    else if (keyCode == Keyboard.DOWN) {
-      Registry.canvas.y -= 10 * Registry.canvas.zoom;
-    }
-    else if (keyCode == Keyboard.EQUAL) {
-      toolbox.clickButtonByName("zoomin");
-    }
-    else if (keyCode == Keyboard.MINUS) {
-      toolbox.clickButtonByName("zoomout");
+    switch(keyCode) {
+      case Keyboard.ESCAPE:
+        System.exit(0);
+      case Keyboard.LEFT:
+        Registry.canvas.x += 10 * Registry.canvas.zoom;
+      case Keyboard.RIGHT:
+        Registry.canvas.x -= 10 * Registry.canvas.zoom;
+      case Keyboard.UP:
+        Registry.canvas.y += 10 * Registry.canvas.zoom;
+      case Keyboard.DOWN:
+        Registry.canvas.y -= 10 * Registry.canvas.zoom;
+      case Keyboard.EQUAL:
+        toolbox.clickButtonByName("zoomin");
+      case Keyboard.MINUS:
+        toolbox.clickButtonByName("zoomout");
+      case Keyboard.ENTER:
+        menuPopup.popup();
     }
   }
 }

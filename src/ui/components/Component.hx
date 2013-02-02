@@ -4,8 +4,7 @@ import graphics.Color;
 
 import nme.display.Sprite;
 import nme.events.Event;
-
-
+import nme.display.Graphics;
 
 class Component extends Sprite {
   private var uWidth:Float;
@@ -16,6 +15,8 @@ class Component extends Sprite {
   public var border:Color;
   public var borderWidth:Int;
   public var ready:Bool;
+
+  public var predraw:Graphics->Float->Float->Void;
 
   public function new() {
     super();
@@ -30,6 +31,8 @@ class Component extends Sprite {
     
     border = new Color(0x777777);
     borderWidth = 0;
+
+    predraw = null;
 
     addEventListener(Event.ADDED, function(e:Event) {
       ready = true;
@@ -47,6 +50,9 @@ class Component extends Sprite {
     if (ready) {
       var gfx = this.graphics;
       gfx.clear();
+      if (predraw != null) {
+        predraw(this.graphics, uWidth, uHeight);
+      }
       if (background != null) {
         if (borderWidth > 0) {
           gfx.beginFill(border.colorInt,  border.alpha);

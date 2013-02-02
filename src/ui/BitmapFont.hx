@@ -49,4 +49,8 @@ class BitmapFont {
     drawText(draw.graphics, x, y, string);
     bitmapData.draw(draw, new Matrix(1, 0, 0, 1, x, y), new ColorTransform(1, 1, 1, 1, 0, 0, 0));
   }
+
+  public function getWidth(string:String):Int {
+    return string.length * fontWidth;
+  }
 }
