@@ -1,17 +1,14 @@
 package ui;
 
+import graphics.Tilesheet;
+
 import nme.display.BitmapData;
-import nme.display.Tilesheet;
 import nme.display.Graphics;
 import nme.geom.Matrix;
 import nme.geom.ColorTransform;
 import nme.display.Shape;
 
 import nme.Assets;
-
-
-import graphics.TilesheetHelper;
-
 
 class BitmapFont {
   public var data:Tilesheet;
@@ -27,10 +24,9 @@ class BitmapFont {
      @param startsAt Starting ascii code in the image file 
      */
   public function new(fileName:String, tilesX:Int, tilesY:Int, ?startsAt:Int = 0) {
-    var tempData = Assets.getBitmapData("assets/" + fileName);
-    data = TilesheetHelper.generateTilesheetFromBitmap(tempData, tilesX, tilesY);
-    fontWidth = Math.floor(tempData.width / tilesX);
-    fontHeight = Math.floor(tempData.height / tilesY);
+    data = new Tilesheet(Assets.getBitmapData("assets/" + fileName), tilesX, tilesY);
+    fontWidth = Math.floor(data.tileWidth);
+    fontHeight = Math.floor(data.tileHeight);
     this.startsAt = startsAt;
   }
 

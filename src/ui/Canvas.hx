@@ -393,13 +393,13 @@ class Canvas extends Sprite {
         noTouchUpEvent = true;
       }
       if (allowDraw) {
-        currentTool.mouseMoveAction(this, event);
+        currentTool.mouseMoveAction(this, cast(event, MouseEvent));
       }
       else {
         if (Point.distance(originPoint, new Point(event.stageX, event.stageY)) > threshold) {
           allowDraw = true;
-          currentTool.mouseDownAction(this, event);
-          currentTool.mouseMoveAction(this, event);
+          currentTool.mouseDownAction(this, cast(event, MouseEvent));
+          currentTool.mouseMoveAction(this, cast(event, MouseEvent));
         }
       }
     }
@@ -408,11 +408,11 @@ class Canvas extends Sprite {
   private function onTouchEnd(event:TouchEvent) {
     if (Registry.touchManager.touchCount <= 0) {
       if (!allowDraw && Point.distance(originPoint, new Point(event.stageX, event.stageY)) < threshold && !Registry.touchManager.wasZooming && !noTouchUpEvent) {
-        currentTool.mouseDownAction(this, event);
-        currentTool.mouseUpAction(this, event);
+        currentTool.mouseDownAction(this, cast(event, MouseEvent));
+        currentTool.mouseUpAction(this, cast(event, MouseEvent));
       }
       else {
-        currentTool.mouseUpAction(this, event);
+        currentTool.mouseUpAction(this, cast(event, MouseEvent));
       }
       allowDraw = false;
       noTouchUpEvent = false;

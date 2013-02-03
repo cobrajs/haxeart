@@ -2,13 +2,12 @@ package ui;
 
 import ui.components.Button;
 import graphics.Color;
-import graphics.TilesheetHelper;
+import graphics.Tilesheet;
 
 import nme.display.Sprite;
 import nme.Assets;
 import nme.display.Bitmap;
 import nme.display.BitmapData;
-import nme.display.Tilesheet;
 import nme.display.Shape;
 import nme.geom.Rectangle;
 import nme.events.MouseEvent;
@@ -31,8 +30,8 @@ class Toolbox extends Sprite {
   private var imageSetBitmap:Bitmap;
   private var imageSetBitmapData:BitmapData;
   private var imageSet:Tilesheet;
-  private var tileWidth:Int;
-  private var tileHeight:Int;
+  private var tileWidth:Float;
+  private var tileHeight:Float;
 
   private var background:Shape;
 
@@ -58,10 +57,10 @@ class Toolbox extends Sprite {
   }
 
   public function setTilesheet(filename:String, tilesX:Int, tilesY:Int, ?transparentKey:Int) {
-    var tempData = Assets.getBitmapData("assets/" + filename);
-    tileWidth = Std.int(tempData.width / tilesX);
-    tileHeight = Std.int(tempData.height / tilesY);
-    imageSet = TilesheetHelper.generateTilesheetFromBitmap(tempData, tilesX, tilesY);
+    imageSet = new Tilesheet(Assets.getBitmapData("assets/" + filename), tilesX, tilesY);
+
+    tileWidth = imageSet.tileWidth;
+    tileHeight = imageSet.tileHeight;
   }
 
   public function addButton(name:String, action:Button->Void, ?image:Int, ?group:Int = 0, ?groupDefault = false) {
@@ -92,7 +91,6 @@ class Toolbox extends Sprite {
     }
 
     if (image != null) {
-      trace(image);
       imageSet.drawTiles(button.drawImage(tileWidth, tileHeight), [0, 0, image]);
     }
 

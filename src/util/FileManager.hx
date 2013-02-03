@@ -26,8 +26,9 @@ class FileManager {
   }
 
   public function listDir():Array<FileInfo> {
-    var files = sys.FileSystem.readDirectory(currentDir);
     var retFiles = new Array<FileInfo>();
+#if (!flash && !js)
+    var files = sys.FileSystem.readDirectory(currentDir);
     for (file in files) {
       if (file.charAt(0) != '.') {
         var temp:FileInfo = { 
@@ -55,6 +56,7 @@ class FileManager {
       }
       return 0;
     });
+#end
     return retFiles;
   }
 
@@ -71,12 +73,14 @@ class FileManager {
 
   public function loadPreview(fileName:String):BitmapData {
     var data:BitmapData = null;
+#if (!flash && !js)
     var fullName = currentDir + '/' + fileName;
     if (StringTools.endsWith(fileName, ".png") && 
         sys.FileSystem.exists(fullName)) {
       var rawData = sys.io.File.getBytes(fullName);
       data = BitmapData.loadFromHaxeBytes(rawData);
     }
+#end
     return data;
   }
 }

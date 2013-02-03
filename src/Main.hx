@@ -182,11 +182,11 @@ class Main extends Sprite {
     filePopup = new FilePopup(stage.stageWidth - 90, stage.stageHeight - 20);
 
     menuPopup = new MenuPopup();
-    var tempLabel = new Label<String>("Hey");
+    var tempLabel = new Label<String>("ABCDEFGH");
     tempLabel.borderWidth = 1;
     tempLabel.background = null;
     menuPopup.addComponent(tempLabel);
-    tempLabel = new Label<String>("Che");
+    tempLabel = new Label<String>("abcdefgh");
     tempLabel.borderWidth = 1;
     tempLabel.vAlign = middle;
     tempLabel.hAlign = center;
@@ -313,7 +313,6 @@ class Main extends Sprite {
 
     //toolbox.clickButton(6);
 
-
     Registry.canvas.addEventListener(MouseEvent.MOUSE_OVER, canvasMouseOver);
     Registry.canvas.addEventListener(MouseEvent.MOUSE_OUT, canvasMouseOut);
 
@@ -422,10 +421,12 @@ class Main extends Sprite {
         Registry.canvas.y += 10 * Registry.canvas.zoom;
       case Keyboard.DOWN:
         Registry.canvas.y -= 10 * Registry.canvas.zoom;
+#if !js
       case Keyboard.EQUAL:
         toolbox.clickButtonByName("zoomin");
       case Keyboard.MINUS:
         toolbox.clickButtonByName("zoomout");
+#end
       case Keyboard.ENTER:
         menuPopup.popup();
     }

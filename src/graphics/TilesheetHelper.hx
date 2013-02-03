@@ -6,6 +6,8 @@ import nme.geom.Rectangle;
 import nme.geom.Point;
 import nme.Assets;
 
+// TODO: Keeping this around for now, but it is superceded by my Tilesheet override implementation
+
 class TilesheetHelper {
   public static function getTransparentBitmapData(bitmapData:BitmapData):BitmapData {
     var data = new BitmapData(bitmapData.width, bitmapData.height, true);

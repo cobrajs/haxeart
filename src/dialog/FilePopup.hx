@@ -3,11 +3,11 @@ package dialog;
 import util.FileManager;
 import dialog.Popup;
 import ui.ScrollBox;
-import graphics.TilesheetHelper;
+import graphics.Tilesheet;
 
 import nme.display.Sprite;
-import nme.display.Tilesheet;
 import nme.display.BitmapData;
+import nme.Assets;
 
 import nme.events.MouseEvent;
 import nme.events.KeyboardEvent;
@@ -30,7 +30,7 @@ class FilePopup extends Popup {
   public function new(width:Int, height:Int) {
     super(width, height);
 
-    icons = TilesheetHelper.generateTilesheet('fileicons.png', 2, 2);
+    icons = new Tilesheet(Assets.getBitmapData("assets/fileicons.png"), 2, 2);
 
     fileHeight = 32;
     selected = -1;

@@ -109,7 +109,7 @@ class Button extends Sprite {
     }
   }
 
-  public function drawImage(width:Int, height:Int):Graphics {
+  public function drawImage(width:Float, height:Float):Graphics {
     if (buttonOverlay == null) {
       buttonOverlay = new Sprite();
 
