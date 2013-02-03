@@ -40,7 +40,7 @@ class BrushFactory {
     color = 0x000000;
 
     if (transparentKey != null) {
-      Color.keyImage(brushData, transparentKey);
+      ImageOpts.keyBitmapData(brushData, transparentKey);
     }
     coloredBrushData.draw(brushData);
 

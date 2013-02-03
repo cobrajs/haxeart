@@ -196,7 +196,7 @@ class Main extends Sprite {
     tempButton.vAlign = middle;
     tempButton.hAlign = center;
     tempButton.clickBackground = new Color(0x888888);
-    tempButton.onClick = function() {
+    tempButton.onClick = function(event:MouseEvent) {
       trace("yeah man");
     };
     /*

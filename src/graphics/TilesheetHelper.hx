@@ -7,7 +7,7 @@ import nme.geom.Point;
 import nme.Assets;
 
 class TilesheetHelper {
-  public static function getTransparencyBitmapData(bitmapData:BitmapData):BitmapData {
+  public static function getTransparentBitmapData(bitmapData:BitmapData):BitmapData {
     var data = new BitmapData(bitmapData.width, bitmapData.height, true);
     data.copyPixels(bitmapData, new Rectangle(0, 0, bitmapData.width, bitmapData.height), new Point(0, 0), null, null, true);
     ImageOpts.keyBitmapData(data);
@@ -15,7 +15,7 @@ class TilesheetHelper {
   }
 
   public static function generateTilesheetFromBitmap(imageData:BitmapData, tilesX:Int, tilesY:Int, ?flippedX:Bool = false, flippedY:Bool = false):Tilesheet {
-    var data = getTransparencyBitmapData(imageData);
+    var data = getTransparentBitmapData(imageData);
 
     if (flippedX || flippedY) {
       data = ImageOpts.flipImageData(data, flippedX, flippedY);
@@ -43,7 +43,7 @@ class TilesheetHelper {
   }
 
   public static function generateBitmapDataFromTilesheet(imageName:String, tilesX:Int, tilesY:Int):Array<BitmapData> {
-    var tempData = getTransparencyBitmapData(Assets.getBitmapData("assets/" + imageName));
+    var tempData = getTransparentBitmapData(Assets.getBitmapData("assets/" + imageName));
 
     var tileWidth = Std.int(tempData.width / tilesX);
     var tileHeight = Std.int(tempData.height / tilesY);

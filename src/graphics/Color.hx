@@ -15,18 +15,6 @@ class Color {
   public var alpha:Int;
   public var colorARGB(getARGBcolor, setARGBcolor):BitmapInt32;
 
-  public static function keyImage(imageData:BitmapData, ?colorKey:Int = 0xFF00FF) {
-    imageData.lock();
-    for (y in 0...Math.floor(imageData.height)) {
-      for (x in 0...Math.floor(imageData.width)) {
-        if (imageData.getPixel(x, y) == colorKey) {
-          imageData.setPixel32(x, y, transparent);
-        }
-      }
-    }
-    imageData.unlock();
-  }
-
   public static function getARGB(color:Int, alpha:Int):BitmapInt32 {
 #if neko
     return {rgb: color, a:alpha};

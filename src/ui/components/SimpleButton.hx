@@ -14,7 +14,7 @@ class SimpleButton<T> extends Label<T> {
   private var originalBackround:Color;
 
   public var clickBackground:Color;
-  public var onClick:Void->Void;
+  public var onClick:MouseEvent->Void;
 
   public function new(content:T, ?margin:Int = 0) {
     super(content, margin);
@@ -47,7 +47,7 @@ class SimpleButton<T> extends Label<T> {
   public function onMouseUp(event:MouseEvent) {
     if (state == clicked) {
       if (onClick != null) {
-        onClick();
+        onClick(event);
       }
       state = normal;
     }

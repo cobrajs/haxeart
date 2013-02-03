@@ -2,6 +2,7 @@ package ui;
 
 import ui.components.Button;
 import graphics.Color;
+import graphics.TilesheetHelper;
 
 import nme.display.Sprite;
 import nme.Assets;
@@ -57,29 +58,10 @@ class Toolbox extends Sprite {
   }
 
   public function setTilesheet(filename:String, tilesX:Int, tilesY:Int, ?transparentKey:Int) {
-    try {
-      imageSetBitmap = new Bitmap(Assets.getBitmapData("assets/" + filename));
-      imageSetBitmapData = new BitmapData(Math.floor(imageSetBitmap.width), Math.floor(imageSetBitmap.height));
-      imageSetBitmapData.draw(imageSetBitmap);
-
-      if (transparentKey != null) {
-        Color.keyImage(imageSetBitmapData, transparentKey);
-      }
-
-      imageSet = new Tilesheet(imageSetBitmapData);
-
-      tileWidth = Math.floor(imageSetBitmap.width / tilesX);
-      tileHeight = Math.floor(imageSetBitmap.height / tilesY);
-
-      for (y in 0...tilesY) {
-        for (x in 0...tilesX) {
-          imageSet.addTileRect(new Rectangle(x * tileWidth, y * tileHeight, tileWidth, tileHeight));
-        }
-      }
-    }
-    catch(e:Dynamic) {
-      throw "Error setting up tilesheet: " + e;
-    }
+    var tempData = Assets.getBitmapData("assets/" + filename);
+    tileWidth = Std.int(tempData.width / tilesX);
+    tileHeight = Std.int(tempData.height / tilesY);
+    imageSet = TilesheetHelper.generateTilesheetFromBitmap(tempData, tilesX, tilesY);
   }
 
   public function addButton(name:String, action:Button->Void, ?image:Int, ?group:Int = 0, ?groupDefault = false) {
@@ -110,6 +92,7 @@ class Toolbox extends Sprite {
     }
 
     if (image != null) {
+      trace(image);
       imageSet.drawTiles(button.drawImage(tileWidth, tileHeight), [0, 0, image]);
     }
 
