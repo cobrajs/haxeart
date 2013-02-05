@@ -191,13 +191,14 @@ class Main extends Sprite {
     tempLabel.vAlign = middle;
     tempLabel.hAlign = center;
     menuPopup.addComponent(tempLabel);
-    var tempButton = new SimpleButton<String>("Click");
+    var tempButton = new SimpleButton<String>("Files");
     tempButton.borderWidth = 2;
     tempButton.vAlign = middle;
     tempButton.hAlign = center;
     tempButton.clickBackground = new Color(0x888888);
     tempButton.onClick = function(event:MouseEvent) {
-      trace("yeah man");
+      menuPopup.hide();
+      filePopup.popup();
     };
     /*
     tempLabel = new Label<String>("Wey");
