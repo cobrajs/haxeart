@@ -200,13 +200,12 @@ class Main extends Sprite {
       menuPopup.hide();
       filePopup.popup();
     };
-    /*
+    menuPopup.addComponent(tempButton);
     tempLabel = new Label<String>("Wey");
     tempLabel.borderWidth = 1;
     tempLabel.vAlign = bottom;
     tempLabel.hAlign = right;
-    */
-    menuPopup.addComponent(tempButton);
+    menuPopup.addComponent(tempLabel);
     menuPopup.layout.pack();
 
     //
@@ -304,6 +303,7 @@ class Main extends Sprite {
     addChild(brushPopup);
     addChild(filePopup);
     addChild(menuPopup);
+
 
     //
     // Setup Cursor

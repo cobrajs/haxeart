@@ -31,39 +31,22 @@ package ui.layouts;
 
 */
 
+import ui.layouts.Layout;
 import ui.components.Component;
 
-class GridLayout {
-  public var width(default, null):Float;
-  public var height(default, null):Float;
-  public var components(default, null):Array<Component>;
+class GridLayout extends Layout {
   public var sizeX:Int;
   public var sizeY:Int;
-  public var packed:Bool;
 
   public function new(width:Float, height:Float, ?sizeX:Int = 0, ?sizeY:Int = 0) {
-    components = new Array<Component>();
+    super(width, height);
 
     this.sizeX = sizeX;
     this.sizeY = sizeY;
-
-    this.width = width;
-    this.height = height;
-
-    packed = false;
   }
 
-  public function addComponent(component:Component) {
-    if (!packed) {
-      components.push(component);
-    }
-    else {
-      throw "No components may be added after packing";
-    }
-  }
-
-  public function pack() {
-    packed = true;
+  override public function pack() {
+    super.pack();
 
     if (sizeX == 0 && sizeY != 0) {
       sizeX = Math.ceil(components.length / sizeY);
@@ -100,13 +83,5 @@ class GridLayout {
       components[i].y = y * componentHeight;
     }
 
-  }
-
-  public function resize(width:Float, height:Float) {
-    this.width = width;
-    this.height = height;
-    if (packed) {
-      pack();
-    }
   }
 }
