@@ -3,6 +3,11 @@ package dialog;
 import util.FileManager;
 import dialog.Popup;
 import ui.ScrollBox;
+import ui.components.Container;
+import ui.components.SimpleButton;
+import ui.components.Label;
+import ui.layouts.BorderLayout;
+import ui.layouts.GridLayout;
 import graphics.Tilesheet;
 
 import nme.display.Sprite;
@@ -21,6 +26,9 @@ class FilePopup extends Popup {
   private var fileListBoxes:Array<Sprite>;
   private var fileList:Array<FileInfo>;
 
+  private var layout:BorderLayout;
+  private var buttonBar:Container;
+
   private var icons:Tilesheet;
 
   private var fileHeight:Float;
@@ -28,7 +36,7 @@ class FilePopup extends Popup {
   private var selected:Int;
 
   public function new(width:Int, height:Int) {
-    super(width, height);
+    super(width, height, false);
 
     icons = new Tilesheet(Assets.getBitmapData("assets/fileicons.png"), 2, 2);
 
@@ -57,6 +65,58 @@ class FilePopup extends Popup {
 
     scrollBox = new ScrollBox(Std.int(uWidth / 2), uHeight);
     window.addChild(scrollBox);
+
+    //
+    // Setup bottom button bar
+
+    buttonBar = new Container();
+    buttonBar.layout = new GridLayout(10, 10, 0, 1);
+    var tempButton = new SimpleButton<String>("Save");
+    tempButton.borderWidth = 1;
+    tempButton.vAlign = middle;
+    tempButton.hAlign = center;
+    tempButton.onClick = function(event:MouseEvent) {
+      trace("Saving File");
+    };
+    buttonBar.layout.addComponent(tempButton);
+    buttonBar.addChild(tempButton);
+    tempButton = new SimpleButton<String>("Load");
+    tempButton.borderWidth = 1;
+    tempButton.vAlign = middle;
+    tempButton.hAlign = center;
+    tempButton.onClick = function(event:MouseEvent) {
+      if (tempBitmapData != null) {
+        Registry.canvas.loadFromData(tempBitmapData);
+        this.hide();
+      }
+    };
+    buttonBar.addChild(tempButton);
+    buttonBar.layout.addComponent(tempButton);
+    tempButton = new SimpleButton<String>("Cancel");
+    tempButton.borderWidth = 1;
+    tempButton.vAlign = middle;
+    tempButton.hAlign = center;
+    tempButton.onClick = function(event:MouseEvent) {
+      this.hide();
+    };
+    buttonBar.addChild(tempButton);
+    buttonBar.layout.addComponent(tempButton);
+    buttonBar.layout.pack();
+
+    // 
+    // Setup layout for buttons and labels
+
+    layout = new BorderLayout(uWidth, uHeight);
+    window.addChild(buttonBar);
+    layout.assignComponent(buttonBar, BorderLayout.BOTTOM_RIGHT, 0.5, 0.15, percent);
+    var tempLabel = new Label<String>("Preview");
+    tempLabel.borderWidth = 2;
+    tempLabel.vAlign = middle;
+    tempLabel.hAlign = center;
+    //tempLabel.background = null;
+    window.addChild(tempLabel);
+    layout.assignComponent(tempLabel, BorderLayout.TOP_RIGHT, 0.5, 0.08, percent);
+    layout.pack();
 
     updateFileList();
   }
@@ -91,22 +151,7 @@ class FilePopup extends Popup {
     gfx.beginFill(selected ? 0xAAAAAA : 0xEEEEEE);
     gfx.drawRect(0, 0, uWidth / 2, fileHeight);
     gfx.endFill();
-    if (file.isDir) {
-      icons.drawTiles(gfx, [0, 0, 0]);
-      /*
-      gfx.beginFill(0xFF0000);
-      gfx.drawRect(0, 0, fileHeight, fileHeight);
-      gfx.endFill();
-      */
-    }
-    else {
-      icons.drawTiles(gfx, [0, 0, 1]);
-      /*
-      gfx.beginFill(0x00FF00);
-      gfx.drawRect(0, 0, fileHeight, fileHeight);
-      gfx.endFill();
-      */
-    }
+    icons.drawTiles(gfx, [0, 0, file.isDir ? 0 : 1]);
     
     Registry.font.drawText(gfx, Std.int(fileHeight + 5), 5, file.name);
   }
@@ -126,6 +171,7 @@ class FilePopup extends Popup {
             updateFileList();
             selected = -1;
             scrollBox.scrollTop();
+            tempBitmapData = null;
           }
           else {
             var gfx = preview.graphics;

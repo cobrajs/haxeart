@@ -72,7 +72,7 @@ class BorderLayout extends Layout {
     slots.set(position, tempSlot);
   }
 
-  override public function pack() {
+  override public function pack(?offsetX:Float = 0, ?offsetY:Float = 0) {
     super.pack();
 
     for (key in slots.keys()) {
@@ -90,8 +90,8 @@ class BorderLayout extends Layout {
               (key == LEFT || key == MIDDLE || key == RIGHT) ? this.height / 2 - height / 2 :
               this.height - height;
       slot.occupant.resize(width, height);
-      slot.occupant.x = x;
-      slot.occupant.y = y;
+      slot.occupant.x = x + offsetX;
+      slot.occupant.y = y + offsetY;
     }
   }
 }

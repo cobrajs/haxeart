@@ -26,7 +26,7 @@ class Layout {
     }
   }
 
-  public function pack() {
+  public function pack(?offsetX:Float = 0, ?offsetY:Float = 0) {
     packed = true;
   }
 

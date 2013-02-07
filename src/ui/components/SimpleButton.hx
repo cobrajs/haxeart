@@ -20,6 +20,8 @@ class SimpleButton<T> extends Label<T> {
     super(content, margin);
     state = normal;
 
+    clickBackground = new Color(0x777777);
+
     addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
     addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
     addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);

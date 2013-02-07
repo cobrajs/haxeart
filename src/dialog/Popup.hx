@@ -16,7 +16,7 @@ class Popup extends Sprite {
   private var closeButton:Sprite;
   private var overlay:Sprite;
 
-  public function new(width:Int, height:Int) {
+  public function new(width:Int, height:Int, ?closeButton:Bool = true) {
     super();
 
     uWidth = width;
@@ -30,21 +30,24 @@ class Popup extends Sprite {
     addChild(overlay);
 
     window = new Sprite();
+    var offset = 2;
     var gfx = window.graphics;
-    gfx.lineStyle(3, 0x555555);
+    gfx.lineStyle(2, 0x555555);
     gfx.beginFill(0xAAAAAA);
-    gfx.drawRect(0, 0, width, height);
+    gfx.drawRect(-offset, -offset, width + offset * 2, height + offset * 2);
     gfx.endFill();
     gfx.lineStyle();
     addChild(window);
 
     this.visible = false;
 
-    closeButton = new Sprite();
-    var tempBitmap = new Bitmap(Assets.getBitmapData("assets/close_button.png"));
-    closeButton.addChild(tempBitmap);
-    closeButton.x = width;
-    window.addChild(closeButton);
+    if (closeButton) {
+      this.closeButton = new Sprite();
+      var tempBitmap = new Bitmap(Assets.getBitmapData("assets/close_button.png"));
+      this.closeButton.addChild(tempBitmap);
+      this.closeButton.x = width;
+      window.addChild(this.closeButton);
+    }
 
     addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
   }

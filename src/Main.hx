@@ -201,11 +201,31 @@ class Main extends Sprite {
       filePopup.popup();
     };
     menuPopup.addComponent(tempButton);
+    /*
     tempLabel = new Label<String>("Wey");
     tempLabel.borderWidth = 1;
     tempLabel.vAlign = bottom;
     tempLabel.hAlign = right;
     menuPopup.addComponent(tempLabel);
+    */
+    /* 
+    var tempCont = new Container();
+    tempCont.layout = new GridLayout(10, 10, 1, 0);
+    tempLabel = new Label<String>("Wey");
+    tempLabel.borderWidth = 1;
+    tempLabel.vAlign = middle;
+    tempLabel.hAlign = center;
+    tempCont.layout.addComponent(tempLabel);
+    tempCont.addChild(tempLabel);
+    tempLabel = new Label<String>("Chico");
+    tempLabel.borderWidth = 1;
+    tempLabel.vAlign = middle;
+    tempLabel.hAlign = center;
+    tempCont.layout.addComponent(tempLabel);
+    tempCont.addChild(tempLabel);
+    tempCont.layout.pack();
+    menuPopup.addComponent(tempCont);
+    */
     menuPopup.layout.pack();
 
     //
@@ -258,7 +278,8 @@ class Main extends Sprite {
         //paletteBox.scroll(-1);
       }, 4,                 null, null],
       ['paldown', function(button) {
-        menuPopup.popup();
+        //menuPopup.popup();
+        filePopup.popup();
       }, 4,                 null, null]/*,
       ['paldown', function(button) {
         paletteBox.scroll(1);
