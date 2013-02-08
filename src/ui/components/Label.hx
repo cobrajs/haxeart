@@ -33,8 +33,9 @@ class Label<T> extends Component {
     this.content = content;
     this.margin = margin;
 
+    // Default is the left, middle
     this.hAlign = left;
-    this.vAlign = top;
+    this.vAlign = middle;
   }
 
   private function getDrawPoint(width:Float, height:Float):Point {

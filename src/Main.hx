@@ -87,8 +87,6 @@ class Main extends Sprite {
   }
 
   private function construct():Void {
-    addEventListener(Event.ENTER_FRAME, enterFrame);
-
     Registry.fileManager = new FileManager();
 
     Registry.stage = stage;
@@ -182,20 +180,25 @@ class Main extends Sprite {
     filePopup = new FilePopup(stage.stageWidth - 90, stage.stageHeight - 20);
 
     menuPopup = new MenuPopup();
-    var tempLabel = new Label<String>("ABCDEFGH");
+    var tempLabel = new Label<String>("Super Menu");
     tempLabel.borderWidth = 1;
-    tempLabel.background = null;
     menuPopup.addComponent(tempLabel);
-    tempLabel = new Label<String>("abcdefgh");
-    tempLabel.borderWidth = 1;
-    tempLabel.vAlign = middle;
-    tempLabel.hAlign = center;
-    menuPopup.addComponent(tempLabel);
+
+    var tempButton = new SimpleButton<String>("Clear");
+    tempButton.borderWidth = 2;
+    tempButton.vAlign = middle;
+    tempButton.hAlign = center;
+    tempButton.onClick = function(event:MouseEvent) {
+      Registry.canvas.canvasModified();
+      Registry.canvas.clearCanvas();
+      menuPopup.hide();
+    };
+    menuPopup.addComponent(tempButton);
+
     var tempButton = new SimpleButton<String>("Files");
     tempButton.borderWidth = 2;
     tempButton.vAlign = middle;
     tempButton.hAlign = center;
-    tempButton.clickBackground = new Color(0x888888);
     tempButton.onClick = function(event:MouseEvent) {
       menuPopup.hide();
       filePopup.popup();
@@ -252,19 +255,21 @@ class Main extends Sprite {
       ['filler', function(button):Void {
         Registry.canvas.currentTool = filler;
       }, filler.imageIndex, 1,    null],
-      ['popup', function(button):Void {
-        brushPopup.popup(100, 100);
-      }, 9,                 null, null],
+      /*
       ['clear', function(button):Void {
         Registry.canvas.canvasModified();
         Registry.canvas.clearCanvas();
       }, 8,                 null, null],
+      */
       ['undo', function(button):Void {
         Registry.canvas.undoStep();
       }, 10,                null, null],
       ['redo', function(button):Void {
         Registry.canvas.redoStep();
       }, 11,                null, null],
+      ['popup', function(button):Void {
+        brushPopup.popup(100, 100);
+      }, 9,                 null, null],
       ['zoomin', function(button):Void {
         Registry.canvas.changeZoom(2);
         cursor.changeZoom(Math.floor(Registry.canvas.zoom));
@@ -273,45 +278,16 @@ class Main extends Sprite {
         Registry.canvas.changeZoom(0.5);
         cursor.changeZoom(Math.floor(Registry.canvas.zoom));
       }, 7,                 null, null],
+
+      // The next two are pretty much just for testing stuff right now
       ['palup', function(button) {
         Registry.canvas.quickView();
         //paletteBox.scroll(-1);
       }, 4,                 null, null],
       ['paldown', function(button) {
-        //menuPopup.popup();
-        filePopup.popup();
-      }, 4,                 null, null]/*,
-      ['paldown', function(button) {
-        paletteBox.scroll(1);
-        // Stuff for FS browsing
-        //trace(sys.FileSystem.readDirectory("/mnt/sdcard"));
-        //trace(sys.FileSystem.stat("/mnt/sdcard/test.png"));
-        //sys.FileSystem.rename("/mnt/sdcard/test.png", "/mnt/sdcard/test2.png");
-        //trace(sys.FileSystem.readDirectory("/mnt/sdcard"));
-        //trace(File.documentsDirectory.nativePath);
-        //trace(File.documentsDirectory.url);
-        //trace(File.userDirectory.nativePath);
-        //trace(File.userDirectory.url);
-        //trace(File.applicationStorageDirectory.nativePath);
-        //trace(File.applicationStorageDirectory.url);
-        var useDir = File.userDirectory.nativePath + '/docs/art/';
-        var files = sys.FileSystem.readDirectory(useDir);
-        for (file in files) {
-          trace(file + ": " + (sys.FileSystem.isDirectory(useDir + '/' + file)));
-          trace(sys.FileSystem.stat(useDir + '/' + file));
-        }
-#if (linux || android)
-        var tempBytes = Registry.canvas.getCanvas().encode('png');
-#if linux 
-        var f = sys.io.File.write(File.userDirectory.nativePath + '/knitter.png', true); 
-#else if android
-        var f = sys.io.File.write(File.documentsDirectory.nativePath + '/knitter.png', true); 
-#end
-        f.writeString(tempBytes.asString());
-        f.close();
-#end
-      }, 5,                 null, null]
-      */
+        menuPopup.popup();
+        //filePopup.popup();
+      }, 4,                 null, null]
     ];
 
     for (button in buttons) {
@@ -341,7 +317,6 @@ class Main extends Sprite {
   }
 
   private function touchTouchBegin(event:MouseEvent) {
-    trace("touch fired");
   }
 
   private function canvasMouseOver(event:MouseEvent) {
@@ -357,10 +332,6 @@ class Main extends Sprite {
     cursor.updateTypeCursor("canvas", brushFactory.getBrushImage());
   }
   
-  private function update():Void {
-
-  }
-
   private function drawLine():Void {
     for (p in (new LineIter(10, 10, 100, 80))) {
       Registry.canvas.drawDot(p[0], p[1]);
@@ -389,10 +360,6 @@ class Main extends Sprite {
 
   private function addedToStage(event:Event):Void {
     construct();
-  }
-
-  private function enterFrame(event:Event):Void {
-    update();
   }
 
   //

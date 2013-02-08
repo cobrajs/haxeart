@@ -20,7 +20,8 @@ class Tilesheet {
     this.tilesX = tilesX;
     this.tilesY = tilesY;
 
-    data = imageData;
+    data = new BitmapData(imageData.width, imageData.height, true);
+    data.copyPixels(imageData, new Rectangle(0, 0, imageData.width, imageData.height), new Point(0, 0), null, null, true);
     ImageOpts.keyBitmapData(data);
 
     rects = new Array<Rectangle>();

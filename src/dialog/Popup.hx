@@ -1,5 +1,7 @@
 package dialog;
 
+// TODO: Make Popup a Component with it's own BorderLayout
+
 import com.eclecticdesignstudio.motion.Actuate;
 
 import nme.display.Sprite;

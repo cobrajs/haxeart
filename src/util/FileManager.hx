@@ -83,4 +83,14 @@ class FileManager {
 #end
     return data;
   }
+
+  // Stuff for saving
+  /*
+#if (!flash && !js)
+  var tempBytes = Registry.canvas.getCanvas().encode('png');
+  var f = sys.io.File.write(dir + '/knitter.png', true); 
+  f.writeString(tempBytes.asString());
+  f.close();
+#end
+  */
 }

@@ -42,7 +42,6 @@ class TouchManager {
       lastPointID = event.touchPointID;
       touchCount++;
     }
-    trace("Points: " + touchCount);
   }
 
   public function onTouchMove(event:TouchEvent) {
@@ -104,7 +103,6 @@ class TouchManager {
       }
     }
 
-    trace("Points: " + touchCount);
   }
 
 }

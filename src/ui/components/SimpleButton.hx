@@ -18,6 +18,11 @@ class SimpleButton<T> extends Label<T> {
 
   public function new(content:T, ?margin:Int = 0) {
     super(content, margin);
+
+    // Default is the centered
+    this.hAlign = center;
+    this.vAlign = middle;
+
     state = normal;
 
     clickBackground = new Color(0x777777);

@@ -9,7 +9,6 @@ import nme.Assets;
 // TODO: Keeping this around for now, but it is superceded by my Tilesheet override implementation
 
 class TilesheetHelper {
-  // TODO: I do still need this for Flash
   public static function getTransparentBitmapData(bitmapData:BitmapData):BitmapData {
     var data = new BitmapData(bitmapData.width, bitmapData.height, true);
     data.copyPixels(bitmapData, new Rectangle(0, 0, bitmapData.width, bitmapData.height), new Point(0, 0), null, null, true);
