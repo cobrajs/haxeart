@@ -3,6 +3,11 @@ package ;
 // TODO: Fix issue with buttons when clicked and dragged off
 // TODO: Fix issue with canvas dragging when dragged over buttons
 // TODO: Make button so mouseUp only works when it had a mouse down event
+// TODO: Add input box popup for text entry
+// TODO: Add alert box popup for notifications
+// TODO: Add confirm box popup for confimations
+// TODO: Add custom events so confim box and input box can be used
+// TODO: Fill in README.md
 
 // UI Elements
 import ui.components.Button;
@@ -172,12 +177,13 @@ class Main extends Sprite {
     //
     // Popup Boxes
     //
-    brushPopup = new BrushPopup(400, 300, brushFactory, function(picked:Int):Void {
+    brushPopup = new BrushPopup(0.6, 0.5, brushFactory, function(picked:Int):Void {
       brushFactory.changeBrush(picked);
       cursor.updateTypeCursor("canvas", brushFactory.getBrushImage());
     });
 
-    filePopup = new FilePopup(stage.stageWidth - 90, stage.stageHeight - 20);
+    //filePopup = new FilePopup(stage.stageWidth - 90, stage.stageHeight - 20);
+    filePopup = new FilePopup(0.8, 0.9);
 
     menuPopup = new MenuPopup();
     var tempLabel = new Label<String>("Super Menu");

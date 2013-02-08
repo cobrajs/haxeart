@@ -1,28 +1,40 @@
 package dialog;
 
-// TODO: Make Popup a Component with it's own BorderLayout
-
 import com.eclecticdesignstudio.motion.Actuate;
+
+import ui.layouts.BorderLayout;
+import ui.components.Component;
 
 import nme.display.Sprite;
 import nme.display.Bitmap;
 import nme.Assets;
 import nme.events.MouseEvent;
+import nme.events.Event;
 
 class Popup extends Sprite {
 
-  public var uWidth:Int;
-  public var uHeight:Int;
+  // In percent of screen
+  private var pWidth:Float;
+  private var pHeight:Float;
+  
+  // Calculated from percent
+  private var uWidth:Float;
+  private var uHeight:Float;
 
-  private var window:Sprite;
+  private var window:Component;
   private var closeButton:Sprite;
   private var overlay:Sprite;
 
-  public function new(width:Int, height:Int, ?closeButton:Bool = true) {
+  private var popupLayout:BorderLayout;
+
+  public function new(width:Float, height:Float, ?position:Int = -1, ?closeButton:Bool = true) {
     super();
 
-    uWidth = width;
-    uHeight = height;
+    pWidth = width;
+    pHeight = height;
+
+    uWidth = Registry.stageWidth * pWidth;
+    uHeight = Registry.stageHeight * pHeight;
 
     overlay = new Sprite();
     var gfx = overlay.graphics;
@@ -31,14 +43,8 @@ class Popup extends Sprite {
     gfx.endFill();
     addChild(overlay);
 
-    window = new Sprite();
-    var offset = 2;
-    var gfx = window.graphics;
-    gfx.lineStyle(2, 0x555555);
-    gfx.beginFill(0xAAAAAA);
-    gfx.drawRect(-offset, -offset, width + offset * 2, height + offset * 2);
-    gfx.endFill();
-    gfx.lineStyle();
+    window = new Component();
+    window.borderWidth = 2;
     addChild(window);
 
     this.visible = false;
@@ -47,28 +53,23 @@ class Popup extends Sprite {
       this.closeButton = new Sprite();
       var tempBitmap = new Bitmap(Assets.getBitmapData("assets/close_button.png"));
       this.closeButton.addChild(tempBitmap);
-      this.closeButton.x = width;
       window.addChild(this.closeButton);
     }
+
+    popupLayout = new BorderLayout(Registry.stageWidth, Registry.stageHeight);
+    popupLayout.assignComponent(window, position == -1 ? BorderLayout.MIDDLE : position, width, height, percent);
+
+    addEventListener(Event.ADDED, function(e:Event) {
+      popupLayout.pack();
+      if (this.closeButton != null) {
+        this.closeButton.x = window.width;
+      }
+    });
 
     addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
   }
 
   public function popup(?x:Int, ?y:Int) {
-    if (x == null) {
-      x = Std.int((Registry.stageWidth - window.width) / 2);
-    }
-    if (y == null) {
-      y = Std.int((Registry.stageHeight - uHeight) / 2);
-    }
-    var popupX = x;
-    var popupY = y;
-    if (x + uWidth > Registry.stageWidth) {
-      popupX = x - uWidth;
-    }
-    if (y + uHeight > Registry.stageHeight) {
-      popupY = y - uHeight;
-    }
     // Forget the juiciness stuff for now :P
     /*
     window.x = 0;
@@ -85,8 +86,6 @@ class Popup extends Sprite {
       alpha  : 1
     }, true);
     */
-    window.x = popupX;
-    window.y = popupY;
     this.visible = true;
   }
 

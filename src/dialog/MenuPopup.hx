@@ -7,6 +7,7 @@ import ui.components.Label;
 import ui.components.Component;
 
 import ui.layouts.GridLayout;
+import ui.layouts.BorderLayout;
 
 import nme.events.MouseEvent;
 
@@ -14,12 +15,7 @@ class MenuPopup extends Popup {
   public var layout:GridLayout;
 
   public function new() {
-    uWidth = Std.int(Registry.stageWidth); 
-    uHeight = Std.int(Registry.stageHeight * 0.3);
-    super(uWidth, uHeight);
-
-    window.removeChild(closeButton);
-    closeButton = null;
+    super(1, 0.3, BorderLayout.BOTTOM, false);
 
     layout = new GridLayout(uWidth, uHeight, 0, 1);
   }

@@ -25,6 +25,7 @@ class FilePopup extends Popup {
   private var scrollBox:ScrollBox;
   private var fileListBoxes:Array<Sprite>;
   private var fileList:Array<FileInfo>;
+  private var parentDir:FileInfo;
 
   private var layout:BorderLayout;
   private var buttonBar:Container;
@@ -35,35 +36,40 @@ class FilePopup extends Popup {
 
   private var selected:Int;
 
-  public function new(width:Int, height:Int) {
-    super(width, height, false);
+  public function new(width:Float, height:Float) {
+    super(width, height, BorderLayout.MIDDLE, false);
 
     icons = new Tilesheet(Assets.getBitmapData("assets/fileicons.png"), 2, 2);
 
     fileHeight = 32;
     selected = -1;
 
+    // For inserting at the start of a list
+    parentDir = {
+      name : '..',
+      isDir : true,
+      size : 0
+    };
+
     fileList = new Array<FileInfo>();
     fileListBoxes = new Array<Sprite>();
 
     preview = new Sprite();
     preview.visible = false;
-    //preview.needsSoftKeyboard = true;
 
     preview.addEventListener(MouseEvent.MOUSE_UP, function(event:MouseEvent) {
-      //preview.requestSoftKeyboard();
       Registry.canvas.loadFromData(tempBitmapData);
       hide();
     });
     window.addChild(preview);
 
-    /*
     Registry.stage.addEventListener(KeyboardEvent.KEY_DOWN, function(event:KeyboardEvent) {
-      trace(String.fromCharCode(event.charCode));
+      if (this.visible) {
+        trace(String.fromCharCode(event.charCode));
+      }
     });
-    */
 
-    scrollBox = new ScrollBox(Std.int(uWidth / 2), uHeight);
+    scrollBox = new ScrollBox(Std.int(uWidth / 2), Std.int(uHeight));
     window.addChild(scrollBox);
 
     //
@@ -123,6 +129,7 @@ class FilePopup extends Popup {
 
   private function updateFileList() {
     fileList = Registry.fileManager.listDir();
+    fileList.unshift(parentDir);
     for (i in 0...fileList.length) {
       if (i < fileListBoxes.length) {
         fileListBoxes[i].visible = true;

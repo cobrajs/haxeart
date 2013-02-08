@@ -1,5 +1,7 @@
 package ui;
 
+// TODO: Add scroll indicator thing
+
 import nme.display.Sprite;
 import nme.geom.Rectangle;
 import nme.geom.Point;

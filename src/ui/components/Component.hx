@@ -54,15 +54,20 @@ class Component extends Sprite {
         predraw(this.graphics, uWidth, uHeight);
       }
       if (background != null) {
+
         if (borderWidth > 0) {
-          gfx.beginFill(border.colorInt,  border.alpha);
-          gfx.drawRect(0, 0, uWidth, uHeight);
-          gfx.endFill();
+          gfx.lineStyle(borderWidth, border.colorInt, border.alpha);
         }
 
         gfx.beginFill(background.colorInt, background.alpha);
-        gfx.drawRect(borderWidth, borderWidth, uWidth - (borderWidth * 2), uHeight - (borderWidth * 2));
+        gfx.drawRect(-borderWidth, -borderWidth, uWidth + (borderWidth * 2), uHeight + (borderWidth * 2));
         gfx.endFill();
+        gfx.lineStyle();
+      }
+      else if (borderWidth > 0) {
+        gfx.lineStyle(borderWidth, border.colorInt, border.alpha);
+        gfx.drawRect(-borderWidth, -borderWidth, uWidth + (borderWidth * 2), uHeight + (borderWidth * 2));
+        gfx.lineStyle();
       }
     }
   }

@@ -56,7 +56,8 @@ class BorderLayout extends Layout {
 
   public function assignComponent(component:Component, position:Int, width:Float, height:Float, type:SizeType) {
     if (slots.exists(position)) {
-      throw "Component already exists in this position";
+      //throw "Component already exists in this position";
+      slots.remove(position);
     }
 
     var tempSlot:Slot = {
