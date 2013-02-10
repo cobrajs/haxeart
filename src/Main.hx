@@ -25,6 +25,8 @@ import ui.TouchManager;
 import dialog.BrushPopup;
 import dialog.FilePopup;
 import dialog.MenuPopup;
+import dialog.DialogEvent;
+import dialog.AlertPopup;
 
 // Graphical Helpers
 import graphics.BrushFactory;
@@ -85,6 +87,8 @@ class Main extends Sprite {
   // FileManager
   private var fileManager:FileManager;
 
+  private var alertPopup:AlertPopup;
+
   public function new() {
     super();
 
@@ -117,6 +121,13 @@ class Main extends Sprite {
       stage.addEventListener(TouchEvent.TOUCH_MOVE, stageTouchMove);
     }
 
+    addEventListener(DialogEvent.MESSAGE, function(e:DialogEvent) {
+      trace("Got message: " + e.message);
+    });
+
+    addEventListener(DialogEvent.CLOSED, function(e:DialogEvent) {
+      trace(">" + e.message + "< just closed");
+    });
 
     var halfHeight = Math.floor(stage.stageHeight / 2);
     var toolboxWidth = 200;
@@ -307,6 +318,12 @@ class Main extends Sprite {
     addChild(filePopup);
     addChild(menuPopup);
 
+    alertPopup = new AlertPopup("You cool bro?", confirm);
+    addChild(alertPopup);
+
+    addEventListener(DialogEvent.MESSAGE, function(e:DialogEvent) {
+      trace("Alert just closed: " + e.message);
+    });
 
     //
     // Setup Cursor
@@ -424,6 +441,8 @@ class Main extends Sprite {
 #end
       case Keyboard.ENTER:
         menuPopup.popup();
+      case Keyboard.SPACE:
+        alertPopup.popup();
     }
   }
 }

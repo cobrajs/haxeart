@@ -9,7 +9,6 @@ class PaletteBox extends ScrollBox {
   private var columns:Int;
   private var rows:Int;
 
-  private var scrollBox:Sprite;
   private var colorBoxes:Array<Sprite>;
   private var colorLookups:Array<Int>;
 
@@ -27,11 +26,6 @@ class PaletteBox extends ScrollBox {
     this.columns = columns;
     this.rows = rows;
 
-    scrollBox = new Sprite();
-    scrollBox.x = 0;
-    scrollBox.y = 0;
-    addChild(scrollBox);
-
     colorBoxes = new Array<Sprite>();
     colorLookups = new Array<Int>();
 
@@ -44,7 +38,7 @@ class PaletteBox extends ScrollBox {
 
     tileWidth = Math.floor(width / columns);
     tileHeight = Math.floor(height / rows);
-
+    
     uWidth = width;
     uHeight = height;
   }

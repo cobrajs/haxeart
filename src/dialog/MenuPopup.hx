@@ -2,6 +2,7 @@ package dialog;
 
 import Registry;
 import dialog.Popup;
+import dialog.DialogEvent;
 
 import ui.components.Label;
 import ui.components.Component;
@@ -12,6 +13,7 @@ import ui.layouts.BorderLayout;
 import nme.events.MouseEvent;
 
 class MenuPopup extends Popup {
+  public static var TYPE:String = "menupopup";
   public var layout:GridLayout;
 
   public function new() {
@@ -36,5 +38,10 @@ class MenuPopup extends Popup {
     if (event.target == overlay) {
       hide();
     }
+  }
+
+  override public function hide() {
+    super.hide();
+    dispatchEvent(new DialogEvent(DialogEvent.CLOSED, TYPE, true));
   }
 }

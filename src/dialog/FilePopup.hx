@@ -79,8 +79,6 @@ class FilePopup extends Popup {
     buttonBar.layout = new GridLayout(10, 10, 0, 1);
     var tempButton = new SimpleButton<String>("Save");
     tempButton.borderWidth = 1;
-    tempButton.vAlign = middle;
-    tempButton.hAlign = center;
     tempButton.onClick = function(event:MouseEvent) {
       trace("Saving File");
     };
@@ -88,8 +86,6 @@ class FilePopup extends Popup {
     buttonBar.addChild(tempButton);
     tempButton = new SimpleButton<String>("Load");
     tempButton.borderWidth = 1;
-    tempButton.vAlign = middle;
-    tempButton.hAlign = center;
     tempButton.onClick = function(event:MouseEvent) {
       if (tempBitmapData != null) {
         Registry.canvas.loadFromData(tempBitmapData);
@@ -100,8 +96,6 @@ class FilePopup extends Popup {
     buttonBar.layout.addComponent(tempButton);
     tempButton = new SimpleButton<String>("Cancel");
     tempButton.borderWidth = 1;
-    tempButton.vAlign = middle;
-    tempButton.hAlign = center;
     tempButton.onClick = function(event:MouseEvent) {
       this.hide();
     };
@@ -149,7 +143,7 @@ class FilePopup extends Popup {
     updateFileListItem(temp, file);
     temp.y = fileListBoxes.length * fileHeight;
     fileListBoxes.push(temp);
-    scrollBox.addChild(temp);
+    scrollBox.scrollBox.addChild(temp);
   }
 
   private function updateFileListItem(fileItem:Sprite, file:FileInfo, ?selected:Bool = false) {
