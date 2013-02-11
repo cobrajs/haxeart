@@ -4,9 +4,6 @@ package ;
 // TODO: Fix issue with canvas dragging when dragged over buttons
 // TODO: Make button so mouseUp only works when it had a mouse down event
 // TODO: Add input box popup for text entry
-// TODO: Add alert box popup for notifications
-// TODO: Add confirm box popup for confimations
-// TODO: Add custom events so confim box and input box can be used
 // TODO: Fill in README.md
 
 // UI Elements
