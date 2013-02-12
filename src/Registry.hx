@@ -22,4 +22,10 @@ class Registry {
 
   public static var stageWidth:Float;
   public static var stageHeight:Float;
+
+  // Ids for alerts and whatever else wants one
+  private static var nextId:Int = 1;
+  public static function getNextId():Int {
+    return nextId++;
+  }
 }

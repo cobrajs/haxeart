@@ -17,7 +17,7 @@ class MenuPopup extends Popup {
   public var layout:GridLayout;
 
   public function new() {
-    super(1, 0.3, BorderLayout.BOTTOM, false);
+    super(1, 0.3, "", BorderLayout.BOTTOM, false);
 
     layout = new GridLayout(uWidth, uHeight, 0, 1);
   }
@@ -27,11 +27,8 @@ class MenuPopup extends Popup {
     layout.addComponent(c);
   }
 
-  override public function popup(?x:Int, ?y:Int) {
-    x = 0;
-    y = Std.int(Registry.stageHeight - uHeight);
-
-    super.popup(x, y);
+  override public function popup() {
+    super.popup();
   }
 
   override public function onMouseUp(event:MouseEvent) {
@@ -42,6 +39,6 @@ class MenuPopup extends Popup {
 
   override public function hide() {
     super.hide();
-    dispatchEvent(new DialogEvent(DialogEvent.CLOSED, TYPE, true));
+    dispatchEvent(new DialogEvent(DialogEvent.CLOSED, TYPE, this.id, true));
   }
 }

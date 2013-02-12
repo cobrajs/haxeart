@@ -18,7 +18,7 @@ class BrushPopup extends Popup {
   private var yGrid:Int;
 
   public function new(width:Float, height:Float, brushFactory:BrushFactory, pickAction:Int->Void) {
-    super(width, height, BorderLayout.MIDDLE, true);
+    super(width, height, "Pick Brush", BorderLayout.MIDDLE, true);
     this.brushFactory = brushFactory;
 
     this.pickAction = pickAction;

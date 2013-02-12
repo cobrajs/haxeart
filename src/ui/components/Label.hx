@@ -1,7 +1,6 @@
 package ui.components;
 
 // Get the BitmapFont from the Registry
-import Registry;
 
 import ui.components.Component;
 

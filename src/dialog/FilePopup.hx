@@ -4,18 +4,19 @@ import util.FileManager;
 import dialog.Popup;
 import ui.ScrollBox;
 import ui.components.Container;
-import ui.components.SimpleButton;
 import ui.components.Label;
+import ui.components.SimpleButton;
 import ui.layouts.BorderLayout;
 import ui.layouts.GridLayout;
 import graphics.Tilesheet;
 
-import nme.display.Sprite;
 import nme.display.BitmapData;
+import nme.display.Sprite;
 import nme.Assets;
 
-import nme.events.MouseEvent;
+import nme.events.Event;
 import nme.events.KeyboardEvent;
+import nme.events.MouseEvent;
 
 class FilePopup extends Popup {
   private var preview:Sprite;
@@ -37,7 +38,7 @@ class FilePopup extends Popup {
   private var selected:Int;
 
   public function new(width:Float, height:Float) {
-    super(width, height, BorderLayout.MIDDLE, false);
+    super(width, height, "Files", BorderLayout.MIDDLE, false);
 
     icons = new Tilesheet(Assets.getBitmapData("assets/fileicons.png"), 2, 2);
 
@@ -63,10 +64,12 @@ class FilePopup extends Popup {
     });
     window.addChild(preview);
 
-    Registry.stage.addEventListener(KeyboardEvent.KEY_DOWN, function(event:KeyboardEvent) {
-      if (this.visible) {
-        trace(String.fromCharCode(event.charCode));
-      }
+    addEventListener(Event.ADDED_TO_STAGE, function(e:Event) {
+      stage.addEventListener(KeyboardEvent.KEY_DOWN, function(event:KeyboardEvent) {
+        if (this.visible) {
+          trace(String.fromCharCode(event.charCode));
+        }
+      });
     });
 
     scrollBox = new ScrollBox(Std.int(uWidth / 2), Std.int(uHeight));

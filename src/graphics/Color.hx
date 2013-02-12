@@ -56,12 +56,33 @@ class Color {
     return retColor;
   }
 
+  public static function lookupColor(colorName:String):Int {
+    switch(colorName) {
+      case 'white':
+        return 0xFFFFFF;
+      case 'gray', 'grey':
+        return 0x777777;
+      case 'black':
+        return 0x000000;
+      default:
+        throw "Invalid color name: " + colorName;
+    }
+  }
+
   //
   // Instance methods
   //
 
-  public function new(colorInt:Int, ?alpha:Int = 0xFF) {
-    this.colorInt = colorInt;
+  public function new(colorVal:Dynamic, ?alpha:Int = 0xFF) {
+    if (Std.is(colorVal, Int) || Std.is(colorVal, Float)) {
+      this.colorInt = colorVal;
+    }
+    else if (Std.is(colorVal, String)) {
+      this.colorInt = Color.lookupColor(colorVal);
+    }
+    else {
+      throw "Invalid type passed to Color. Should be Int or String";
+    }
     this.alpha = alpha;
   }
 

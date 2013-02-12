@@ -11,19 +11,21 @@ import ui.components.Button;
 import ui.components.Label;
 import ui.components.Selector;
 import ui.components.SimpleButton;
-import ui.Toolbox;
-import ui.Canvas;
-import ui.PaletteBox;
-import ui.Cursor;
+import ui.components.TextInput;
 import ui.BitmapFont;
+import ui.Canvas;
+import ui.Cursor;
+import ui.PaletteBox;
+import ui.Toolbox;
 import ui.TouchManager;
 
 // Dialog Boxes
+import dialog.AlertPopup;
 import dialog.BrushPopup;
+import dialog.DialogEvent;
 import dialog.FilePopup;
 import dialog.MenuPopup;
-import dialog.DialogEvent;
-import dialog.AlertPopup;
+import dialog.PromptPopup;
 
 // Graphical Helpers
 import graphics.BrushFactory;
@@ -31,10 +33,10 @@ import graphics.PaletteFactory;
 import graphics.Color;
 
 // Tools
-import tools.Pencil;
-import tools.Move;
-import tools.Picker;
 import tools.Filler;
+import tools.Pencil;
+import tools.Picker;
+import tools.Move;
 
 // Iterators
 import util.LineIter;
@@ -42,6 +44,7 @@ import util.LineIter;
 // Other Utils
 import util.Utils;
 import util.FileManager;
+
 import Registry;
 
 // Libraries
@@ -85,6 +88,7 @@ class Main extends Sprite {
   private var fileManager:FileManager;
 
   private var alertPopup:AlertPopup;
+  private var promptPopup:PromptPopup;
 
   public function new() {
     super();
@@ -191,7 +195,7 @@ class Main extends Sprite {
     });
 
     //filePopup = new FilePopup(stage.stageWidth - 90, stage.stageHeight - 20);
-    filePopup = new FilePopup(0.8, 0.9);
+    filePopup = new FilePopup(0.8, 0.85);
 
     menuPopup = new MenuPopup();
     var tempLabel = new Label<String>("Super Menu");
@@ -282,7 +286,7 @@ class Main extends Sprite {
         Registry.canvas.redoStep();
       }, 11,                null, null],
       ['popup', function(button):Void {
-        brushPopup.popup(100, 100);
+        brushPopup.popup();
       }, 9,                 null, null],
       ['zoomin', function(button):Void {
         Registry.canvas.changeZoom(2);
@@ -315,11 +319,20 @@ class Main extends Sprite {
     addChild(filePopup);
     addChild(menuPopup);
 
+    /*
     alertPopup = new AlertPopup("You cool bro?", confirm);
     addChild(alertPopup);
 
     addEventListener(DialogEvent.MESSAGE, function(e:DialogEvent) {
-      trace("Alert just closed: " + e.message);
+      trace("Alert just closed: message: " + e.message + ", id: " + e.id);
+    });
+    */
+
+    promptPopup = new PromptPopup("test");
+    addChild(promptPopup);
+
+    addEventListener(DialogEvent.MESSAGE, function(e:DialogEvent) {
+      trace("Alert just closed: message: " + e.message + ", id: " + e.id);
     });
 
     //
@@ -439,7 +452,8 @@ class Main extends Sprite {
       case Keyboard.ENTER:
         menuPopup.popup();
       case Keyboard.SPACE:
-        alertPopup.popup();
+        //alertPopup.popup();
+        promptPopup.popup();
     }
   }
 }

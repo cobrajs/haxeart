@@ -4,6 +4,8 @@ import com.eclecticdesignstudio.motion.Actuate;
 
 import ui.layouts.BorderLayout;
 import ui.components.Component;
+import ui.components.Label;
+import graphics.Color;
 
 import nme.display.Sprite;
 import nme.display.Bitmap;
@@ -23,11 +25,14 @@ class Popup extends Sprite {
 
   private var window:Component;
   private var closeButton:Sprite;
+  private var titleBar:Label<String>;
   private var overlay:Sprite;
 
   private var popupLayout:BorderLayout;
 
-  public function new(width:Float, height:Float, ?position:Int = -1, ?closeButton:Bool = true) {
+  public var id:Int;
+
+  public function new(width:Float, height:Float, titleLabel:String, ?position:Int = -1, ?closeButton:Bool = true) {
     super();
 
     pWidth = width;
@@ -56,6 +61,16 @@ class Popup extends Sprite {
       window.addChild(this.closeButton);
     }
 
+    if (titleLabel != "" && titleLabel != null) {
+      titleBar = new Label<String>(titleLabel);
+      titleBar.borderWidth = 2;
+      titleBar.background = new Color(0xAAAAAA);
+      titleBar.hAlign = center;
+      titleBar.resize(uWidth, 25);
+      titleBar.y = -25;
+      window.addChild(titleBar);
+    }
+
     popupLayout = new BorderLayout(Registry.stageWidth, Registry.stageHeight);
     popupLayout.assignComponent(window, position == -1 ? BorderLayout.MIDDLE : position, width, height, percent);
 
@@ -66,10 +81,14 @@ class Popup extends Sprite {
       }
     });
 
+    id = Registry.getNextId();
+    trace(id);
+
     addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
   }
 
-  public function popup(?x:Int, ?y:Int) {
+  //public function popup(?x:Int, ?y:Int) {
+  public function popup() {
     // Forget the juiciness stuff for now :P
     /*
     window.x = 0;
