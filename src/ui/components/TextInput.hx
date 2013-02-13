@@ -16,7 +16,18 @@ class TextInput extends Label<String> {
     background = new Color("white");
     borderWidth = 2;
 
+    needsSoftKeyboard = true;
+
     addEventListener(Event.ADDED_TO_STAGE, addedToStage);
+  }
+
+  public function activate() {
+    active = true;
+    requestSoftKeyboard();
+  }
+
+  public function deactivate() {
+    active = false;
   }
 
   private function addedToStage(event:Event) {

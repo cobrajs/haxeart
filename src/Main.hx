@@ -114,6 +114,23 @@ class Main extends Sprite {
     stage.addEventListener(MouseEvent.MOUSE_UP, stageMouseUp);
     stage.addEventListener(MouseEvent.MOUSE_DOWN, stageMouseDown);
 
+    stage.addEventListener(MouseEvent.MOUSE_WHEEL, function(e:MouseEvent) {
+      if (e.delta > 0) {
+        Registry.canvas.changeZoom(2);
+        cursor.changeZoom(Math.floor(Registry.canvas.zoom));
+      } else {
+        Registry.canvas.changeZoom(0.5);
+        cursor.changeZoom(Math.floor(Registry.canvas.zoom));
+      }
+    });
+
+    stage.addEventListener(MouseEvent.MIDDLE_MOUSE_DOWN, function(e:MouseEvent) {
+      Registry.canvas.startDrag();
+    });
+    stage.addEventListener(MouseEvent.MIDDLE_MOUSE_UP, function(e:MouseEvent) {
+      Registry.canvas.stopDrag();
+    });
+
     if (Multitouch.supportsTouchEvents) {
       stage.addEventListener(TouchEvent.TOUCH_BEGIN, Registry.touchManager.onTouchBegin);
       stage.addEventListener(TouchEvent.TOUCH_MOVE, Registry.touchManager.onTouchMove);

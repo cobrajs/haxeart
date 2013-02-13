@@ -64,6 +64,7 @@ class FilePopup extends Popup {
     });
     window.addChild(preview);
 
+    /*
     addEventListener(Event.ADDED_TO_STAGE, function(e:Event) {
       stage.addEventListener(KeyboardEvent.KEY_DOWN, function(event:KeyboardEvent) {
         if (this.visible) {
@@ -71,6 +72,7 @@ class FilePopup extends Popup {
         }
       });
     });
+    */
 
     scrollBox = new ScrollBox(Std.int(uWidth / 2), Std.int(uHeight));
     window.addChild(scrollBox);
@@ -83,7 +85,22 @@ class FilePopup extends Popup {
     var tempButton = new SimpleButton<String>("Save");
     tempButton.borderWidth = 1;
     tempButton.onClick = function(event:MouseEvent) {
-      trace("Saving File");
+      var tempPopup = new PromptPopup(selected == -1 ? '' : fileList[selected].name);
+      addChild(tempPopup);
+      tempPopup.popup();
+      var id = tempPopup.id;
+      var msgFnc:DialogEvent->Void = null;
+      msgFnc = function(e:DialogEvent) {
+        if (e.id == id) {
+          Registry.fileManager.saveFile(e.message, Registry.canvas.getCanvas());
+          tempPopup.hide();
+          removeEventListener(DialogEvent.MESSAGE, msgFnc);
+          removeChild(tempPopup);
+          this.hide();
+        }
+      };
+
+      addEventListener(DialogEvent.MESSAGE, msgFnc);
     };
     buttonBar.layout.addComponent(tempButton);
     buttonBar.addChild(tempButton);

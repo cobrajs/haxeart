@@ -82,7 +82,6 @@ class Popup extends Sprite {
     });
 
     id = Registry.getNextId();
-    trace(id);
 
     addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
   }

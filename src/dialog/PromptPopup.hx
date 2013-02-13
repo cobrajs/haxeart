@@ -25,7 +25,13 @@ class PromptPopup extends Popup {
   private var buttons:Container;
 
   public function new(defaultText:String, ?titleLabel:String) {
-    super(0.7, 0.4, titleLabel != null ? titleLabel : "Prompt", BorderLayout.MIDDLE, false);
+    super(0.7, 0.3, titleLabel != null ? titleLabel : "Prompt", 
+#if (android)
+        BorderLayout.TOP, 
+#else
+        BorderLayout.MIDDLE, 
+#end
+        false);
 
     layout = new BorderLayout(uWidth, uHeight);
 
@@ -75,12 +81,12 @@ class PromptPopup extends Popup {
 
   override public function popup() {
     super.popup();
-    textBox.active = true;
+    textBox.activate();
   }
 
   override public function hide() {
     super.hide();
-    textBox.active = false;
+    textBox.deactivate();
   }
 
 }

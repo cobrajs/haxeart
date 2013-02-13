@@ -84,13 +84,19 @@ class FileManager {
     return data;
   }
 
-  // Stuff for saving
-  /*
+  public function saveFile(fileName:String, data:BitmapData) {
 #if (!flash && !js)
-  var tempBytes = Registry.canvas.getCanvas().encode('png');
-  var f = sys.io.File.write(dir + '/knitter.png', true); 
-  f.writeString(tempBytes.asString());
-  f.close();
+    var tempBytes = data.encode('png');
+    if (!StringTools.endsWith(fileName, ".png")) {
+      fileName += ".png";
+    }
+    trace("File name: " + currentDir + '/' + fileName);
+    var f = sys.io.File.write(currentDir + '/' + fileName, true); 
+    trace("Opened file");
+    f.writeString(tempBytes.asString());
+    trace("Wrote file");
+    f.close();
 #end
-  */
+  }
+
 }
