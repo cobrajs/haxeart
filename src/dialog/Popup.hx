@@ -61,13 +61,15 @@ class Popup extends Sprite {
       window.addChild(this.closeButton);
     }
 
+    var hasTitleBar = false;
     if (titleLabel != "" && titleLabel != null) {
+      hasTitleBar = true;
       titleBar = new Label<String>(titleLabel);
       titleBar.borderWidth = 2;
       titleBar.background = new Color(0xAAAAAA);
       titleBar.hAlign = center;
       titleBar.resize(uWidth, 25);
-      titleBar.y = -25;
+      titleBar.y = -titleBar.uHeight;
       window.addChild(titleBar);
     }
 
@@ -76,6 +78,9 @@ class Popup extends Sprite {
 
     addEventListener(Event.ADDED, function(e:Event) {
       popupLayout.pack();
+      if (hasTitleBar && position & BorderLayout.IS_TOP_EDGE != 0) {
+        window.y += titleBar.uHeight;
+      }
       if (this.closeButton != null) {
         this.closeButton.x = window.width;
       }

@@ -92,11 +92,13 @@ class FilePopup extends Popup {
       var msgFnc:DialogEvent->Void = null;
       msgFnc = function(e:DialogEvent) {
         if (e.id == id) {
-          Registry.fileManager.saveFile(e.message, Registry.canvas.getCanvas());
-          tempPopup.hide();
-          removeEventListener(DialogEvent.MESSAGE, msgFnc);
-          removeChild(tempPopup);
-          this.hide();
+          if (e.message != "" && e.message != null) {
+            Registry.fileManager.saveFile(e.message, Registry.canvas.getCanvas());
+            tempPopup.hide();
+            removeEventListener(DialogEvent.MESSAGE, msgFnc);
+            removeChild(tempPopup);
+            this.hide();
+          }
         }
       };
 

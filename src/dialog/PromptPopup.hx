@@ -43,6 +43,7 @@ class PromptPopup extends Popup {
       dispatchEvent(new DialogEvent(DialogEvent.CLOSED, TYPE, id));
       this.hide();
     };
+    /*
     tempButton = new SimpleButton<String>("OK");
     tempButton.borderWidth = 1;
     tempButton.onClick = function(event:MouseEvent) {
@@ -50,24 +51,23 @@ class PromptPopup extends Popup {
     }
     buttons.addChild(tempButton);
     buttons.layout.addComponent(tempButton);
-    /*
-    } else if (type == confirm) {
-      tempButton = new SimpleButton<String>("Yes");
-      tempButton.borderWidth = 1;
-      tempButton.onClick = function(event:MouseEvent) {
-        messageAndClose("yes");
-      }
-      buttons.addChild(tempButton);
-      buttons.layout.addComponent(tempButton);
-      tempButton = new SimpleButton<String>("No");
-      tempButton.borderWidth = 1;
-      tempButton.onClick = function(event:MouseEvent) {
-        messageAndClose("no");
-      }
-      buttons.addChild(tempButton);
-      buttons.layout.addComponent(tempButton);
-    }
     */
+
+    tempButton = new SimpleButton<String>("Ok");
+    tempButton.borderWidth = 1;
+    tempButton.onClick = function(event:MouseEvent) {
+      messageAndClose(textBox.content);
+    }
+    buttons.addChild(tempButton);
+    buttons.layout.addComponent(tempButton);
+    tempButton = new SimpleButton<String>("Cancel");
+    tempButton.borderWidth = 1;
+    tempButton.onClick = function(event:MouseEvent) {
+      messageAndClose("");
+    }
+    buttons.addChild(tempButton);
+    buttons.layout.addComponent(tempButton);
+
     window.addChild(buttons);
     buttons.layout.pack();
 

@@ -7,8 +7,8 @@ import nme.events.Event;
 import nme.display.Graphics;
 
 class Component extends Sprite {
-  private var uWidth:Float;
-  private var uHeight:Float;
+  public var uWidth(default, null):Float;
+  public var uHeight(default, null):Float;
   public var margin(default, setMargin):Int;
   public var background:Color;
   public var foreground:Color;

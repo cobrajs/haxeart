@@ -139,10 +139,6 @@ class Main extends Sprite {
       stage.addEventListener(TouchEvent.TOUCH_MOVE, stageTouchMove);
     }
 
-    addEventListener(DialogEvent.MESSAGE, function(e:DialogEvent) {
-      trace("Got message: " + e.message);
-    });
-
     addEventListener(DialogEvent.CLOSED, function(e:DialogEvent) {
       trace(">" + e.message + "< just closed");
     });
@@ -347,10 +343,6 @@ class Main extends Sprite {
 
     promptPopup = new PromptPopup("test");
     addChild(promptPopup);
-
-    addEventListener(DialogEvent.MESSAGE, function(e:DialogEvent) {
-      trace("Alert just closed: message: " + e.message + ", id: " + e.id);
-    });
 
     //
     // Setup Cursor

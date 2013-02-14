@@ -32,15 +32,23 @@ typedef Slot = {
 }
 
 class BorderLayout extends Layout {
-  public static var TOP_LEFT:Int = 0;
-  public static var TOP:Int = 1;
-  public static var TOP_RIGHT:Int = 2;
-  public static var LEFT:Int = 3;
-  public static var MIDDLE:Int = 4;
-  public static var RIGHT:Int = 5;
-  public static var BOTTOM_LEFT:Int = 6;
-  public static var BOTTOM:Int = 7;
-  public static var BOTTOM_RIGHT:Int = 8;
+  // These are from binary anding the vertical and horizontal positions
+  public static var TOP_LEFT:Int = 9;
+  public static var TOP:Int = 17;
+  public static var TOP_RIGHT:Int = 33;
+  public static var LEFT:Int = 10;
+  public static var MIDDLE:Int = 18;
+  public static var RIGHT:Int = 34;
+  public static var BOTTOM_LEFT:Int = 12;
+  public static var BOTTOM:Int = 20;
+  public static var BOTTOM_RIGHT:Int = 36;
+
+  public static var IS_TOP_EDGE:Int = 1;
+  public static var IS_LEFT_EDGE:Int = 8;
+  public static var IS_RIGHT_EDGE:Int = 32;
+  public static var IS_BOTTOM_EDGE:Int = 4;
+  public static var IS_MIDDLE_HORIZONTAL:Int = 16;
+  public static var IS_MIDDLE_VERTICAL:Int = 2;
 
   public var slots:IntHash<Slot>;
 
