@@ -141,6 +141,25 @@ class Main extends Sprite {
 
     addEventListener(DialogEvent.CLOSED, function(e:DialogEvent) {
       trace(">" + e.message + "< just closed");
+      //var start = util.Timing.getTime();
+      trace(util.Timing.timeFunction(function() {
+        var walkFunc:Sprite->String->Void = null;
+        walkFunc = function(node:Sprite, ?level:String = "") {
+          trace(node.parent);
+          for (i in 0...node.numChildren) {
+            if (Std.is(node.getChildAt(i), Sprite)) {
+              var child:Sprite = cast(node.getChildAt(i), Sprite);
+              trace(level + child);
+              if (child.numChildren > 0) {
+                walkFunc(child, level + "  ");
+              }
+            }
+          }
+        };
+        walkFunc(this, "");
+      }));
+      trace(util.Timing.timeFunction(function(){util.NodeWalker.getSiblings(Registry.canvas);}));
+      //trace((util.Timing.getTime() - start));
     });
 
     var halfHeight = Math.floor(stage.stageHeight / 2);
