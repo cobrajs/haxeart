@@ -73,7 +73,7 @@ class PromptPopup extends Popup {
 
     layout.assignComponent(buttons, BorderLayout.BOTTOM_RIGHT, 0.7, 0.3, percent);
     textBox = new TextInput(defaultText);
-    textBox.hAlign = center;
+    //textBox.hAlign = center;
     window.addChild(textBox);
     layout.assignComponent(textBox, BorderLayout.TOP_RIGHT, 1, 0.7, percent);
     layout.pack();
@@ -87,6 +87,10 @@ class PromptPopup extends Popup {
   override public function hide() {
     super.hide();
     textBox.deactivate();
+  }
+
+  public function addAllowed(allowed:EReg) {
+    textBox.allowed = allowed;
   }
 
 }

@@ -9,6 +9,8 @@ import nme.ui.Keyboard;
 
 class TextInput extends Label<String> {
   public var active:Bool;
+  public var allowed:EReg;
+  public var cursor:Int;
 
   public function new(?defaultText:String) {
     super(defaultText == null ? "" : defaultText);
@@ -39,14 +41,15 @@ class TextInput extends Label<String> {
     if (this.active) {
       var char = String.fromCharCode(event.charCode);
       if (event.charCode >= 32) {
-        content += String.fromCharCode(event.charCode);
+        if (allowed == null || (allowed != null && allowed.match(char))) {
+          content += char;
+        }
       } else {
         switch(event.keyCode) {
           case Keyboard.BACKSPACE:
             content = content.substr(0, content.length - 1);
         }
       }
-      trace(event.keyCode);
     }
   }
 

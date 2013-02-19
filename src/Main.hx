@@ -3,10 +3,10 @@ package ;
 // TODO: Fix issue with buttons when clicked and dragged off
 // TODO: Fix issue with canvas dragging when dragged over buttons
 // TODO: Make button so mouseUp only works when it had a mouse down event
-// TODO: Add input box popup for text entry
 // TODO: Fill in README.md
 
 // UI Elements
+import ui.components.Component;
 import ui.components.Button;
 import ui.components.Label;
 import ui.components.Selector;
@@ -25,7 +25,9 @@ import dialog.BrushPopup;
 import dialog.DialogEvent;
 import dialog.FilePopup;
 import dialog.MenuPopup;
+import dialog.NewPopup;
 import dialog.PromptPopup;
+import dialog.Popup;
 
 // Graphical Helpers
 import graphics.BrushFactory;
@@ -45,6 +47,7 @@ import util.LineIter;
 import util.Utils;
 import util.FileManager;
 
+import Preferences;
 import Registry;
 
 // Libraries
@@ -77,6 +80,7 @@ class Main extends Sprite {
   private var brushPopup:BrushPopup;
   private var filePopup:FilePopup;
   private var menuPopup:MenuPopup;
+  private var newPopup:NewPopup;
 
   private var pencil:Pencil;
   private var move:Move;
@@ -104,6 +108,8 @@ class Main extends Sprite {
     Registry.stageHeight = stage.stageHeight;
 
     Registry.touchManager = new TouchManager();
+
+    Registry.prefs = new Preferences();
 
     //
     // Add Events for Stage
@@ -139,6 +145,7 @@ class Main extends Sprite {
       stage.addEventListener(TouchEvent.TOUCH_MOVE, stageTouchMove);
     }
 
+    /*
     addEventListener(DialogEvent.CLOSED, function(e:DialogEvent) {
       trace(">" + e.message + "< just closed");
       //var start = util.Timing.getTime();
@@ -158,9 +165,13 @@ class Main extends Sprite {
         };
         walkFunc(this, "");
       }));
+      trace(util.Timing.timeFunction(function(){
+        trace(util.NodeWalker.findChildrenByClass(this, Component, true));
+      }));
       trace(util.Timing.timeFunction(function(){util.NodeWalker.getSiblings(Registry.canvas);}));
       //trace((util.Timing.getTime() - start));
     });
+    */
 
     var halfHeight = Math.floor(stage.stageHeight / 2);
     var toolboxWidth = 200;
@@ -226,18 +237,27 @@ class Main extends Sprite {
       cursor.updateTypeCursor("canvas", brushFactory.getBrushImage());
     });
 
+    newPopup = new NewPopup(0.7, 0.7);
     //filePopup = new FilePopup(stage.stageWidth - 90, stage.stageHeight - 20);
     filePopup = new FilePopup(0.8, 0.85);
 
     menuPopup = new MenuPopup();
+    /*
     var tempLabel = new Label<String>("Super Menu");
     tempLabel.borderWidth = 1;
     menuPopup.addComponent(tempLabel);
+    */
 
-    var tempButton = new SimpleButton<String>("Clear");
+    var tempButton = new SimpleButton<String>("New");
     tempButton.borderWidth = 2;
-    tempButton.vAlign = middle;
-    tempButton.hAlign = center;
+    tempButton.onClick = function(event:MouseEvent) {
+      newPopup.popup();
+      menuPopup.hide();
+    };
+    menuPopup.addComponent(tempButton);
+
+    tempButton = new SimpleButton<String>("Clear");
+    tempButton.borderWidth = 2;
     tempButton.onClick = function(event:MouseEvent) {
       Registry.canvas.canvasModified();
       Registry.canvas.clearCanvas();
@@ -245,10 +265,8 @@ class Main extends Sprite {
     };
     menuPopup.addComponent(tempButton);
 
-    var tempButton = new SimpleButton<String>("Files");
+    tempButton = new SimpleButton<String>("Files");
     tempButton.borderWidth = 2;
-    tempButton.vAlign = middle;
-    tempButton.hAlign = center;
     tempButton.onClick = function(event:MouseEvent) {
       menuPopup.hide();
       filePopup.popup();
@@ -336,7 +354,6 @@ class Main extends Sprite {
       }, 4,                 null, null],
       ['paldown', function(button) {
         menuPopup.popup();
-        //filePopup.popup();
       }, 4,                 null, null]
     ];
 
@@ -349,6 +366,7 @@ class Main extends Sprite {
     // Put Popup Box on Top
     addChild(brushPopup);
     addChild(filePopup);
+    addChild(newPopup);
     addChild(menuPopup);
 
     /*
@@ -361,6 +379,7 @@ class Main extends Sprite {
     */
 
     promptPopup = new PromptPopup("test");
+    promptPopup.addAllowed(~/[A-Za-z._-]/);
     addChild(promptPopup);
 
     //

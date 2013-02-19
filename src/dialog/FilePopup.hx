@@ -3,6 +3,7 @@ package dialog;
 import util.FileManager;
 import dialog.Popup;
 import ui.ScrollBox;
+import ui.components.Component;
 import ui.components.Container;
 import ui.components.Label;
 import ui.components.SimpleButton;
@@ -86,6 +87,7 @@ class FilePopup extends Popup {
     tempButton.borderWidth = 1;
     tempButton.onClick = function(event:MouseEvent) {
       var tempPopup = new PromptPopup(selected == -1 ? '' : fileList[selected].name);
+      tempPopup.addAllowed(~/[A-Za-z._-]/);
       addChild(tempPopup);
       tempPopup.popup();
       var id = tempPopup.id;

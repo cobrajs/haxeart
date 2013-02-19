@@ -60,13 +60,17 @@ class Component extends Sprite {
         }
 
         gfx.beginFill(background.colorInt, background.alpha);
-        gfx.drawRect(-borderWidth, -borderWidth, uWidth + (borderWidth * 2), uHeight + (borderWidth * 2));
+        //gfx.drawRect(-borderWidth, -borderWidth, uWidth + (borderWidth * 2), uHeight + (borderWidth * 2));
+        //gfx.drawRect(borderWidth, borderWidth, uWidth - (borderWidth * 2), uHeight - (borderWidth * 2));
+        gfx.drawRect(0, 0, uWidth, uHeight);
         gfx.endFill();
         gfx.lineStyle();
       }
       else if (borderWidth > 0) {
         gfx.lineStyle(borderWidth, border.colorInt, border.alpha);
-        gfx.drawRect(-borderWidth, -borderWidth, uWidth + (borderWidth * 2), uHeight + (borderWidth * 2));
+        //gfx.drawRect(-borderWidth, -borderWidth, uWidth + (borderWidth * 2), uHeight + (borderWidth * 2));
+        //gfx.drawRect(borderWidth, borderWidth, uWidth - (borderWidth * 2), uHeight - (borderWidth * 2));
+        gfx.drawRect(0, 0, uWidth, uHeight);
         gfx.lineStyle();
       }
     }

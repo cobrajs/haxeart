@@ -27,4 +27,23 @@ class NodeWalker {
     }
     return ret;
   }
+
+  public static function findChildrenByClass(node:DisplayObjectContainer, type:Dynamic, ?deep = false, ?found:Array<DisplayObject>):Array<DisplayObject> {
+    var ret = found == null ? new Array<DisplayObject>() : found;
+    for (child in getChildren(node)) {
+      if (Std.is(child, type)) {
+        ret.push(child);
+      }
+      if (deep) {
+        if (Std.is(child, DisplayObjectContainer)) {
+          var childContainer = cast(child, DisplayObjectContainer);
+          if (childContainer.numChildren > 0) {
+            findChildrenByClass(childContainer, type, deep, ret);
+          }
+        }
+      }
+    }
+    return ret;
+  }
+
 }

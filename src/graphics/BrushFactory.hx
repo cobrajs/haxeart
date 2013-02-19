@@ -44,7 +44,7 @@ class BrushFactory {
     }
     coloredBrushData.draw(brushData);
 
-    currentBrush = 2;
+    currentBrush = Registry.prefs.lastUsedBrush;
     clipRects = new Array<Rectangle>();
 
     tileWidth = Math.floor(brushData.width / tilesX);
@@ -112,6 +112,7 @@ class BrushFactory {
 
   public function changeBrush(newBrush:Int):Void {
     currentBrush = newBrush;
+    Registry.prefs.lastUsedBrush = newBrush;
   }
 }
 

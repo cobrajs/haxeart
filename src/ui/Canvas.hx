@@ -26,7 +26,6 @@ import nme.ui.Multitouch;
 class Canvas extends Sprite {
   private var undoSteps:Array<BitmapData>;
   private var redoSteps:Array<BitmapData>;
-  private var maxUndoSteps:Int;
   private var data:BitmapData;
   private var display:Bitmap;
   private var grid:Shape;
@@ -77,7 +76,6 @@ class Canvas extends Sprite {
     data = new BitmapData(width, height);
     undoSteps = new Array<BitmapData>();
     redoSteps = new Array<BitmapData>();
-    maxUndoSteps = 5;
 
     display = new Bitmap(data);
     display.smoothing = false;
@@ -123,12 +121,34 @@ class Canvas extends Sprite {
   }
 
   public function loadFromData(imageData:BitmapData) {
+    uWidth = imageData.width;
+    uHeight = imageData.height;
+
     display.scaleX = 1;
     display.scaleY = 1;
     zoom = 1;
 
     data = new BitmapData(imageData.width, imageData.height);
     data.draw(imageData);
+
+    display.bitmapData = data;
+    undoSteps = new Array<BitmapData>();
+    redoSteps = new Array<BitmapData>();
+
+    renderGrid();
+
+    zoomPoint = localToGlobal(new Point(width / 2, height / 2));
+  }
+
+  public function newImage(width:Int, height:Int) {
+    uWidth = width;
+    uHeight = height;
+
+    display.scaleX = 1;
+    display.scaleY = 1;
+    zoom = 1;
+
+    data = new BitmapData(width, height);
 
     display.bitmapData = data;
     undoSteps = new Array<BitmapData>();
@@ -327,8 +347,9 @@ class Canvas extends Sprite {
         redoSteps.pop();
       }
     }
+
     undoSteps.push(data.clone());
-    if (undoSteps.length > maxUndoSteps) {
+    if (undoSteps.length > Registry.prefs.undoSteps) {
       undoSteps.shift();
     }
   }
