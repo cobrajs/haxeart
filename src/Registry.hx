@@ -1,7 +1,5 @@
 package ;
 
-// TODO: Add Preferences class that uses SharedObject for persistence
-
 import util.FileManager;
 import ui.BitmapFont;
 import ui.Canvas;

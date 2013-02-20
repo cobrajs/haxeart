@@ -162,6 +162,7 @@ class Canvas extends Sprite {
 
   private function renderGrid() {
     var gfx = grid.graphics;
+    gfx.clear();
     gfx.lineStyle(1, 0x444444, 1, false, LineScaleMode.NONE);
     for (y in 0...Std.int(uHeight + 1)) {
       gfx.moveTo(0, y);
