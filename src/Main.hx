@@ -199,7 +199,10 @@ class Main extends Sprite {
     //
     // Setup Canvas
     //
+    // TODO: Make parent container for canvas and use layout to position
     Registry.canvas = new Canvas(64, 64, brushFactory, pencil);
+    Registry.canvas.zoomRect.width = stage.stageWidth - 200;
+    Registry.canvas.zoomRect.x = 200;
     Registry.canvas.originalPos = new Point(toolboxWidth, 0);
     Registry.canvas.moveTo(
         Math.floor(200 + ((stage.stageWidth - 200) / 2) - Registry.canvas.uWidth / 2), 
@@ -238,16 +241,9 @@ class Main extends Sprite {
     });
 
     newPopup = new NewPopup(0.7, 0.7);
-    //filePopup = new FilePopup(stage.stageWidth - 90, stage.stageHeight - 20);
     filePopup = new FilePopup(0.8, 0.85);
 
     menuPopup = new MenuPopup();
-    /*
-    var tempLabel = new Label<String>("Super Menu");
-    tempLabel.borderWidth = 1;
-    menuPopup.addComponent(tempLabel);
-    */
-
     var tempButton = new SimpleButton<String>("New");
     tempButton.borderWidth = 2;
     tempButton.onClick = function(event:MouseEvent) {
@@ -272,31 +268,6 @@ class Main extends Sprite {
       filePopup.popup();
     };
     menuPopup.addComponent(tempButton);
-    /*
-    tempLabel = new Label<String>("Wey");
-    tempLabel.borderWidth = 1;
-    tempLabel.vAlign = bottom;
-    tempLabel.hAlign = right;
-    menuPopup.addComponent(tempLabel);
-    */
-    /* 
-    var tempCont = new Container();
-    tempCont.layout = new GridLayout(10, 10, 1, 0);
-    tempLabel = new Label<String>("Wey");
-    tempLabel.borderWidth = 1;
-    tempLabel.vAlign = middle;
-    tempLabel.hAlign = center;
-    tempCont.layout.addComponent(tempLabel);
-    tempCont.addChild(tempLabel);
-    tempLabel = new Label<String>("Chico");
-    tempLabel.borderWidth = 1;
-    tempLabel.vAlign = middle;
-    tempLabel.hAlign = center;
-    tempCont.layout.addComponent(tempLabel);
-    tempCont.addChild(tempLabel);
-    tempCont.layout.pack();
-    menuPopup.addComponent(tempCont);
-    */
     menuPopup.layout.pack();
 
     //
@@ -323,12 +294,6 @@ class Main extends Sprite {
       ['filler', function(button):Void {
         Registry.canvas.currentTool = filler;
       }, filler.imageIndex, 1,    null],
-      /*
-      ['clear', function(button):Void {
-        Registry.canvas.canvasModified();
-        Registry.canvas.clearCanvas();
-      }, 8,                 null, null],
-      */
       ['undo', function(button):Void {
         Registry.canvas.undoStep();
       }, 10,                null, null],

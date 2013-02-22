@@ -33,6 +33,7 @@ class Canvas extends Sprite {
   private var zoomDisplay:Bitmap;
   public var originalPos:Point;
 
+  public var zoomRect:Rectangle;
   private var zoomPoint:Point;
   private var lastMousePoint:Point;
 
@@ -52,6 +53,7 @@ class Canvas extends Sprite {
   public var ignoreMouse:Bool;
 
   public var oldZoom:Float;
+  public var oldPos:Point;
   
   // Touch Gesture stuff
   public var threshold:Int;
@@ -88,9 +90,8 @@ class Canvas extends Sprite {
 
     addChild(grid);
 
+    zoomRect = new Rectangle(0, 0, Registry.stageWidth, Registry.stageHeight);
     lastMousePoint = new Point(-1, -1);
-    //zoomPoint = new Point(this.x + width / 2, this.y + height / 2);
-    //zoomPoint = new Point(this.x + width, this.y + height);
     zoomPoint = localToGlobal(new Point(width / 2, height / 2));
 
     this.currentTool = currentTool;
@@ -266,15 +267,34 @@ class Canvas extends Sprite {
   }
 
   public function quickView() {
-    if (Math.abs(1 - zoom) > 0.2) {
-      oldZoom = zoom;
+    if (oldPos == null) {
+      storeState();
       changeZoom(1 / zoom);
+      centerCanvas();
     }
     else {
-      zoom = 1;
-      changeZoom(oldZoom);
-      oldZoom = 1;
+      restoreState();
     }
+  }
+
+  private function storeState() {
+    oldZoom = zoom;
+    oldPos = new Point(this.x, this.y);
+  }
+  
+  private function restoreState() {
+    zoom = 1;
+    changeZoom(oldZoom);
+    moveTo(oldPos.x, oldPos.y);
+    oldZoom = 1;
+    oldPos = null;
+  }
+
+  public function centerCanvas() {
+    moveTo(
+      zoomRect.x + (zoomRect.width / 2 - (uWidth * zoom) / 2), 
+      zoomRect.y + (zoomRect.height / 2 - (uHeight * zoom) / 2)
+    );
   }
 
   public function changeZoom(multiplier:Float) {
