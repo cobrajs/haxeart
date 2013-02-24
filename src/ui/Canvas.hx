@@ -316,22 +316,19 @@ class Canvas extends Sprite {
     else {
       zoom *= multiplier;
     }
-    var tempPoint = globalToLocal(zoomPoint);
-    var tempX = originalPos.x + (((tempPoint.x) - (tempPoint.x) * multiplier) - (originalPos.x - this.x));
-    var tempY = originalPos.y + (((tempPoint.y) - (tempPoint.y) * multiplier) - (originalPos.y - this.y));
+    var tempPointGlobal = new Point(zoomRect.x + zoomRect.width / 2, zoomRect.y + zoomRect.height / 2);
+    var tempPoint = globalToLocal(tempPointGlobal);
+    var tempX = originalPos.x + ((tempPoint.x - tempPoint.x * multiplier) - (originalPos.x - this.x));
+    var tempY = originalPos.y + ((tempPoint.y - tempPoint.y * multiplier) - (originalPos.y - this.y));
     display.scaleX = zoom;
     display.scaleY = zoom;
     grid.scaleX = zoom;
     grid.scaleY = zoom;
     grid.visible = zoom >= 8;
-    //this.x = zoomPoint.x - width / 2;
-    //this.y = zoomPoint.y - height / 2;
+    moveTo(tempX, tempY);
     //Actuate.tween(this, 0.5, {x:tempX, y:tempY});
     //Actuate.tween(display, 0.5, {scaleX: zoom, scaleY:zoom});
     //Actuate.tween(grid, 0.5, {scaleX:zoom, scaleY:zoom});
-    moveTo(tempX, tempY);
-    //this.x = tempX;
-    //this.y = tempY;
   }
 
   //
