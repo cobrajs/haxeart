@@ -86,16 +86,17 @@ class FileManager {
 
   public function saveFile(fileName:String, data:BitmapData, ?isFullName:Bool = false) {
 #if (!flash && !js)
-    var tempBytes = data.encode('png');
-    if (!StringTools.endsWith(fileName, ".png")) {
-      fileName += ".png";
+    try {
+      var tempBytes = data.encode('png');
+      if (!StringTools.endsWith(fileName, ".png")) {
+        fileName += ".png";
+      }
+      var f = sys.io.File.write(isFullName ? fileName : currentDir + '/' + fileName, true); 
+      f.writeString(tempBytes.asString());
+      f.close();
+    } catch (e : Dynamic) {
+      trace("Error saving file! " + e);
     }
-    trace("File name: " + currentDir + '/' + fileName);
-    var f = sys.io.File.write(isFullName ? fileName : currentDir + '/' + fileName, true); 
-    trace("Opened file");
-    f.writeString(tempBytes.asString());
-    trace("Wrote file");
-    f.close();
 #end
   }
 

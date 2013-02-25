@@ -65,16 +65,6 @@ class FilePopup extends Popup {
     });
     window.addChild(preview);
 
-    /*
-    addEventListener(Event.ADDED_TO_STAGE, function(e:Event) {
-      stage.addEventListener(KeyboardEvent.KEY_DOWN, function(event:KeyboardEvent) {
-        if (this.visible) {
-          trace(String.fromCharCode(event.charCode));
-        }
-      });
-    });
-    */
-
     scrollBox = new ScrollBox(Std.int(uWidth / 2), Std.int(uHeight));
     window.addChild(scrollBox);
 
