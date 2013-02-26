@@ -470,12 +470,10 @@ class Main extends Sprite {
         promptPopup.popup();
       case Keyboard.D:
         toolbox.resize(toolbox.uWidth + 20, toolbox.uHeight);
+        paletteBox.resize(paletteBox.uWidth + 20, paletteBox.uHeight);
       case Keyboard.A:
         toolbox.resize(toolbox.uWidth - 20, toolbox.uHeight);
-      case Keyboard.W:
-        toolbox.resize(toolbox.uWidth, toolbox.uHeight - 20);
-      case Keyboard.S:
-        toolbox.resize(toolbox.uWidth, toolbox.uHeight + 20);
+        paletteBox.resize(paletteBox.uWidth - 20, paletteBox.uHeight);
     }
   }
 }

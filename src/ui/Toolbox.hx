@@ -47,12 +47,7 @@ class Toolbox extends Sprite {
     layout = new GridLayout(width - 1, height - 1, columns, rows);
 
     background = new Shape();
-    var gfx = background.graphics;
-    gfx.lineStyle(2, 0x555555);
-    gfx.beginFill(0xAAAAAA);
-    gfx.drawRect(0, 0, uWidth, uHeight);
-    gfx.endFill();
-    gfx.lineStyle();
+    renderBackground();
     addChild(background);
   }
 
@@ -113,6 +108,10 @@ class Toolbox extends Sprite {
     uHeight = Std.int(height);
     layout.resize(width, height);
 
+    renderBackground();
+  }
+
+  private function renderBackground() {
     var gfx = background.graphics;
     gfx.clear();
     gfx.lineStyle(2, 0x555555);

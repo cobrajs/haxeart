@@ -28,15 +28,22 @@ class PaletteBox extends ScrollBox {
 
     this.clickFunction = clickFunction;
 
-    var gfx = this.graphics;
-    gfx.beginFill(0x000000);
-    gfx.drawRect(0, 0, width, height);
-    gfx.endFill();
-
     layout = new GridLayout(width, height, columns, rows);
     
     uWidth = width;
     uHeight = height;
+
+    renderBackground();
+  }
+
+  private function renderBackground() {
+    var gfx = this.graphics;
+    gfx.clear();
+    gfx.lineStyle(2, 0x555555);
+    gfx.beginFill(0xAAAAAA);
+    gfx.drawRect(0, 0, width, height);
+    gfx.endFill();
+    gfx.lineStyle();
   }
 
   public function addColor(color:Int) {
@@ -53,5 +60,16 @@ class PaletteBox extends ScrollBox {
   public function doneAdding() {
     layout.pack();
   }
+
+  override public function resize(width:Float, height:Float) {
+    uWidth = Std.int(width);
+    uHeight = Std.int(height);
+    layout.resize(width, height);
+
+    super.resize(width, height);
+
+    renderBackground();
+  }
+
 
 }

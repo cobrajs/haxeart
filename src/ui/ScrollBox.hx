@@ -11,6 +11,7 @@ import nme.events.Event;
 import nme.events.MouseEvent;
 
 class ScrollBox extends Sprite {
+  private static var SCROLLWIDTH:Int = 20;
   public var scrollBox:Sprite;
   private var scrollBoxRect:Rectangle;
   private var originClick:Point;
@@ -36,16 +37,15 @@ class ScrollBox extends Sprite {
     this.checkTolerance  = true;
 
     scrollIndicator = new Shape();
-    var scrollWidth = 20;
     var scrollHeight = height * 0.2;
     var gfx = scrollIndicator.graphics;
     gfx.beginFill(0xDDDDDD);
-    gfx.drawRect(0, 0, scrollWidth, scrollHeight / 2);
+    gfx.drawRect(0, 0, SCROLLWIDTH, scrollHeight / 2);
     gfx.endFill();
     gfx.beginFill(0x888888);
-    gfx.drawRect(0, scrollHeight / 2, scrollWidth, scrollHeight / 2);
+    gfx.drawRect(0, scrollHeight / 2, SCROLLWIDTH, scrollHeight / 2);
     gfx.endFill();
-    scrollIndicator.x = width - scrollWidth;
+    scrollIndicator.x = width - SCROLLWIDTH;
     scrollIndicator.y = 0;
     scrollIndicator.visible = false;
     addChild(scrollIndicator);
@@ -114,4 +114,10 @@ class ScrollBox extends Sprite {
       });
   }
 
+  public function resize(width:Float, height:Float) {
+    scrollBoxRect.width = width;
+    scrollBoxRect.height = height;
+    scrollIndicator.x = width - SCROLLWIDTH;
+    refreshScrollRect();
+  }
 }
