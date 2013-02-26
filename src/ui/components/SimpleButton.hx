@@ -11,6 +11,7 @@ enum ButtonState {
 
 class SimpleButton<T> extends Label<T> {
   public var state(default, setState):ButtonState;
+  public var stickyState:Bool;
   private var originalBackround:Color;
 
   public var clickBackground:Color;
@@ -24,6 +25,7 @@ class SimpleButton<T> extends Label<T> {
     this.vAlign = middle;
 
     state = normal;
+    stickyState = false;
 
     clickBackground = new Color(0x777777);
 
@@ -32,20 +34,20 @@ class SimpleButton<T> extends Label<T> {
     addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
   }
 
-  private function setState(s:ButtonState):ButtonState {
-    if (state != s) {
-      if (state == normal && s == clicked) {
+  private function setState(newState:ButtonState):ButtonState {
+    if (state != newState) {
+      if (state == normal && newState == clicked) {
         originalBackround = background;
         background = clickBackground;
-      } else if (state == clicked && s == normal) {
+      } else if (state == clicked && newState == normal) {
         background = originalBackround;
       }
-      state = s;
+      state = newState;
 
       redraw();
     }
 
-    return s;
+    return newState;
   }
 
   //
@@ -56,7 +58,9 @@ class SimpleButton<T> extends Label<T> {
       if (onClick != null) {
         onClick(event);
       }
-      state = normal;
+      if (!stickyState) {
+        state = normal;
+      }
     }
   }
 
@@ -65,7 +69,9 @@ class SimpleButton<T> extends Label<T> {
   }
 
   public function onMouseOut(event:MouseEvent) {
-    state = normal;
+    if (!stickyState) {
+      state = normal;
+    }
   }
 
 }

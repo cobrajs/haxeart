@@ -45,8 +45,8 @@ class Tilesheet {
   public function drawTiles(gfx:Graphics, tileData:Array<Float>) {
     for (i in 0...tileData.length) {
       if (i % 3 == 0) {
-        var x = tileData[i];
-        var y = tileData[i + 1];
+        var x = Std.int(tileData[i]);
+        var y = Std.int(tileData[i + 1]);
         var tileIndex = Std.int(tileData[i + 2]);
         var rect = rects[tileIndex];
         gfx.beginBitmapFill(data, new Matrix(1, 0, 0, 1, -rect.x + x, -rect.y + y));

@@ -6,8 +6,8 @@ import ui.components.Component;
 
 import nme.display.Sprite;
 import nme.display.BitmapData;
+import nme.geom.Matrix;
 import nme.geom.Point;
-
 
 enum HAlignment {
   left;
@@ -70,7 +70,7 @@ class Label<T> extends Component {
         var gfx = this.graphics;
         var temp = cast(content, BitmapData);
         var pnt = getDrawPoint(temp.width, temp.height);
-        gfx.beginBitmapFill(temp);
+        gfx.beginBitmapFill(temp, new Matrix(1, 0, 0, 1, pnt.x, pnt.y));
         gfx.drawRect(pnt.x, pnt.y, temp.width, temp.height);
         gfx.endFill();
       }

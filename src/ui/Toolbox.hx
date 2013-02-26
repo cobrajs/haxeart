@@ -1,8 +1,11 @@
 package ui;
 
+import ui.components.SimpleButton;
 import ui.components.Button;
+import ui.layouts.GridLayout;
 import graphics.Color;
 import graphics.Tilesheet;
+import graphics.TilesheetHelper;
 
 import nme.display.Sprite;
 import nme.Assets;
@@ -14,31 +17,26 @@ import nme.events.MouseEvent;
 
 
 class Toolbox extends Sprite {
-  private var uWidth:Int;
-  private var uHeight:Int;
+  public var uWidth(default, null):Int;
+  public var uHeight(default, null):Int;
   private var columns:Int;
   private var rows:Int;
-  private var buttonWidth:Int;
-  private var buttonHeight:Int;
   private var commonBevel:Int;
 
-  private var buttons:Array<Button>;
+  private var buttons:Array<SimpleButton<BitmapData>>;
   private var buttonGroups:Array<Int>;
   // Matches the button's name to the button's index
   private var buttonNames:Hash<Int>;
 
-  private var imageSetBitmap:Bitmap;
-  private var imageSetBitmapData:BitmapData;
-  private var imageSet:Tilesheet;
-  private var tileWidth:Float;
-  private var tileHeight:Float;
-
+  private var imageSet:Array<BitmapData>;
   private var background:Shape;
+
+  private var layout:GridLayout;
 
   public function new(width:Int, height:Int, columns:Int, rows:Int, ?bevel:Int = 0) {
     super();
 
-    buttons = new Array<Button>();
+    buttons = new Array<SimpleButton<BitmapData>>();
     buttonGroups = new Array<Int>();
     buttonNames = new Hash<Int>();
 
@@ -47,62 +45,56 @@ class Toolbox extends Sprite {
     this.columns = columns;
     this.rows = rows;
 
-    commonBevel = bevel;
-
-    buttonWidth = Math.floor(width / columns);
-    buttonHeight = Math.floor(height / rows);
+    layout = new GridLayout(width - 1, height - 1, columns, rows);
 
     background = new Shape();
+    var gfx = background.graphics;
+    gfx.lineStyle(2, 0x555555);
+    gfx.beginFill(0xAAAAAA);
+    gfx.drawRect(0, 0, uWidth, uHeight);
+    gfx.endFill();
+    gfx.lineStyle();
     addChild(background);
   }
 
   public function setTilesheet(filename:String, tilesX:Int, tilesY:Int, ?transparentKey:Int) {
-    imageSet = new Tilesheet(Assets.getBitmapData("assets/" + filename), tilesX, tilesY);
-
-    tileWidth = imageSet.tileWidth;
-    tileHeight = imageSet.tileHeight;
+    imageSet = TilesheetHelper.generateBitmapDataFromTilesheet(filename, tilesX, tilesY);
   }
 
-  public function addButton(name:String, action:Button->Void, ?image:Int, ?group:Int = 0, ?groupDefault = false) {
-    if (buttons.length >= columns * rows) {
-      throw "Adding too many buttons to the toolbox";
-    }
-    var button = new Button(buttonWidth, buttonHeight, commonBevel, group != 0);
-    button.x = buttonWidth * (buttons.length % columns);
-    button.y = buttonHeight * Math.floor(buttons.length / columns);
+  public function addButton(name:String, action:MouseEvent->Void, image:Int, ?group:Int = 0, ?groupDefault = false) {
+    var button = new SimpleButton(imageSet[image]);
+    button.borderWidth = 2;
     if (groupDefault) {
-      button.changeState(Button.CLICKED);
+      button.state = clicked;
     }
 
     if (group != 0) {
-      button.clickAction = function(thisButton):Void {
+      button.onClick = function(event:MouseEvent):Void {
         for (i in 0...buttons.length) {
           if (buttons[i] != button) {
             if (buttonGroups[i] == group) {
-              buttons[i].changeState(Button.NORMAL);
+              buttons[i].state = normal;
             }
           }
         }
-        action(button);
-      }
-    }
-    else {
-      button.clickAction = action;
+        action(event);
+      };
+      button.stickyState = true;
+    } else {
+      button.onClick = action;
     }
 
-    if (image != null) {
-      imageSet.drawTiles(button.drawImage(tileWidth, tileHeight), [0, 0, image]);
-    }
 
     addChild(button);
     buttons.push(button);
+    layout.addComponent(button);
     buttonGroups.push(group);
     buttonNames.set(name, buttons.length - 1);
 
-    var gfx = background.graphics;
-    gfx.beginFill(0xFFFFFF);
-    gfx.drawRect(0, 0, buttonWidth * columns, buttonHeight * Math.ceil(buttons.length / columns));
-    gfx.endFill();
+  }
+
+  public function doneAdding() {
+    layout.pack();
   }
 
   public function clickButtonByName(name:String):Void {
@@ -115,5 +107,19 @@ class Toolbox extends Sprite {
     var upEvent = new MouseEvent(MouseEvent.MOUSE_UP, false, false, button.width / 2, button.height / 2);
     button.dispatchEvent(downEvent);
     button.dispatchEvent(upEvent);
+  }
+
+  public function resize(width:Float, height:Float) {
+    uWidth = Std.int(width);
+    uHeight = Std.int(height);
+    layout.resize(width, height);
+
+    var gfx = background.graphics;
+    gfx.clear();
+    gfx.lineStyle(2, 0x555555);
+    gfx.beginFill(0xAAAAAA);
+    gfx.drawRect(0, 0, uWidth, uHeight);
+    gfx.endFill();
+    gfx.lineStyle();
   }
 }

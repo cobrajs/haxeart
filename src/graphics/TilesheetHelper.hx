@@ -11,7 +11,7 @@ import nme.Assets;
 class TilesheetHelper {
   public static function getTransparentBitmapData(bitmapData:BitmapData):BitmapData {
     var data = new BitmapData(bitmapData.width, bitmapData.height, true);
-    data.copyPixels(bitmapData, new Rectangle(0, 0, bitmapData.width, bitmapData.height), new Point(0, 0), null, null, true);
+    data.copyPixels(bitmapData, new Rectangle(0, 0, bitmapData.width, bitmapData.height), new Point(0, 0), null, null, false);
     ImageOpts.keyBitmapData(data);
     return data;
   }
@@ -55,7 +55,7 @@ class TilesheetHelper {
     for (y in 0...tilesY) {
       for (x in 0...tilesX) {
         var tempBitmapData = new BitmapData(tileWidth, tileHeight, true);
-        tempBitmapData.copyPixels(tempData, new Rectangle(x * tileWidth, y * tileHeight, tileWidth, tileHeight), new Point(0, 0), null, null, true);
+        tempBitmapData.copyPixels(tempData, new Rectangle(x * tileWidth, y * tileHeight, tileWidth, tileHeight), new Point(0, 0), null, null, false);
         returnData.push(tempBitmapData);
       }
     } 

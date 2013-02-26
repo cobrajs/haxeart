@@ -74,7 +74,7 @@ class FilePopup extends Popup {
     buttonBar = new Container();
     buttonBar.layout = new GridLayout(10, 10, 0, 1);
     var tempButton = new SimpleButton<String>("Save");
-    tempButton.borderWidth = 1;
+    tempButton.borderWidth = 2;
     tempButton.onClick = function(event:MouseEvent) {
       var tempPopup = new PromptPopup(selected == -1 ? '' : fileList[selected].name);
       tempPopup.addAllowed(~/[A-Za-z._-]/);
@@ -99,7 +99,7 @@ class FilePopup extends Popup {
     buttonBar.layout.addComponent(tempButton);
     buttonBar.addChild(tempButton);
     tempButton = new SimpleButton<String>("Load");
-    tempButton.borderWidth = 1;
+    tempButton.borderWidth = 2;
     tempButton.onClick = function(event:MouseEvent) {
       if (tempBitmapData != null) {
         Registry.canvas.loadFromData(tempBitmapData);
@@ -109,7 +109,7 @@ class FilePopup extends Popup {
     buttonBar.addChild(tempButton);
     buttonBar.layout.addComponent(tempButton);
     tempButton = new SimpleButton<String>("Cancel");
-    tempButton.borderWidth = 1;
+    tempButton.borderWidth = 2;
     tempButton.onClick = function(event:MouseEvent) {
       this.hide();
     };

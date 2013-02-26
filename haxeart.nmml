@@ -22,7 +22,7 @@
 		 hardware="true"
 	/>
 
-  <window width="640" height="480" resizable="false" unless="mobile" />
+  <window width="800" height="600" resizable="false" unless="mobile" />
 
   <set name="BUILD_DIR" value="bin" />
   

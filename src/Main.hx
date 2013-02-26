@@ -283,7 +283,7 @@ class Main extends Sprite {
         Registry.canvas.currentTool = pencil; 
       }, pencil.imageIndex, 1,    true],
       ['move', function(button):Void { 
-        move.revert = button.state == Button.CLICKED;
+        //move.revert = button.state == Button.CLICKED;
         Registry.canvas.previousTool = Registry.canvas.currentTool;
         Registry.canvas.currentTool = move; 
       }, move.imageIndex,   1,    null],
@@ -313,6 +313,7 @@ class Main extends Sprite {
       }, 7,                 null, null],
 
       // The next two are pretty much just for testing stuff right now
+
       ['palup', function(button) {
         Registry.canvas.quickView();
         //paletteBox.scroll(-1);
@@ -325,6 +326,7 @@ class Main extends Sprite {
     for (button in buttons) {
       toolbox.addButton(button[0], button[1], button[2], button[3], button[4]);
     }
+    toolbox.doneAdding();
 
     addChild(toolbox);
 
@@ -466,6 +468,14 @@ class Main extends Sprite {
       case Keyboard.SPACE:
         //alertPopup.popup();
         promptPopup.popup();
+      case Keyboard.D:
+        toolbox.resize(toolbox.uWidth + 20, toolbox.uHeight);
+      case Keyboard.A:
+        toolbox.resize(toolbox.uWidth - 20, toolbox.uHeight);
+      case Keyboard.W:
+        toolbox.resize(toolbox.uWidth, toolbox.uHeight - 20);
+      case Keyboard.S:
+        toolbox.resize(toolbox.uWidth, toolbox.uHeight + 20);
     }
   }
 }

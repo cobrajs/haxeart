@@ -77,8 +77,9 @@ class FileManager {
     var fullName = currentDir + '/' + fileName;
     if (StringTools.endsWith(fileName, ".png") && 
         sys.FileSystem.exists(fullName)) {
-      var rawData = sys.io.File.getBytes(fullName);
-      data = BitmapData.loadFromHaxeBytes(rawData);
+      //var rawData = sys.io.File.getBytes(fullName);
+      //data = BitmapData.loadFromHaxeBytes(rawData);
+      data = BitmapData.load(fullName);
     }
 #end
     return data;
