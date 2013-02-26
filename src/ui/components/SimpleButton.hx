@@ -38,7 +38,9 @@ class SimpleButton<T> extends Label<T> {
     if (state != newState) {
       if (state == normal && newState == clicked) {
         originalBackround = background;
-        background = clickBackground;
+        if (clickBackground != null) {
+          background = clickBackground;
+        }
       } else if (state == clicked && newState == normal) {
         background = originalBackround;
       }

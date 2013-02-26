@@ -1,6 +1,7 @@
 package ui;
 
 import ui.ScrollBox;
+import ui.layouts.GridLayout;
 
 import nme.display.Sprite;
 import nme.events.MouseEvent;
@@ -19,6 +20,8 @@ class PaletteBox extends ScrollBox {
 
   public var uWidth:Int;
   public var uHeight:Int;
+  
+  private var layout:GridLayout;
 
   public function new(width:Int, height:Int,  columns:Int, rows:Int, clickFunction:Int->Void) {
     super(width, height, 5);
@@ -38,6 +41,8 @@ class PaletteBox extends ScrollBox {
 
     tileWidth = Math.floor(width / columns);
     tileHeight = Math.floor(height / rows);
+
+    layout = new GridLayout(width, height, columns, rows);
     
     uWidth = width;
     uHeight = height;

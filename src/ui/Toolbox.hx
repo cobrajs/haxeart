@@ -15,7 +15,6 @@ import nme.display.Shape;
 import nme.geom.Rectangle;
 import nme.events.MouseEvent;
 
-
 class Toolbox extends Sprite {
   public var uWidth(default, null):Int;
   public var uHeight(default, null):Int;
