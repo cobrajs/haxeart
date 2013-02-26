@@ -228,6 +228,7 @@ class Main extends Sprite {
     for (color in paletteFactory.getColors()) {
       paletteBox.addColor(color);
     }
+    paletteBox.doneAdding();
 
     addChild(paletteBox);
 
@@ -316,7 +317,6 @@ class Main extends Sprite {
 
       ['palup', function(button) {
         Registry.canvas.quickView();
-        //paletteBox.scroll(-1);
       }, 4,                 null, null],
       ['paldown', function(button) {
         menuPopup.popup();

@@ -1,5 +1,7 @@
 package ui;
 
+// TODO: Change cursor to snap to pixels on canvas
+
 import graphics.Color;
 
 import nme.display.Sprite;
