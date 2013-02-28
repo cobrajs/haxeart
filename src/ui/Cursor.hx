@@ -22,7 +22,7 @@ class Cursor extends Sprite {
 
   public function new(?width:Int = 9, ?height:Int = 9) {
     super();
-#if desktop
+#if !mobile
 
     images = new Hash<BitmapData>();
     useZoom = new Hash<Bool>();
@@ -51,14 +51,14 @@ class Cursor extends Sprite {
   } 
 
   public function addTypeCursor(name:String, imageData:BitmapData, ?useZoom:Bool = false) {
-#if desktop
+#if !mobile
     images.set(name, imageData);
     this.useZoom.set(name, useZoom);
 #end
   }
 
   public function updateTypeCursor(name:String, imageData:BitmapData) {
-#if desktop
+#if !mobile
     images.set(name, imageData);
     if (name == currentCursor) {
       setCursor(name, imageData);
@@ -67,7 +67,7 @@ class Cursor extends Sprite {
   }
 
   public function setCursor(name:String, ?imageData:BitmapData) {
-#if desktop
+#if !mobile
     if (imageData == null && (currentCursor == name || !images.exists(name))) {
       return;
     }
@@ -95,14 +95,14 @@ class Cursor extends Sprite {
   }
 
   public function update(x:Float, y:Float) {
-#if desktop
+#if !mobile
     this.x = Math.ceil((x + 1 - (Registry.canvas.x % this.scaleX)) / this.scaleX) * this.scaleX  + (Registry.canvas.x % this.scaleX);
     this.y = Math.ceil((y + 1 - (Registry.canvas.y % this.scaleY)) / this.scaleY) * this.scaleY  + (Registry.canvas.y % this.scaleY);
 #end
   }
 
   public function changeZoom(zoom:Int) {
-#if desktop
+#if !mobile
     this.zoomLevel = zoom;
     if (useZoom.get(currentCursor)) {
       this.scaleX = this.zoomLevel;

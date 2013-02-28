@@ -49,7 +49,7 @@ class Pencil implements ITool {
         }
       }
       else {
-        canvas.drawDot(Math.ceil(event.localX / canvas.zoom), Math.ceil(event.localY / canvas.zoom));
+        canvas.drawDot(Math.floor(event.localX / canvas.zoom), Math.floor(event.localY / canvas.zoom));
         if (!canvasModifySet) {
           canvas.canvasModified();
           canvasModifySet = true;

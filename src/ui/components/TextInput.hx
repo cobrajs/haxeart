@@ -18,14 +18,18 @@ class TextInput extends Label<String> {
     background = new Color("white");
     borderWidth = 2;
 
+#if !js
     needsSoftKeyboard = true;
+#end
 
     addEventListener(Event.ADDED_TO_STAGE, addedToStage);
   }
 
   public function activate() {
     active = true;
+#if !js
     requestSoftKeyboard();
+#end
   }
 
   public function deactivate() {

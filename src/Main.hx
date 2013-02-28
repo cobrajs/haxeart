@@ -127,6 +127,7 @@ class Main extends Sprite {
       }
     });
 
+#if (!flash && !js)
     stage.addEventListener(MouseEvent.MIDDLE_MOUSE_DOWN, function(e:MouseEvent) {
       Registry.canvas.startDrag();
     });
@@ -134,6 +135,7 @@ class Main extends Sprite {
       Registry.canvas.stopDrag();
       Registry.canvas.checkBounds();
     });
+#end
 
     if (Multitouch.supportsTouchEvents) {
       stage.addEventListener(TouchEvent.TOUCH_BEGIN, Registry.touchManager.onTouchBegin);
@@ -466,7 +468,6 @@ class Main extends Sprite {
       case Keyboard.ENTER:
         menuPopup.popup();
       case Keyboard.SPACE:
-        //alertPopup.popup();
         promptPopup.popup();
       case Keyboard.D:
         toolbox.resize(toolbox.uWidth + 20, toolbox.uHeight);
