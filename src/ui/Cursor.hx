@@ -1,14 +1,14 @@
 package ui;
 
-// TODO: Change cursor to snap to pixels on canvas
-
 import graphics.Color;
 
 import nme.display.Sprite;
+import nme.display.Shape;
 import nme.display.Bitmap;
 import nme.display.BitmapData;
 import nme.ui.Mouse;
 import nme.geom.Rectangle;
+import nme.geom.Matrix;
 
 class Cursor extends Sprite {
   private var image:Sprite;
@@ -29,8 +29,8 @@ class Cursor extends Sprite {
 
     image = new Sprite();
     addChild(image);
-    image.x = -Math.floor(width / 2);
-    image.y = -Math.floor(height / 2);
+    image.x = -Math.ceil(width / 2);
+    image.y = -Math.ceil(height / 2);
     image.mouseEnabled = false;
 
     var imageBitmapData = new BitmapData(width, height);
@@ -46,7 +46,7 @@ class Cursor extends Sprite {
     this.visible = true;
     this.zoomLevel = 1;
     this.mouseEnabled = false;
-    Mouse.hide();
+    //Mouse.hide();
 #end
   } 
 
@@ -86,6 +86,8 @@ class Cursor extends Sprite {
     var bitmapData = imageData == null ? images.get(name) : imageData;
     var gfx = image.graphics;
     gfx.clear();
+    var drawX = Math.floor(bitmapData.width / 2);
+    var drawY = Math.floor(bitmapData.height / 2);
     gfx.beginBitmapFill(bitmapData);
     gfx.drawRect(0, 0, bitmapData.width, bitmapData.height);
     gfx.endFill();
@@ -94,10 +96,8 @@ class Cursor extends Sprite {
 
   public function update(x:Float, y:Float) {
 #if desktop
-    //this.x = Math.ceil(x / this.scaleX) * this.scaleX;
-    //this.y = Math.ceil(y / this.scaleY) * this.scaleY;
-    this.x = x;
-    this.y = y;
+    this.x = Math.ceil((x + 1 - (Registry.canvas.x % this.scaleX)) / this.scaleX) * this.scaleX  + (Registry.canvas.x % this.scaleX);
+    this.y = Math.ceil((y + 1 - (Registry.canvas.y % this.scaleY)) / this.scaleY) * this.scaleY  + (Registry.canvas.y % this.scaleY);
 #end
   }
 

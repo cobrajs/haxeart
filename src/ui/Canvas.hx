@@ -34,7 +34,6 @@ class Canvas extends Sprite {
   public var originalPos:Point;
 
   public var zoomRect:Rectangle;
-  private var zoomPoint:Point;
   private var lastMousePoint:Point;
 
   public var zoom:Float;
@@ -92,7 +91,6 @@ class Canvas extends Sprite {
 
     zoomRect = new Rectangle(0, 0, Registry.stageWidth, Registry.stageHeight);
     lastMousePoint = new Point(-1, -1);
-    zoomPoint = localToGlobal(new Point(width / 2, height / 2));
 
     this.currentTool = currentTool;
     ignoreMouse = false;
@@ -138,7 +136,7 @@ class Canvas extends Sprite {
 
     renderGrid();
 
-    zoomPoint = localToGlobal(new Point(width / 2, height / 2));
+    centerCanvas();
   }
 
   public function newImage(width:Int, height:Int) {
@@ -157,7 +155,7 @@ class Canvas extends Sprite {
 
     renderGrid();
 
-    zoomPoint = localToGlobal(new Point(width / 2, height / 2));
+    centerCanvas();
   }
 
 
@@ -175,27 +173,28 @@ class Canvas extends Sprite {
     }
   }
 
+  public function checkBounds() {
+    if (this.x < zoomRect.x - (uWidth * zoom) + zoom) {
+      this.x = zoomRect.x - (uWidth * zoom) + zoom;
+    } else if (this.x > zoomRect.x + zoomRect.width - zoom) {
+      this.x = zoomRect.x + zoomRect.width - zoom;
+    }
+    if (this.y < zoomRect.y - (uHeight * zoom) + zoom) {
+      this.y = zoomRect.y - (uHeight * zoom) + zoom;
+    } else if (this.y > zoomRect.y + zoomRect.height - zoom) {
+      this.y = zoomRect.y + zoomRect.height - zoom;
+    }
+  }
+
   public function moveTo(x:Float, y:Float):Void {
     this.x = x;
     this.y = y;
 
-    /*
-    if (this.x < 0) {
-      this.x = 0;
-    }
-    if (this.y < 0) {
-      this.y = 0;
-    }
-    */
-
-    zoomPoint = localToGlobal(new Point(width / 2, height / 2));
+    checkBounds();
   }
 
   public function moveBy(x:Float, y:Float):Void {
     moveTo(this.x + x, this.y + y);
-    //this.x += x;
-    //this.y += y;
-    //zoomPoint = localToGlobal(new Point(width / 2, height / 2));
   }
 
   //

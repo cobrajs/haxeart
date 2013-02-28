@@ -72,7 +72,7 @@ class BrushFactory {
     canvas.copyPixels(
       coloredBrushData, 
       clipRects[brush != null ? brush : currentBrush], 
-      new Point(x - tileWidth / 2, y - tileHeight / 2),
+      new Point(x - Math.floor(tileWidth / 2), y - Math.floor(tileHeight / 2)),
       null,
       null,
       true

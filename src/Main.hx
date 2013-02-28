@@ -1,8 +1,5 @@
 package ;
 
-// TODO: Fix issue with buttons when clicked and dragged off
-// TODO: Fix issue with canvas dragging when dragged over buttons
-// TODO: Make button so mouseUp only works when it had a mouse down event
 // TODO: Fill in README.md
 
 // UI Elements
@@ -135,6 +132,7 @@ class Main extends Sprite {
     });
     stage.addEventListener(MouseEvent.MIDDLE_MOUSE_UP, function(e:MouseEvent) {
       Registry.canvas.stopDrag();
+      Registry.canvas.checkBounds();
     });
 
     if (Multitouch.supportsTouchEvents) {
@@ -199,7 +197,6 @@ class Main extends Sprite {
     //
     // Setup Canvas
     //
-    // TODO: Make parent container for canvas and use layout to position
     Registry.canvas = new Canvas(64, 64, brushFactory, pencil);
     Registry.canvas.zoomRect.width = stage.stageWidth - 200;
     Registry.canvas.zoomRect.x = 200;
@@ -354,6 +351,7 @@ class Main extends Sprite {
     //
     cursor = new Cursor();
     cursor.addTypeCursor("canvas", brushFactory.getBrushImage(), true);
+    cursor.visible = false;
     addChild(cursor);
 
     //toolbox.clickButton(6);
@@ -368,10 +366,12 @@ class Main extends Sprite {
 
   private function canvasMouseOver(event:MouseEvent) {
     cursor.setCursor("canvas");
+    cursor.visible = true;
   }
 
   private function canvasMouseOut(event:MouseEvent) {
     cursor.setCursor("default");
+    cursor.visible = false;
   }
 
   private function setCanvasBrushColor(color:Int):Void {

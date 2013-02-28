@@ -32,15 +32,18 @@ class Pencil implements ITool {
       canvas.canvasModified();
       canvasModifySet = true;
     }
-    canvas.drawDot(Math.ceil(event.localX / canvas.zoom), Math.ceil(event.localY / canvas.zoom));
+    canvas.drawDot(
+      Math.floor(event.localX / canvas.zoom), 
+      Math.floor(event.localY / canvas.zoom)
+    );
   }
 
   public function mouseMoveAction(canvas:Canvas, event:MouseEvent):Void {
     if (event.buttonDown) {
       if (lastMousePoint.x >= 0 && lastMousePoint.y >= 0) {
         for (p in (new LineIter(
-            Math.ceil(event.localX / canvas.zoom), Math.ceil(event.localY / canvas.zoom),
-            Math.ceil(lastMousePoint.x / canvas.zoom), Math.ceil(lastMousePoint.y / canvas.zoom)
+            Math.floor(event.localX / canvas.zoom), Math.floor(event.localY / canvas.zoom),
+            Math.floor(lastMousePoint.x / canvas.zoom), Math.floor(lastMousePoint.y / canvas.zoom)
         ))) {
           canvas.drawDot(p[0], p[1]);
         }
