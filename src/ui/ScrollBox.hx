@@ -1,7 +1,5 @@
 package ui;
 
-import com.eclecticdesignstudio.motion.Actuate;
-
 import nme.display.DisplayObject;
 import nme.display.Sprite;
 import nme.display.Shape;
@@ -94,9 +92,7 @@ class ScrollBox extends Sprite {
         refreshScrollRect();
 
         if (checkTolerance) {
-          scrollIndicator.alpha = 0;
           scrollIndicator.visible = true;
-          Actuate.tween(scrollIndicator, 0.2, { alpha: 1 });
         }
         checkTolerance = false;
       }
@@ -108,10 +104,7 @@ class ScrollBox extends Sprite {
     originClick = null;
     originPoint = null;
     checkTolerance = true;
-    Actuate.tween(scrollIndicator, 0.5, { alpha: 0 })
-      .onComplete(function():Void { 
-        scrollIndicator.visible = false;
-      });
+    scrollIndicator.visible = false;
   }
 
   public function resize(width:Float, height:Float) {

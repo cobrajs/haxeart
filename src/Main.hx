@@ -1,6 +1,7 @@
 package ;
 
 // TODO: Fill in README.md
+// TODO: Setup main and alternate colors
 
 // UI Elements
 import ui.components.Component;

@@ -1,7 +1,5 @@
 package ui.components;
 
-import com.eclecticdesignstudio.motion.Actuate;
-
 import nme.display.GradientType;
 import nme.display.Sprite;
 import nme.display.Bitmap;
@@ -218,15 +216,6 @@ class Button extends Sprite {
 
   private function mouseDown(event:MouseEvent):Void {
     changeState(CLICKED);
-    /*
-    var scale = 0.9;
-    Actuate.tween(this, 0.4, {
-      x: this.x + (this.uWidth - this.uWidth * scale) / 2, 
-      y: this.y + (this.uHeight - this.uHeight * scale) / 2,
-      scaleX: scale,
-      scaleY: scale
-    }, true);
-    */
   }
 
   private function mouseUp(event:MouseEvent):Void {
@@ -237,14 +226,6 @@ class Button extends Sprite {
     if (!stayPressed) {
       changeState();
     }
-    /*
-    Actuate.tween(this, 0.4, {
-      x: origX, 
-      y: origY,
-      scaleX: 1,
-      scaleY: 1
-    }, true);
-    */
     event.stopPropagation();
   }
 
@@ -256,14 +237,6 @@ class Button extends Sprite {
       if (!stayPressed) {
         changeState(NORMAL);
       }
-      /*
-      Actuate.tween(this, 0.4, {
-        x: origX, 
-        y: origY,
-        scaleX: 1,
-        scaleY: 1
-      }, true);
-      */
     }
     this.clickHandled = false;
   }

@@ -1,5 +1,7 @@
 package dialog;
 
+// TODO: Replace with components
+
 import ui.layouts.BorderLayout;
 import dialog.Popup;
 

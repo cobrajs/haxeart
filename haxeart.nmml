@@ -25,6 +25,7 @@
   <window width="800" height="600" resizable="false" unless="mobile" />
 
   <set name="BUILD_DIR" value="bin" />
+  <set name="NDKV7" value="1" />
   
   <source path="src" />
   

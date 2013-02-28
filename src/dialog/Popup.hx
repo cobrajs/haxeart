@@ -1,7 +1,5 @@
 package dialog;
 
-import com.eclecticdesignstudio.motion.Actuate;
-
 import ui.layouts.BorderLayout;
 import ui.components.Component;
 import ui.components.Label;
@@ -91,40 +89,11 @@ class Popup extends Sprite {
     addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
   }
 
-  //public function popup(?x:Int, ?y:Int) {
   public function popup() {
-    // Forget the juiciness stuff for now :P
-    /*
-    window.x = 0;
-    window.y = 0;
-    window.scaleX = 0.5;
-    window.scaleY = 0.5;
-    window.alpha = 0;
-    this.visible = true;
-    Actuate.tween(window, 0.5, {
-      x      : popupX,
-      y      : popupY,
-      scaleX : 1,
-      scaleY : 1,
-      alpha  : 1
-    }, true);
-    */
     this.visible = true;
   }
 
   public function hide():Void {
-    /*
-    var scale = 1.5;
-    Actuate.tween(window, 0.3, {
-      x      : x - ((window.width * scale) - window.width) / 2,
-      y      : y - ((window.height * scale) - window.height) / 2,
-      scaleX : scale,
-      scaleY : scale,
-      alpha  : 0
-    }, true).onComplete(function():Void {
-      this.visible = false;
-    });
-    */
     this.visible = false;
   }
 

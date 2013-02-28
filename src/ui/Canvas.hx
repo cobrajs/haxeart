@@ -1,8 +1,5 @@
 package ui;
 
-// Actuate
-import com.eclecticdesignstudio.motion.Actuate;
-
 // Project Files
 import graphics.BrushFactory;
 import graphics.Color;
@@ -325,9 +322,6 @@ class Canvas extends Sprite {
     grid.scaleY = zoom;
     grid.visible = zoom >= 8;
     moveTo(tempX, tempY);
-    //Actuate.tween(this, 0.5, {x:tempX, y:tempY});
-    //Actuate.tween(display, 0.5, {scaleX: zoom, scaleY:zoom});
-    //Actuate.tween(grid, 0.5, {scaleX:zoom, scaleY:zoom});
   }
 
   //

@@ -1,5 +1,7 @@
 package ui.components;
 
+// TODO: Add indicator flag and render option for a selected component
+
 import graphics.Color;
 
 import nme.display.Sprite;

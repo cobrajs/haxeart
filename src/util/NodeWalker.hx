@@ -1,5 +1,7 @@
 package util;
 
+// TODO: Add next/prev, directional finding, limiting finding by active popup
+
 import nme.display.DisplayObject;
 import nme.display.DisplayObjectContainer;
 import nme.display.Sprite;

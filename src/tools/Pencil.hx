@@ -1,5 +1,7 @@
 package tools;
 
+// TODO: Implement single click to toggle between main and alternate color
+
 import tools.ITool;
 import ui.Canvas;
 import util.LineIter;
