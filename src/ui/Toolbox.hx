@@ -3,6 +3,7 @@ package ui;
 import ui.components.SimpleButton;
 import ui.components.Button;
 import ui.layouts.GridLayout;
+import ui.StatusBox;
 import graphics.Color;
 import graphics.Tilesheet;
 import graphics.TilesheetHelper;
@@ -22,6 +23,7 @@ class Toolbox extends Sprite {
   private var rows:Int;
   private var commonBevel:Int;
 
+  private var statusBox:StatusBox;
   private var buttons:Array<SimpleButton<BitmapData>>;
   private var buttonGroups:Array<Int>;
   // Matches the button's name to the button's index
@@ -53,6 +55,11 @@ class Toolbox extends Sprite {
 
   public function setTilesheet(filename:String, tilesX:Int, tilesY:Int, ?transparentKey:Int) {
     imageSet = TilesheetHelper.generateBitmapDataFromTilesheet(filename, tilesX, tilesY);
+  }
+
+  public function addButtonLike(button:SimpleButton<BitmapData>) {
+    addChild(button);
+    layout.addComponent(button);
   }
 
   public function addButton(name:String, action:MouseEvent->Void, image:Int, ?group:Int = 0, ?groupDefault = false) {
@@ -88,6 +95,7 @@ class Toolbox extends Sprite {
   }
 
   public function doneAdding() {
+    trace (buttonGroups);
     layout.pack();
   }
 

@@ -1,7 +1,6 @@
 package ;
 
 // TODO: Fill in README.md
-// TODO: Setup main and alternate colors
 
 // UI Elements
 import ui.components.Component;
@@ -10,6 +9,7 @@ import ui.components.Label;
 import ui.components.Selector;
 import ui.components.SimpleButton;
 import ui.components.TextInput;
+import ui.StatusBox;
 import ui.BitmapFont;
 import ui.Canvas;
 import ui.Cursor;
@@ -66,6 +66,7 @@ import nme.filesystem.File;
 class Main extends Sprite {
 
   private var buttons:Array<Button>;
+  private var statusBox:StatusBox;
   private var toolbox:Toolbox;
   private var paletteBox:PaletteBox;
 
@@ -315,13 +316,22 @@ class Main extends Sprite {
 
       // The next two are pretty much just for testing stuff right now
 
-      ['palup', function(button) {
+      ['quickview', function(button) {
         Registry.canvas.quickView();
-      }, 4,                 null, null],
+        cursor.changeZoom(Math.floor(Registry.canvas.zoom));
+      }, 12,                 null, null],
       ['paldown', function(button) {
         menuPopup.popup();
       }, 4,                 null, null]
     ];
+
+    statusBox = new StatusBox();
+
+    statusBox.onClick = function(event:MouseEvent) {
+      swapCanvasBrushColors();
+    };
+
+    toolbox.addButtonLike(statusBox);
 
     for (button in buttons) {
       toolbox.addButton(button[0], button[1], button[2], button[3], button[4]);
@@ -377,9 +387,16 @@ class Main extends Sprite {
     cursor.visible = false;
   }
 
+  private function swapCanvasBrushColors():Void {
+    brushFactory.swapColors();
+    cursor.updateTypeCursor("canvas", brushFactory.getBrushImage());
+    statusBox.forceRedraw();
+  }
+
   private function setCanvasBrushColor(color:Int):Void {
     brushFactory.changeColor(color);
     cursor.updateTypeCursor("canvas", brushFactory.getBrushImage());
+    statusBox.forceRedraw();
   }
   
   private function drawLine():Void {
@@ -476,6 +493,11 @@ class Main extends Sprite {
       case Keyboard.A:
         toolbox.resize(toolbox.uWidth - 20, toolbox.uHeight);
         paletteBox.resize(paletteBox.uWidth - 20, paletteBox.uHeight);
+      case Keyboard.V:
+        Registry.canvas.quickView();
+        cursor.changeZoom(Math.floor(Registry.canvas.zoom));
+      case Keyboard.X:
+        swapCanvasBrushColors();
     }
   }
 }

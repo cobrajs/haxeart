@@ -22,6 +22,14 @@ class Color {
     return (alpha << 24) | color;
 #end
   }
+  
+  public static function getAlpha(color:BitmapInt32):Int {
+#if neko
+    return color.a;
+#else
+    return color >> 24;
+#end
+  }
 
   public static function generateTransform(color:Int) {
     return 

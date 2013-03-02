@@ -1,5 +1,8 @@
 package ui.components;
 
+// TODO: Make slider actually be a slider
+// TODO: Add options for minimum and maximum
+
 import graphics.Color;
 import ui.components.Container;
 import ui.components.SimpleButton;

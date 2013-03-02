@@ -36,7 +36,6 @@ class Canvas extends Sprite {
   public var zoom:Float;
 
   public var brushSize:Int;
-  public var brushColor:Int;
 
   public var uWidth:Int;
   public var uHeight:Int;
@@ -45,6 +44,9 @@ class Canvas extends Sprite {
 
   public var currentTool:ITool;
   public var previousTool:ITool;
+
+  public var mainColor(getMainColor, null):Int;
+  public var alternateColor(getAlternateColor, null):Int;
 
   public var ignoreMouse:Bool;
 
@@ -69,7 +71,6 @@ class Canvas extends Sprite {
     oldZoom = 1;
 
     brushSize = 5;
-    brushColor = 0x000000;
 
     data = new BitmapData(width, height);
     undoSteps = new Array<BitmapData>();
@@ -197,8 +198,8 @@ class Canvas extends Sprite {
   //
   // Drawing functions
   //
-  public function drawDot(x:Int, y:Int) {
-    brushFactory.drawBrush(data, x, y);
+  public function drawDot(x:Int, y:Int, ?useAlternateColor:Bool = false) {
+    brushFactory.drawBrush(data, x, y, null, useAlternateColor);
   }
 
   // Really bad line drawing. Really.
@@ -229,13 +230,18 @@ class Canvas extends Sprite {
     }
   }
 
+  public function checkPoint(x:Int, y:Int):Bool {
+    // TESTING //
+    return brushFactory.checkPoint(data, x, y);
+  }
+
   public function getPoint(x:Int, y:Int):Int {
     return data.getPixel(x, y);
   }
 
   public function fill(startX:Int, startY:Int, ?color:Int) {
     if (color == null) {
-      color = brushFactory.color;
+      color = brushFactory.mainColor.colorInt;
     }
 
     if (data.getPixel(startX, startY) == color) {
@@ -325,6 +331,18 @@ class Canvas extends Sprite {
   }
 
   //
+  // Getters for color
+  //
+
+  public function getMainColor():Int {
+    return brushFactory.mainColor.colorInt;
+  }
+
+  public function getAlternateColor():Int {
+    return brushFactory.alternateColor.colorInt;
+  }
+
+  //
   // Brush modification
   //
   public function changeBrushSize(delta:Int) {
@@ -332,10 +350,6 @@ class Canvas extends Sprite {
     if (brushSize <= 0) {
       brushSize = 0;
     }
-  }
-
-  public function changeBrushColor(color:Int) {
-    brushColor = color;
   }
 
   //

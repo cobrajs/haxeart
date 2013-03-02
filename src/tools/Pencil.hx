@@ -1,7 +1,5 @@
 package tools;
 
-// TODO: Implement single click to toggle between main and alternate color
-
 import tools.ITool;
 import ui.Canvas;
 import util.LineIter;
@@ -16,10 +14,16 @@ class Pencil implements ITool {
   public var name:String;
   public var canvasModifySet:Bool;
 
+  private var moved:Bool;
+  private var switchColors:Bool;
+
   public function new() {
     name = "pencil";
     imageIndex = 0;
     imageFile = "toolbox.png";
+
+    moved = false;
+    switchColors = false;
 
     lastMousePoint = new Point(-1, -1);
     canvasModifySet = false;
@@ -34,10 +38,13 @@ class Pencil implements ITool {
       canvas.canvasModified();
       canvasModifySet = true;
     }
-    canvas.drawDot(
-      Math.floor(event.localX / canvas.zoom), 
-      Math.floor(event.localY / canvas.zoom)
-    );
+    var x = Math.floor(event.localX / canvas.zoom);
+    var y = Math.floor(event.localY / canvas.zoom);
+
+    switchColors = canvas.checkPoint(x, y);
+    moved = false;
+
+    canvas.drawDot(x, y);
   }
 
   public function mouseMoveAction(canvas:Canvas, event:MouseEvent):Void {
@@ -59,6 +66,7 @@ class Pencil implements ITool {
       }
       lastMousePoint.x = event.localX;
       lastMousePoint.y = event.localY;
+      moved = true;
     }
   }
 
@@ -66,6 +74,11 @@ class Pencil implements ITool {
     lastMousePoint.x = -1;
     lastMousePoint.y = -1;
     canvasModifySet = false;
+    if (!moved && switchColors) {
+      var x = Math.floor(event.localX / canvas.zoom);
+      var y = Math.floor(event.localY / canvas.zoom);
+      canvas.drawDot(x, y, true);
+    }
   }
 }
 
