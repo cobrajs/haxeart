@@ -9,6 +9,7 @@ import nme.geom.Point;
 
 class Pencil implements ITool {
   private var lastMousePoint:Point;
+  private var firstDownPoint:Point;
   public var imageFile:String;
   public var imageIndex:Int;
   public var name:String;
@@ -26,6 +27,7 @@ class Pencil implements ITool {
     switchColors = false;
 
     lastMousePoint = new Point(-1, -1);
+    firstDownPoint = new Point(-1, -1);
     canvasModifySet = false;
   }
 
@@ -40,6 +42,9 @@ class Pencil implements ITool {
     }
     var x = Math.floor(event.localX / canvas.zoom);
     var y = Math.floor(event.localY / canvas.zoom);
+
+    firstDownPoint.x = event.localX;
+    firstDownPoint.y = event.localY;
 
     switchColors = canvas.checkPoint(x, y);
     moved = false;
@@ -66,7 +71,11 @@ class Pencil implements ITool {
       }
       lastMousePoint.x = event.localX;
       lastMousePoint.y = event.localY;
-      moved = true;
+      if (!moved) {
+        if (Point.distance(lastMousePoint, firstDownPoint) > canvas.zoom / 2) {
+          moved = true;
+        }
+      }
     }
   }
 
@@ -78,6 +87,8 @@ class Pencil implements ITool {
       var x = Math.floor(event.localX / canvas.zoom);
       var y = Math.floor(event.localY / canvas.zoom);
       canvas.drawDot(x, y, true);
+      switchColors = false;
+      moved = false;
     }
   }
 }
