@@ -178,7 +178,7 @@ class Main extends Sprite {
     var halfHeight = Math.floor(stage.stageHeight / 2);
     var toolboxWidth = 200;
 
-    brushFactory = new BrushFactory("brushes.png", 7, 7, 0xFF00FF);
+    brushFactory = new BrushFactory("brushes.png", 7, 4, 0xFF00FF);
 
     // 
     // Setup Tools
@@ -237,7 +237,7 @@ class Main extends Sprite {
     //
     // Popup Boxes
     //
-    brushPopup = new BrushPopup(0.6, 0.5, brushFactory, function(picked:Int):Void {
+    brushPopup = new BrushPopup(0.8, 0.7, brushFactory, function(picked:Int):Void {
       brushFactory.changeBrush(picked);
       cursor.updateTypeCursor("canvas", brushFactory.getBrushImage());
     });

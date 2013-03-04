@@ -1,15 +1,17 @@
 package dialog;
 
-// TODO: Replace with components
-
+import ui.components.SimpleButton;
 import ui.layouts.BorderLayout;
+import ui.layouts.GridLayout;
 import dialog.Popup;
 
 import graphics.BrushFactory;
+import graphics.Color;
 
 import nme.events.MouseEvent;
 import nme.display.BitmapData;
 import nme.display.Graphics;
+import nme.geom.Rectangle;
 
 class BrushPopup extends Popup {
   private var brushFactory:BrushFactory;
@@ -19,47 +21,52 @@ class BrushPopup extends Popup {
   private var xGrid:Int;
   private var yGrid:Int;
 
+  private var layout:GridLayout;
+  private var buttons:Array<SimpleButton<BitmapData>>;
+
   public function new(width:Float, height:Float, brushFactory:BrushFactory, pickAction:Int->Void) {
     super(width, height, "Pick Brush", BorderLayout.MIDDLE, true);
     this.brushFactory = brushFactory;
 
     this.pickAction = pickAction;
 
-    background = new BitmapData(Std.int(uWidth), Std.int(uHeight));
+    buttons = new Array<SimpleButton<BitmapData>>();
+    layout = new GridLayout(uWidth, uHeight, brushFactory.tilesX, brushFactory.tilesY);
 
-    xGrid = 7;
-    yGrid = 4;
+    var brushScale = 4;
+
+    xGrid = brushFactory.tilesX;
+    yGrid = brushFactory.tilesY;
     for (y in 0...yGrid) {
       for (x in 0...xGrid) {
+        var temp = new BitmapData(brushFactory.tileWidth * brushScale, brushFactory.tileHeight * brushScale, true);
+        temp.fillRect(new Rectangle(0, 0, temp.width, temp.height), Color.transparent);
+        var index = (y * xGrid) + x;
         brushFactory.drawBrushScale(
-          background, 
-          Math.floor(xGrid + x * (uWidth / xGrid) + brushFactory.tileWidth), 
-          Math.floor(yGrid + y * (uHeight / yGrid)) + brushFactory.tileHeight, 
-          (y * xGrid) + x,
-          2
+          temp, 
+          Std.int(brushFactory.tileWidth * brushScale / 2),
+          Std.int(brushFactory.tileHeight * brushScale / 2),
+          index,
+          brushScale
         );
+        var tempButton = new SimpleButton<BitmapData>(temp);
+        tempButton.borderWidth = 0;
+        tempButton.onClick = function(event:MouseEvent) {
+          pickAction(index);
+          hide();
+        };
+        window.addChild(tempButton);
+        layout.addComponent(tempButton);
+        buttons.push(tempButton);
       }
     }
 
-    window.background = null;
-    window.predraw = function(gfx:Graphics, width, height) {
-      gfx.beginBitmapFill(background);
-      gfx.drawRect(0, 0, width, height);
-      gfx.endFill();
-    };
+    layout.pack();
   }
 
   override function onMouseUp(event:MouseEvent) {
-    if (event.target == window) {
-      var tempX = Math.floor(event.localX / (uWidth / xGrid));
-      var tempY = Math.floor(event.localY / (uHeight / yGrid));
-      pickAction(tempY * xGrid + tempX);
+    if (event.target == overlay) {
       hide();
-    }
-    else if (event.target == closeButton) {
-      hide();
-    }
-    else {
     }
   }
 }

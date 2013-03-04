@@ -95,7 +95,6 @@ class Toolbox extends Sprite {
   }
 
   public function doneAdding() {
-    trace (buttonGroups);
     layout.pack();
   }
 

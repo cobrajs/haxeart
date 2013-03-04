@@ -135,7 +135,7 @@ class BrushFactory {
   public function drawBrushScale(canvas:BitmapData, x:Int, y:Int, ?brush:Int, ?scale:Int = 1):Void {
     var tempTileNum = brush != null ? brush : currentBrush;
     var tempTileX = Math.floor(tempTileNum % tilesX);
-    var tempTileY = Math.floor(tempTileNum / tilesY);
+    var tempTileY = Math.floor(tempTileNum / tilesX);
     var tempBrushRect = clipRects[tempTileNum];
     var tempX = x - (tileWidth * scale) / 2;
     var tempY = y - (tileHeight * scale) / 2;
