@@ -2,7 +2,10 @@ package ui.components;
 
 import graphics.Color;
 
+import nme.display.Shape;
 import nme.events.MouseEvent;
+import nme.events.TouchEvent;
+import nme.ui.Multitouch;
 
 enum ButtonState {
   normal;
@@ -12,7 +15,10 @@ enum ButtonState {
 class SimpleButton<T> extends Label<T> {
   public var state(default, setState):ButtonState;
   public var stickyState:Bool;
+  public var flagged(default, setFlagged):Bool;
   private var originalBackround:Color;
+  private var flag:Shape;
+  private var dirtyFlag:Bool;
 
   public var clickBackground:Color;
   public var onClick:MouseEvent->Void;
@@ -27,11 +33,47 @@ class SimpleButton<T> extends Label<T> {
     state = normal;
     stickyState = false;
 
+    flag = new Shape();
+    addChild(flag);
+    flag.visible = false;
+
+    flagged = false;
+    dirtyFlag = true;
+
     clickBackground = new Color(0x777777);
 
     addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
     addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
     addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
+    if (Multitouch.supportsTouchEvents) {
+      addEventListener(TouchEvent.TOUCH_OUT, onMouseOut);
+    }
+  }
+
+  override public function resize(width:Float, height:Float) {
+    super.resize(width, height);
+    if (flagged) {
+      renderFlag();
+    } else {
+      dirtyFlag = true;
+    }
+  }
+
+  private function renderFlag() {
+    var tempWidth = uWidth * 0.4;
+    var tempHeight = uHeight * 0.4;
+    var tempSize = Math.min(tempWidth, tempHeight);
+    var gfx = flag.graphics;
+    gfx.clear();
+    gfx.beginFill(border.colorInt);
+    gfx.moveTo(tempSize, 0);
+    gfx.lineTo(tempSize, tempSize);
+    gfx.lineTo(0, tempSize);
+    gfx.lineTo(tempSize, 0);
+    gfx.endFill();
+    flag.x = uWidth - flag.width;
+    flag.y = uHeight - flag.height;
+    dirtyFlag = false;
   }
 
   private function setState(newState:ButtonState):ButtonState {
@@ -52,10 +94,23 @@ class SimpleButton<T> extends Label<T> {
     return newState;
   }
 
+  private function setFlagged(flagged:Bool):Bool {
+    this.flagged = flagged;
+    if (flagged) {
+      if (dirtyFlag) {
+        renderFlag();
+      }
+      flag.visible = true;
+    } else {
+      flag.visible = false;
+    }
+    return flagged;
+  }
+
   //
   // Event Handlers
   //
-  public function onMouseUp(event:MouseEvent) {
+  private function onMouseUp(event:MouseEvent) {
     if (state == clicked) {
       if (onClick != null) {
         onClick(event);
@@ -66,11 +121,11 @@ class SimpleButton<T> extends Label<T> {
     }
   }
 
-  public function onMouseDown(event:MouseEvent) {
+  private function onMouseDown(event:MouseEvent) {
     state = clicked;
   }
 
-  public function onMouseOut(event:MouseEvent) {
+  private function onMouseOut(event:MouseEvent) {
     if (!stickyState) {
       state = normal;
     }

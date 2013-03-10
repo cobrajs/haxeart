@@ -13,6 +13,7 @@ import ui.StatusBox;
 import ui.BitmapFont;
 import ui.Canvas;
 import ui.Cursor;
+import ui.Navigator;
 import ui.PaletteBox;
 import ui.Toolbox;
 import ui.TouchManager;
@@ -56,6 +57,7 @@ import nme.events.KeyboardEvent;
 import nme.events.MouseEvent;
 import nme.events.TouchEvent;
 import nme.geom.Point;
+import nme.system.Capabilities;
 import nme.system.System;
 import nme.ui.Keyboard;
 import nme.ui.Mouse;
@@ -64,6 +66,7 @@ import nme.ui.Multitouch;
 import nme.filesystem.File;
 
 class Main extends Sprite {
+  private var toolboxWidth:Int;
 
   private var buttons:Array<Button>;
   private var statusBox:StatusBox;
@@ -75,6 +78,8 @@ class Main extends Sprite {
   private var canvas:Canvas;
 
   private var cursor:Cursor;
+
+  private var navigator:Navigator;
 
   private var brushPopup:BrushPopup;
   private var filePopup:FilePopup;
@@ -113,6 +118,8 @@ class Main extends Sprite {
     //
     // Add Events for Stage
     //
+    stage.addEventListener(Event.RESIZE, resize);
+
     stage.addEventListener(KeyboardEvent.KEY_DOWN, stageKeyDown);
 
     stage.addEventListener(MouseEvent.MOUSE_MOVE, stageMouseMove);
@@ -176,7 +183,7 @@ class Main extends Sprite {
     */
 
     var halfHeight = Math.floor(stage.stageHeight / 2);
-    var toolboxWidth = 200;
+    toolboxWidth = 200;
 
     brushFactory = new BrushFactory("brushes.png", 7, 4, 0xFF00FF);
 
@@ -359,6 +366,9 @@ class Main extends Sprite {
     promptPopup.addAllowed(~/[A-Za-z._-]/);
     addChild(promptPopup);
 
+    //navigator = new Navigator(toolbox.getChildAt(0));
+    //addChild(navigator);
+
     //
     // Setup Cursor
     //
@@ -367,10 +377,14 @@ class Main extends Sprite {
     cursor.visible = false;
     addChild(cursor);
 
+    trace(Capabilities.screenDPI);
+
     //toolbox.clickButton(6);
 
     Registry.canvas.addEventListener(MouseEvent.MOUSE_OVER, canvasMouseOver);
     Registry.canvas.addEventListener(MouseEvent.MOUSE_OUT, canvasMouseOut);
+
+    resizeComponents();
 
   }
 
@@ -420,6 +434,29 @@ class Main extends Sprite {
     gfx.endFill();
   }
 
+  private function resizeComponents() {
+    var ratio = (stage.stageWidth / stage.stageHeight);
+    if (ratio > 1) {
+      var halfHeight = stage.stageHeight / 2;
+      toolbox.x = 0;
+      toolbox.y = 0;
+      toolbox.resize(toolboxWidth, halfHeight);
+      paletteBox.x = 0;
+      paletteBox.y = halfHeight;
+      paletteBox.resize(toolboxWidth, halfHeight);
+      Registry.canvas.moveTo(Registry.canvas.y, Registry.canvas.x);
+    } else {
+      var halfWidth = stage.stageWidth / 2;
+      toolbox.x = 0;
+      toolbox.y = 0;
+      toolbox.resize(halfWidth, toolboxWidth);
+      paletteBox.x = halfWidth;
+      paletteBox.y = 0;
+      paletteBox.resize(halfWidth, toolboxWidth);
+      Registry.canvas.moveTo(Registry.canvas.y, Registry.canvas.x);
+    }
+  }
+
 
   // -------------------------------------------------- 
   //                  Event Handlers
@@ -427,6 +464,12 @@ class Main extends Sprite {
 
   private function addedToStage(event:Event):Void {
     construct();
+  }
+
+  private function resize(event:Event):Void {
+    trace("resizing...");
+    //layout.resize(stage.stageWidth, stage.stageHeight);
+    resizeComponents();
   }
 
   //
@@ -498,6 +541,12 @@ class Main extends Sprite {
         cursor.changeZoom(Math.floor(Registry.canvas.zoom));
       case Keyboard.X:
         swapCanvasBrushColors();
+      case Keyboard.N:
+        //navigator.nextNode();
+      case Keyboard.P:
+        //navigator.previousNode();
+      case Keyboard.G:
+        //navigator.clickNode();
     }
   }
 }

@@ -18,11 +18,6 @@ import ui.layouts.Layout;
 
 */
 
-enum SizeType {
-  pixel;
-  percent;
-}
-
 typedef Slot = {
   var width:Float;
   var height:Float;
@@ -62,7 +57,7 @@ class BorderLayout extends Layout {
     throw "Invalid call. Use assignComponent for this Layout type";
   }
 
-  public function assignComponent(component:Component, position:Int, width:Float, height:Float, type:SizeType) {
+  override public function assignComponent(component:Component, position:Int, width:Float, height:Float, type:SizeType) {
     if (slots.exists(position)) {
       //throw "Component already exists in this position";
       slots.remove(position);

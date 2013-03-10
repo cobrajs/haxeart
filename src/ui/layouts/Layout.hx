@@ -2,6 +2,11 @@ package ui.layouts;
 
 import ui.components.Component;
 
+enum SizeType {
+  pixel;
+  percent;
+}
+
 class Layout {
   public var width(default, null):Float;
   public var height(default, null):Float;
@@ -24,6 +29,9 @@ class Layout {
     else {
       throw "No components may be added after packing";
     }
+  }
+
+  public function assignComponent(component:Component, position:Int, width:Float, height:Float, type:SizeType) {
   }
 
   public function pack(?offsetX:Float = 0, ?offsetY:Float = 0) {

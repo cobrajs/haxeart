@@ -14,7 +14,6 @@ import nme.events.MouseEvent;
 
 class MenuPopup extends Popup {
   public static var TYPE:String = "menupopup";
-  public var layout:GridLayout;
 
   public function new() {
     super(1, 0.3, "", BorderLayout.BOTTOM, false);

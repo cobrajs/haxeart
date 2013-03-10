@@ -21,7 +21,6 @@ class BrushPopup extends Popup {
   private var xGrid:Int;
   private var yGrid:Int;
 
-  private var layout:GridLayout;
   private var buttons:Array<SimpleButton<BitmapData>>;
 
   public function new(width:Float, height:Float, brushFactory:BrushFactory, pickAction:Int->Void) {
@@ -62,6 +61,12 @@ class BrushPopup extends Popup {
     }
 
     layout.pack();
+  }
+
+  override private function sizeToStage() {
+    super.sizeToStage();
+
+    layout.resize(uWidth, uHeight);
   }
 
   override function onMouseUp(event:MouseEvent) {

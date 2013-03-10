@@ -15,7 +15,7 @@
   <window
      width="0" 
      height="0" 
-		 orientation="landscape" 
+		 orientation="auto" 
 		 fps="30"
 		 background="0xdddddd"
      resizable="true"

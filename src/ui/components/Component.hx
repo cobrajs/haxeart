@@ -18,6 +18,8 @@ class Component extends Sprite {
   public var borderWidth:Int;
   public var ready:Bool;
 
+  public var isClickable:Bool;
+
   public var predraw:Graphics->Float->Float->Void;
 
   public function new() {
@@ -27,6 +29,8 @@ class Component extends Sprite {
     uWidth = 10;
     uHeight = 10;
     margin = 0;
+
+    isClickable = false;
 
     background = new Color(0xDDDDDD);
     foreground = new Color(0x000000);

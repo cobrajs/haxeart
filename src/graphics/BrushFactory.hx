@@ -119,10 +119,8 @@ class BrushFactory {
     mainColoredBrushData.lock();
     for (ty in 0...height) {
       for (tx in 0...width) {
-        if (Color.getAlpha(mainColoredBrushData.getPixel32(xBrush + tx, yBrush + ty)) > 0) {
-          if (mainColoredBrushData.getPixel(xBrush + tx, yBrush + ty) != canvas.getPixel(xCanvas + tx, yCanvas + ty)) {
-            good = false;
-          }
+        if (Color.getAlpha(mainColoredBrushData.getPixel32(xBrush + tx, yBrush + ty)) != 0 && (mainColoredBrushData.getPixel(xBrush + tx, yBrush + ty) != canvas.getPixel(xCanvas + tx, yCanvas + ty))) {
+          good = false;
         }
       }
     }

@@ -41,7 +41,7 @@ class PaletteBox extends ScrollBox {
     gfx.clear();
     gfx.lineStyle(2, 0x555555);
     gfx.beginFill(0xAAAAAA);
-    gfx.drawRect(0, 0, width, height);
+    gfx.drawRect(0, 0, uWidth, uHeight);
     gfx.endFill();
     gfx.lineStyle();
   }
@@ -51,6 +51,10 @@ class PaletteBox extends ScrollBox {
     colorBox.background = new Color(color);
     colorBox.onClick = function(e:MouseEvent) {
       clickFunction(color);
+      for (box in layout.components) {
+        cast(box, SimpleButton<Dynamic>).flagged = false;
+      }
+      colorBox.flagged = true;
     };
 
     layout.addComponent(colorBox);

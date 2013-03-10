@@ -23,8 +23,6 @@ class AlertPopup extends Popup {
   private var message:String;
   private var type:PopupType;
 
-  private var layout:BorderLayout;
-
   private var label:Label<String>;
   private var buttons:Container;
 

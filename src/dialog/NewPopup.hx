@@ -14,8 +14,6 @@ import nme.events.MouseEvent;
 class NewPopup extends Popup {
   public static var TYPE:String = "new";
 
-  private var layout:BorderLayout;
-
   private var widthSlider:Slider;
   private var heightSlider:Slider;
 
@@ -80,5 +78,6 @@ class NewPopup extends Popup {
 
     layout.pack();
   }
+
 }
 

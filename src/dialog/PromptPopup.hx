@@ -19,8 +19,6 @@ class PromptPopup extends Popup {
   private var value:String;
   private var message:String;
 
-  private var layout:BorderLayout;
-
   private var textBox:TextInput;
   private var buttons:Container;
 

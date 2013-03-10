@@ -271,7 +271,7 @@ class Canvas extends Sprite {
   public function quickView() {
     if (oldPos == null) {
       storeState();
-      changeZoom(1 / zoom);
+      changeZoom(1 / zoom, true);
       centerCanvas();
     }
     else {
@@ -286,7 +286,7 @@ class Canvas extends Sprite {
   
   private function restoreState() {
     zoom = 1;
-    changeZoom(oldZoom);
+    changeZoom(oldZoom, true);
     moveTo(oldPos.x, oldPos.y);
     oldZoom = 1;
     oldPos = null;
@@ -299,23 +299,23 @@ class Canvas extends Sprite {
     );
   }
 
-  public function changeZoom(multiplier:Float) {
+  public function changeZoom(multiplier:Float, ?keepPos:Bool = false) {
+    if (!keepPos) {
+      oldPos = null;
+    }
     if (multiplier == 1) {
       return;
     }
     if (multiplier < 1 && zoom == 1) {
       return;
-    }
-    else if (multiplier > 1 && zoom == 128) {
+    } else if (multiplier > 1 && zoom == 128) {
       return;
     }
     if (zoom < 1 || zoom * multiplier < 1) {
       zoom = 1;
-    }
-    else if (zoom > 128 || zoom * multiplier > 128) {
+    } else if (zoom > 128 || zoom * multiplier > 128) {
       zoom = 128;
-    }
-    else {
+    } else {
       zoom *= multiplier;
     }
     var tempPointGlobal = new Point(zoomRect.x + zoomRect.width / 2, zoomRect.y + zoomRect.height / 2);

@@ -29,7 +29,6 @@ class FilePopup extends Popup {
   private var fileList:Array<FileInfo>;
   private var parentDir:FileInfo;
 
-  private var layout:BorderLayout;
   private var buttonBar:Container;
 
   private var icons:Tilesheet;
@@ -132,6 +131,13 @@ class FilePopup extends Popup {
     layout.assignComponent(tempLabel, BorderLayout.TOP_RIGHT, 0.5, 0.08, percent);
     layout.pack();
 
+    updateFileList();
+  }
+
+  override private function sizeToStage() {
+    super.sizeToStage();
+
+    scrollBox.resize(Std.int(uWidth / 2), Std.int(uHeight));
     updateFileList();
   }
 

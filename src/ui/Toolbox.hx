@@ -24,7 +24,7 @@ class Toolbox extends Sprite {
   private var commonBevel:Int;
 
   private var statusBox:StatusBox;
-  private var buttons:Array<SimpleButton<BitmapData>>;
+  public var buttons:Array<SimpleButton<BitmapData>>;
   private var buttonGroups:Array<Int>;
   // Matches the button's name to the button's index
   private var buttonNames:Hash<Int>;
@@ -66,21 +66,21 @@ class Toolbox extends Sprite {
     var button = new SimpleButton(imageSet[image]);
     button.borderWidth = 2;
     if (groupDefault) {
-      button.state = clicked;
+      button.flagged = true;
     }
 
     if (group != 0) {
       button.onClick = function(event:MouseEvent):Void {
+        button.flagged = true;
         for (i in 0...buttons.length) {
           if (buttons[i] != button) {
             if (buttonGroups[i] == group) {
-              buttons[i].state = normal;
+              buttons[i].flagged = false;
             }
           }
         }
         action(event);
       };
-      button.stickyState = true;
     } else {
       button.onClick = action;
     }
