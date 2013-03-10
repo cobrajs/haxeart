@@ -33,7 +33,7 @@ class NewPopup extends Popup {
     slideContainer.addChild(widthLabel);
     slideContainer.layout.addComponent(widthLabel);
 
-    widthSlider = new Slider(32);
+    widthSlider = new Slider(1, 256, 32);
     slideContainer.addChild(widthSlider);
     slideContainer.layout.addComponent(widthSlider);
 
@@ -42,7 +42,7 @@ class NewPopup extends Popup {
     slideContainer.addChild(heightLabel);
     slideContainer.layout.addComponent(heightLabel);
 
-    heightSlider = new Slider(32);
+    heightSlider = new Slider(1, 256, 32);
     slideContainer.addChild(heightSlider);
     slideContainer.layout.addComponent(heightSlider);
 

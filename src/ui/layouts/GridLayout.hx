@@ -45,7 +45,13 @@ class GridLayout extends Layout {
     this.sizeY = sizeY;
   }
 
-  override public function pack(?offsetX:Float = 0, ?offsetY:Float = 0) {
+  public function resizeGrid(sizeX:Int, sizeY:Int) {
+    this.sizeX = sizeX;
+    this.sizeY = sizeY;
+    pack();
+  }
+
+  override public function pack() {
     super.pack();
 
     if (sizeX == 0 && sizeY != 0) {
@@ -78,9 +84,9 @@ class GridLayout extends Layout {
     for (i in 0...components.length) {
       x = i % sizeX;
       y = Std.int(i / sizeX);
-      components[i].resize(componentWidth, componentHeight);
-      components[i].x = x * componentWidth + offsetX;
-      components[i].y = y * componentHeight + offsetY;
+      components[i].resize(componentWidth - paddingX * 2, componentHeight - paddingY * 2);
+      components[i].x = x * componentWidth + paddingX;
+      components[i].y = y * componentHeight + paddingY;
     }
 
   }

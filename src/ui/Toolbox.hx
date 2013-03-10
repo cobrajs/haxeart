@@ -34,7 +34,7 @@ class Toolbox extends Sprite {
 
   private var layout:GridLayout;
 
-  public function new(width:Int, height:Int, columns:Int, rows:Int, ?bevel:Int = 0) {
+  public function new(width:Int, height:Int, columns:Int, rows:Int) {
     super();
 
     buttons = new Array<SimpleButton<BitmapData>>();
@@ -51,6 +51,12 @@ class Toolbox extends Sprite {
     background = new Shape();
     renderBackground();
     addChild(background);
+  }
+
+  public function resizeGrid(sizeX:Int, sizeY:Int) {
+    layout.sizeX = sizeX;
+    layout.sizeY = sizeY;
+    layout.pack();
   }
 
   public function setTilesheet(filename:String, tilesX:Int, tilesY:Int, ?transparentKey:Int) {

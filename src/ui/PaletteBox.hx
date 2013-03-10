@@ -15,6 +15,8 @@ class PaletteBox extends ScrollBox {
 
   private var clickFunction:Int->Void;
 
+  private var colorsHash:IntHash<SimpleButton<String>>;
+
   public var uWidth:Int;
   public var uHeight:Int;
   
@@ -29,6 +31,7 @@ class PaletteBox extends ScrollBox {
     this.clickFunction = clickFunction;
 
     layout = new GridLayout(width, height, columns, rows);
+    colorsHash = new IntHash<SimpleButton<String>>();
     
     uWidth = width;
     uHeight = height;
@@ -49,6 +52,7 @@ class PaletteBox extends ScrollBox {
   public function addColor(color:Int) {
     var colorBox = new SimpleButton<String>("");
     colorBox.background = new Color(color);
+    colorsHash.set(color, colorBox);
     colorBox.onClick = function(e:MouseEvent) {
       clickFunction(color);
       for (box in layout.components) {
@@ -75,5 +79,14 @@ class PaletteBox extends ScrollBox {
     renderBackground();
   }
 
+  public function pickColor(colorInt:Int) {
+    var button = colorsHash.get(colorInt);
+    if (button != null) {
+      for (box in layout.components) {
+        cast(box, SimpleButton<Dynamic>).flagged = false;
+      }
+      button.flagged = true;
+    }
+  }
 
 }

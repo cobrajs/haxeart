@@ -24,6 +24,7 @@ typedef Slot = {
   var type:SizeType;
   var position:Int;
   var occupant:Component;
+  var customFunc:Void->Void;
 }
 
 class BorderLayout extends Layout {
@@ -37,6 +38,7 @@ class BorderLayout extends Layout {
   public static var BOTTOM_LEFT:Int = 12;
   public static var BOTTOM:Int = 20;
   public static var BOTTOM_RIGHT:Int = 36;
+  public static var CUSTOM:Int = 0;
 
   public static var IS_TOP_EDGE:Int = 1;
   public static var IS_LEFT_EDGE:Int = 8;
@@ -57,7 +59,7 @@ class BorderLayout extends Layout {
     throw "Invalid call. Use assignComponent for this Layout type";
   }
 
-  override public function assignComponent(component:Component, position:Int, width:Float, height:Float, type:SizeType) {
+  override public function assignComponent(component:Component, position:Int, width:Float, height:Float, type:SizeType, ?customFunc:Void->Void) {
     if (slots.exists(position)) {
       //throw "Component already exists in this position";
       slots.remove(position);
@@ -68,7 +70,8 @@ class BorderLayout extends Layout {
       height: height,
       position: position,
       occupant: component,
-      type: type
+      type: type,
+      customFunc: customFunc
     };
 
     super.addComponent(component);
@@ -76,7 +79,7 @@ class BorderLayout extends Layout {
     slots.set(position, tempSlot);
   }
 
-  override public function pack(?offsetX:Float = 0, ?offsetY:Float = 0) {
+  override public function pack() {
     super.pack();
 
     for (key in slots.keys()) {
@@ -87,15 +90,21 @@ class BorderLayout extends Layout {
         width = slot.width * this.width;
         height = slot.height * this.height;
       }
-      var x = (key == TOP_LEFT || key == LEFT || key == BOTTOM_LEFT) ? 0 :
-              (key == TOP || key == MIDDLE || key == BOTTOM) ? this.width / 2 - width / 2 :
+      var x = (key & IS_LEFT_EDGE != 0) ? 0 :
+              (key & IS_MIDDLE_HORIZONTAL != 0) ? this.width / 2 - width / 2 :
               this.width - width;
-      var y = (key == TOP_LEFT || key == TOP || key == TOP_RIGHT) ? 0 :
-              (key == LEFT || key == MIDDLE || key == RIGHT) ? this.height / 2 - height / 2 :
+      var y = (key & IS_TOP_EDGE != 0) ? 0 :
+              (key & IS_MIDDLE_VERTICAL != 0) ? this.height / 2 - height / 2 :
               this.height - height;
-      slot.occupant.resize(width, height);
-      slot.occupant.x = x + offsetX;
-      slot.occupant.y = y + offsetY;
+      slot.occupant.resize(width - paddingX * 2, height - paddingY * 2);
+      if (key != CUSTOM) {
+        slot.occupant.x = x + paddingX;
+        slot.occupant.y = y + paddingY;
+      } else {
+        if (slot.customFunc != null) {
+          slot.customFunc();
+        }
+      }
     }
   }
 }

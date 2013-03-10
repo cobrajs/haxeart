@@ -1,6 +1,9 @@
 package ;
 
 // TODO: Fill in README.md
+// TODO: Add palette modification popup
+// TODO: Add theme factory thing
+// TODO: Add preferences box
 
 // UI Elements
 import ui.components.Component;
@@ -226,7 +229,7 @@ class Main extends Sprite {
     //
     // Setup Palette Box
     //
-    paletteBox = new PaletteBox(toolboxWidth, halfHeight - 50, 3, 3, setCanvasBrushColor);
+    paletteBox = new PaletteBox(toolboxWidth, halfHeight - 50, 3, 4, setCanvasBrushColor);
     paletteBox.x = 0;
     paletteBox.y = halfHeight + 50;
 
@@ -282,7 +285,7 @@ class Main extends Sprite {
     //
     // Setup Toolbox
     //
-    toolbox = new Toolbox(toolboxWidth, halfHeight + 50,   3, 4,   5);
+    toolbox = new Toolbox(toolboxWidth, halfHeight + 50,   3, 4);
     toolbox.x = 0;
     toolbox.y = 0;
 
@@ -320,13 +323,13 @@ class Main extends Sprite {
         Registry.canvas.changeZoom(0.5);
         cursor.changeZoom(Math.floor(Registry.canvas.zoom));
       }, 7,                 null, null],
-
-      // The next two are pretty much just for testing stuff right now
-
       ['quickview', function(button) {
         Registry.canvas.quickView();
         cursor.changeZoom(Math.floor(Registry.canvas.zoom));
       }, 12,                 null, null],
+
+      // The next two are pretty much just for testing stuff right now
+
       ['paldown', function(button) {
         menuPopup.popup();
       }, 4,                 null, null]
@@ -335,7 +338,7 @@ class Main extends Sprite {
     statusBox = new StatusBox();
 
     statusBox.onClick = function(event:MouseEvent) {
-      swapCanvasBrushColors();
+      setCanvasBrushColor();
     };
 
     toolbox.addButtonLike(statusBox);
@@ -347,7 +350,7 @@ class Main extends Sprite {
 
     addChild(toolbox);
 
-    // Put Popup Box on Top
+    // Put Popup Boxes on Top
     addChild(brushPopup);
     addChild(filePopup);
     addChild(newPopup);
@@ -384,7 +387,7 @@ class Main extends Sprite {
     Registry.canvas.addEventListener(MouseEvent.MOUSE_OVER, canvasMouseOver);
     Registry.canvas.addEventListener(MouseEvent.MOUSE_OUT, canvasMouseOut);
 
-    resizeComponents();
+    resizeComponents(true);
 
   }
 
@@ -401,25 +404,21 @@ class Main extends Sprite {
     cursor.visible = false;
   }
 
-  private function swapCanvasBrushColors():Void {
-    brushFactory.swapColors();
+  private function setCanvasBrushColor(?color:Int):Void {
+    if (color == null) {
+      brushFactory.swapColors();
+    } else {
+      brushFactory.changeColor(color);
+    }
     cursor.updateTypeCursor("canvas", brushFactory.getBrushImage());
     statusBox.forceRedraw();
+    paletteBox.pickColor(brushFactory.mainColor.colorInt);
   }
 
-  private function setCanvasBrushColor(color:Int):Void {
-    brushFactory.changeColor(color);
-    cursor.updateTypeCursor("canvas", brushFactory.getBrushImage());
-    statusBox.forceRedraw();
-  }
-  
   private function drawLine():Void {
     for (p in (new LineIter(10, 10, 100, 80))) {
       Registry.canvas.drawDot(p[0], p[1]);
     }
-  }
-
-  private function paletteBoxScrollUp():Void {
   }
 
   private function drawRedCircle():Void { drawCircle(0xFF0000); }
@@ -434,26 +433,32 @@ class Main extends Sprite {
     gfx.endFill();
   }
 
-  private function resizeComponents() {
+  private function resizeComponents(?initial:Bool = false) {
     var ratio = (stage.stageWidth / stage.stageHeight);
     if (ratio > 1) {
       var halfHeight = stage.stageHeight / 2;
       toolbox.x = 0;
       toolbox.y = 0;
       toolbox.resize(toolboxWidth, halfHeight);
+      toolbox.resizeGrid(3, 4);
       paletteBox.x = 0;
       paletteBox.y = halfHeight;
       paletteBox.resize(toolboxWidth, halfHeight);
-      Registry.canvas.moveTo(Registry.canvas.y, Registry.canvas.x);
+      if (!initial) {
+        Registry.canvas.moveTo(Registry.canvas.y, Registry.canvas.x);
+      }
     } else {
       var halfWidth = stage.stageWidth / 2;
       toolbox.x = 0;
       toolbox.y = 0;
       toolbox.resize(halfWidth, toolboxWidth);
+      toolbox.resizeGrid(4, 3);
       paletteBox.x = halfWidth;
       paletteBox.y = 0;
       paletteBox.resize(halfWidth, toolboxWidth);
-      Registry.canvas.moveTo(Registry.canvas.y, Registry.canvas.x);
+      if (!initial) {
+        Registry.canvas.moveTo(Registry.canvas.y, Registry.canvas.x);
+      }
     }
   }
 
@@ -467,9 +472,9 @@ class Main extends Sprite {
   }
 
   private function resize(event:Event):Void {
-    trace("resizing...");
-    //layout.resize(stage.stageWidth, stage.stageHeight);
     resizeComponents();
+    Registry.canvas.zoomRect.width = stage.stageWidth;
+    Registry.canvas.zoomRect.height = stage.stageHeight;
   }
 
   //
@@ -540,7 +545,7 @@ class Main extends Sprite {
         Registry.canvas.quickView();
         cursor.changeZoom(Math.floor(Registry.canvas.zoom));
       case Keyboard.X:
-        swapCanvasBrushColors();
+        setCanvasBrushColor();
       case Keyboard.N:
         //navigator.nextNode();
       case Keyboard.P:
