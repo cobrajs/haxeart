@@ -43,7 +43,7 @@ class Slider extends Container {
     dragging = false;
 
     slider.addEventListener(MouseEvent.MOUSE_DOWN, function(e:MouseEvent) {
-      slider.startDrag(null, new Rectangle(0, 0, sliderBackground.uWidth - slider.uWidth, 0));
+      slider.startDrag(false, new Rectangle(0, 0, sliderBackground.uWidth - slider.uWidth, 0));
       dragging = true;
     });
 

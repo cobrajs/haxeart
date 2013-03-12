@@ -4,6 +4,8 @@ package ;
 // TODO: Add palette modification popup
 // TODO: Add theme factory thing
 // TODO: Add preferences box
+// TODO: Fix touch out on canvas and slider
+// TODO: Fix rotation of canvas
 
 // UI Elements
 import ui.components.Component;
