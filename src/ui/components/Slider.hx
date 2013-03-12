@@ -6,11 +6,13 @@ import ui.components.SimpleButton;
 import ui.components.Label;
 import ui.layouts.BorderLayout;
 
+import nme.events.Event;
 import nme.events.MouseEvent;
 import nme.geom.Rectangle;
 
 class Slider extends Container {
   public var value(default, setValue):Int;
+  private var oldValue:Int;
 
   public var minimum:Int;
   public var maximum:Int;
@@ -49,7 +51,12 @@ class Slider extends Container {
 
     slider.addEventListener(MouseEvent.MOUSE_MOVE, function(e:MouseEvent) {
       if (dragging) {
-        value = Std.int((slider.x / (sliderBackground.uWidth - slider.uWidth)) * (maximum - minimum) + minimum);
+        var tempValue = Std.int((slider.x / (sliderBackground.uWidth - slider.uWidth)) * (maximum - minimum) + minimum);
+        if (tempValue != oldValue) {
+          value = tempValue;
+          oldValue = value;
+          dispatchEvent(new Event(Event.CHANGE));
+        }
       }
     });
 

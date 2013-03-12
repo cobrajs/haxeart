@@ -26,12 +26,13 @@ import ui.TouchManager;
 // Dialog Boxes
 import dialog.AlertPopup;
 import dialog.BrushPopup;
+import dialog.ColorPicker;
 import dialog.DialogEvent;
 import dialog.FilePopup;
 import dialog.MenuPopup;
 import dialog.NewPopup;
-import dialog.PromptPopup;
 import dialog.Popup;
+import dialog.PromptPopup;
 
 // Graphical Helpers
 import graphics.BrushFactory;
@@ -74,9 +75,9 @@ class Main extends Sprite {
   private var toolboxWidth:Int;
 
   private var buttons:Array<Button>;
+  private var paletteBox:PaletteBox;
   private var statusBox:StatusBox;
   private var toolbox:Toolbox;
-  private var paletteBox:PaletteBox;
 
   private var brushFactory:BrushFactory;
 
@@ -87,14 +88,15 @@ class Main extends Sprite {
   private var navigator:Navigator;
 
   private var brushPopup:BrushPopup;
+  private var colorPicker:ColorPicker;
   private var filePopup:FilePopup;
   private var menuPopup:MenuPopup;
   private var newPopup:NewPopup;
 
-  private var pencil:Pencil;
-  private var move:Move;
-  private var picker:Picker;
   private var filler:Filler;
+  private var move:Move;
+  private var pencil:Pencil;
+  private var picker:Picker;
 
   private var label:Label<String>;
   // FileManager
@@ -256,6 +258,7 @@ class Main extends Sprite {
 
     newPopup = new NewPopup(0.7, 0.7);
     filePopup = new FilePopup(0.8, 0.85);
+    colorPicker = new ColorPicker(new Color(0xFF0000));
 
     menuPopup = new MenuPopup();
     var tempButton = new SimpleButton<String>("New");
@@ -357,6 +360,7 @@ class Main extends Sprite {
     addChild(filePopup);
     addChild(newPopup);
     addChild(menuPopup);
+    addChild(colorPicker);
 
     /*
     alertPopup = new AlertPopup("You cool bro?", confirm);
@@ -550,10 +554,12 @@ class Main extends Sprite {
         setCanvasBrushColor();
       case Keyboard.N:
         //navigator.nextNode();
-      case Keyboard.P:
+      //case Keyboard.P:
         //navigator.previousNode();
       case Keyboard.G:
         //navigator.clickNode();
+      case Keyboard.P:
+        colorPicker.popup();
     }
   }
 }

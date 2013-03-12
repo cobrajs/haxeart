@@ -14,6 +14,9 @@ class Color {
   public var colorInt:Int;
   public var alpha:Int;
   public var colorARGB(getARGBcolor, setARGBcolor):BitmapInt32;
+  public var r(getR, setR):Int;
+  public var g(getG, setG):Int;
+  public var b(getB, setB):Int;
 
   public static function getARGB(color:Int, alpha:Int):BitmapInt32 {
 #if neko
@@ -112,6 +115,34 @@ class Color {
     this.alpha = color >> 24;
     this.colorInt = color & (0xFFFFFF);
 #end
+    return color;
+  }
+
+  // Individual Color Components
+  private function getR():Int {
+    return (colorInt & (0xFF0000)) >> 16;
+  }
+  private function setR(color:Int):Int {
+    colorInt &= 0x00FFFF;
+    colorInt |= color << 16;
+    return color;
+  }
+
+  private function getG():Int {
+    return (colorInt & (0xFF00)) >> 8;
+  }
+  private function setG(color:Int):Int {
+    colorInt &= 0xFF00FF;
+    colorInt |= color << 8;
+    return color;
+  }
+
+  private function getB():Int {
+    return (colorInt & (0xFF));
+  }
+  private function setB(color:Int):Int {
+    colorInt &= 0xFFFF00;
+    colorInt |= color;
     return color;
   }
 }
