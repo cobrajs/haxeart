@@ -52,14 +52,14 @@ class PromptPopup extends Popup {
     */
 
     tempButton = new SimpleButton<String>("Ok");
-    tempButton.borderWidth = 1;
+    tempButton.borderWidth = 2;
     tempButton.onClick = function(event:MouseEvent) {
       messageAndClose(textBox.content);
     }
     buttons.addChild(tempButton);
     buttons.layout.addComponent(tempButton);
     tempButton = new SimpleButton<String>("Cancel");
-    tempButton.borderWidth = 1;
+    tempButton.borderWidth = 2;
     tempButton.onClick = function(event:MouseEvent) {
       messageAndClose("");
     }
@@ -69,7 +69,7 @@ class PromptPopup extends Popup {
     window.addChild(buttons);
     buttons.layout.pack();
 
-    layout.assignComponent(buttons, BorderLayout.BOTTOM_RIGHT, 0.7, 0.3, percent);
+    layout.assignComponent(buttons, BorderLayout.BOTTOM_RIGHT, 1, 0.3, percent);
     textBox = new TextInput(defaultText);
     //textBox.hAlign = center;
     window.addChild(textBox);

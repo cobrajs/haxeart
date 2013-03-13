@@ -67,18 +67,43 @@ class ColorPicker extends Popup {
       dispatchEvent(new DialogEvent(DialogEvent.CLOSED, TYPE, this.id));
       this.hide();
     };
+    tempButton = new SimpleButton<String>("Enter Hex");
+    tempButton.borderWidth = 2;
+    tempButton.onClick = function(event:MouseEvent) {
+      var tempPopup = new PromptPopup(currentColor.toHexString());
+      tempPopup.addAllowed(~/[A-Za-z0-9]/);
+      addChild(tempPopup);
+      tempPopup.popup();
+      var id = tempPopup.id;
+      var msgFnc:DialogEvent->Void = null;
+      msgFnc = function(e:DialogEvent) {
+        if (e.id == id) {
+          if (e.message != "" && e.message != null) {
+            currentColor.update(e.message);
+            tempPopup.hide();
+            removeEventListener(DialogEvent.MESSAGE, msgFnc);
+            removeChild(tempPopup);
+            updateSliders();
+          }
+        }
+      };
+
+      addEventListener(DialogEvent.MESSAGE, msgFnc);
+    };
+    buttons.addChild(tempButton);
+    buttons.layout.addComponent(tempButton);
     tempButton = new SimpleButton<String>("Use Color");
-    tempButton.borderWidth = 1;
+    tempButton.borderWidth = 2;
     tempButton.onClick = function(event:MouseEvent) {
       messageAndClose(true);
-    }
+    };
     buttons.addChild(tempButton);
     buttons.layout.addComponent(tempButton);
     tempButton = new SimpleButton<String>("Cancel");
-    tempButton.borderWidth = 1;
+    tempButton.borderWidth = 2;
     tempButton.onClick = function(event:MouseEvent) {
       messageAndClose(false);
-    }
+    };
     buttons.addChild(tempButton);
     buttons.layout.addComponent(tempButton);
     window.addChild(buttons);
@@ -90,10 +115,21 @@ class ColorPicker extends Popup {
     updateColor();
   }
 
+  private function updateSliders() {
+    redSlider.value = currentColor.r;
+    greenSlider.value = currentColor.g;
+    blueSlider.value = currentColor.b;
+    updateLabel();
+  }
+
   private function updateColor(?e:Event) {
     currentColor.r = redSlider.value;
     currentColor.g = greenSlider.value;
     currentColor.b = blueSlider.value;
+    updateLabel();
+  }
+
+  private function updateLabel() {
     label.background = currentColor;
     label.redraw();
   }

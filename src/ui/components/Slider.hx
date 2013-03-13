@@ -25,6 +25,10 @@ class Slider extends Container {
   private var valueLabel:Label<String>;
 
   public function new(minimum:Int, maximum:Int, ?defaultValue:Int, ?step:Int = 1) {
+    this.minimum = minimum;
+    this.maximum = maximum;
+    this.step = step;
+
     super();
 
     layout = new BorderLayout(10, 10);
@@ -83,6 +87,7 @@ class Slider extends Container {
   public function setValue(value:Int):Int {
     this.value = value;
     valueLabel.content = Std.string(value);
+    slider.x = (value / (maximum - minimum)) * (sliderBackground.uWidth - slider.uWidth);
     return value;
   }
 }

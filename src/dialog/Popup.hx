@@ -166,8 +166,6 @@ class Popup extends Sprite {
           }
         }
       }
-    } else {
-      trace(this);
     }
     return active;
   }

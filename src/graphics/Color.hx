@@ -50,8 +50,10 @@ class Color {
 
     var retColor:Int = 0;
     var use:Int = 0, charCode:Int = 0;
-    for (i in 0...parts * 2) {
-      charCode = color.charCodeAt(i);
+    var max:Int = parts * 2;
+    for (i in 0...max) {
+      // Walk backwards through string since the numbers work the other way (or something)
+      charCode = color.charCodeAt(max - 1 - i);
       if (charCode >= 48 && charCode <= 57) {
         use = charCode - 48;
       }
@@ -76,7 +78,7 @@ class Color {
       case 'black':
         return 0x000000;
       default:
-        throw "Invalid color name: " + colorName;
+        return -1;
     }
   }
 
@@ -87,11 +89,15 @@ class Color {
   public function new(colorVal:Dynamic, ?alpha:Int = 0xFF) {
     if (Std.is(colorVal, Int) || Std.is(colorVal, Float)) {
       this.colorInt = colorVal;
-    }
-    else if (Std.is(colorVal, String)) {
+    } else if (Std.is(colorVal, String)) {
       this.colorInt = Color.lookupColor(colorVal);
-    }
-    else {
+      if (this.colorInt == -1) {
+        Color.stringToColor(colorVal);
+        if (this.colorInt == -1) {
+          throw "Invalid color name: " + colorVal;
+        }
+      }
+    } else {
       throw "Invalid type passed to Color. Should be Int or String";
     }
     this.alpha = alpha;
@@ -144,5 +150,22 @@ class Color {
     colorInt &= 0xFFFF00;
     colorInt |= color;
     return color;
+  }
+
+  public function toHexString():String {
+    return StringTools.hex(colorInt);
+  }
+
+  public function update(colorVal:Dynamic) {
+    if (Std.is(colorVal, Int) || Std.is(colorVal, Float)) {
+      this.colorInt = colorVal;
+    } else if (Std.is(colorVal, String)) {
+      this.colorInt = Color.lookupColor(colorVal);
+      if (this.colorInt == -1) {
+        this.colorInt = Color.stringToColor(colorVal);
+      }
+    } else {
+      throw "Invalid type passed to Color. Should be Int or String";
+    }
   }
 }
