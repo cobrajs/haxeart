@@ -79,6 +79,27 @@ class BorderLayout extends Layout {
     slots.set(position, tempSlot);
   }
 
+  // TODO: Fix this to be able to move a component to a new position
+  public function updateComponent(component:Component, position:Int, width:Float, height:Float, type:SizeType, ?customFunc:Void->Void) {
+    if (slots.exists(position)) {
+      //throw "Component already exists in this position";
+      slots.remove(position);
+    }
+
+    var tempSlot:Slot = {
+      width: width,
+      height: height,
+      position: position,
+      occupant: component,
+      type: type,
+      customFunc: customFunc
+    };
+
+    super.addComponent(component);
+
+    slots.set(position, tempSlot);
+  }
+
   override public function pack() {
     super.pack();
 

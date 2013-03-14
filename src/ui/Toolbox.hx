@@ -1,5 +1,7 @@
 package ui;
 
+// TODO: Convert to Component to allow use with BorderLayout
+
 import ui.components.SimpleButton;
 import ui.components.Button;
 import ui.layouts.GridLayout;

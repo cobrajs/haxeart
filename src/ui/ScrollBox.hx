@@ -1,5 +1,7 @@
 package ui;
 
+// TODO: Convert to Component to allow use with BorderLayout
+
 import nme.display.DisplayObject;
 import nme.display.Sprite;
 import nme.display.Shape;

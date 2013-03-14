@@ -2,10 +2,10 @@ package ;
 
 // TODO: Fill in README.md
 // TODO: Add palette modification popup
-// TODO: Add theme factory thing
 // TODO: Add preferences box
-// TODO: Fix touch out on canvas and slider
 // TODO: Fix rotation of canvas
+// TODO: Update cobraui with new code
+// TODO: Update haxeart to use cobraui
 
 // UI Elements
 import ui.components.Component;
@@ -491,8 +491,9 @@ class Main extends Sprite {
 
   private function resize(event:Event):Void {
     resizeComponents();
-    Registry.canvas.zoomRect.width = stage.stageWidth;
+    Registry.canvas.zoomRect.width = stage.stageWidth - toolboxWidth;
     Registry.canvas.zoomRect.height = stage.stageHeight;
+    Registry.canvas.centerCanvas();
   }
 
   //
