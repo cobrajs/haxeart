@@ -56,14 +56,12 @@ class NewPopup extends Popup {
     var buttonBar = new Container();
     buttonBar.layout = new GridLayout(10, 10, 0, 1);
     var tempButton = new SimpleButton<String>("Cancel");
-    tempButton.borderWidth = 2;
     tempButton.onClick = function(event:MouseEvent) {
       this.hide();
     };
     buttonBar.layout.addComponent(tempButton);
     buttonBar.addChild(tempButton);
     tempButton = new SimpleButton<String>("Ok");
-    tempButton.borderWidth = 2;
     tempButton.onClick = function(event:MouseEvent) {
       dispatchEvent(new DialogEvent(DialogEvent.CLOSED, TYPE, this.id));
       Registry.canvas.newImage(widthSlider.value, heightSlider.value);

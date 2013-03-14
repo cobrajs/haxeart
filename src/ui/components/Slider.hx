@@ -8,7 +8,9 @@ import ui.layouts.BorderLayout;
 
 import nme.events.Event;
 import nme.events.MouseEvent;
+import nme.events.TouchEvent;
 import nme.geom.Rectangle;
+import nme.ui.Multitouch;
 
 class Slider extends Container {
   public var value(default, setValue):Int;
@@ -56,6 +58,7 @@ class Slider extends Container {
     slider.addEventListener(MouseEvent.MOUSE_MOVE, function(e:MouseEvent) {
       if (dragging) {
         var tempValue = Std.int((slider.x / (sliderBackground.uWidth - slider.uWidth)) * (maximum - minimum) + minimum);
+        tempValue = tempValue - tempValue % step;
         if (tempValue != oldValue) {
           value = tempValue;
           oldValue = value;
@@ -71,6 +74,10 @@ class Slider extends Container {
 
     slider.addEventListener(MouseEvent.MOUSE_UP, stopDragging);
     slider.addEventListener(MouseEvent.MOUSE_OUT, stopDragging);
+
+    if (Multitouch.supportsTouchEvents) {
+      slider.addEventListener(TouchEvent.TOUCH_OUT, stopDragging);
+    }
 
     valueLabel = new Label<String>("");
     valueLabel.background = new Color(0xAAAAAA);

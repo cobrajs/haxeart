@@ -106,7 +106,7 @@ class Canvas extends Sprite {
       addEventListener(TouchEvent.TOUCH_BEGIN, onTouchBegin);
       addEventListener(TouchEvent.TOUCH_END, onTouchEnd);
       addEventListener(TouchEvent.TOUCH_MOVE, onTouchMove);
-      //addEventListener(TouchEvent.TOUCH_OUT, onTouchOut);
+      addEventListener(TouchEvent.TOUCH_OUT, onTouchOut);
     }
     else {
       addEventListener(MouseEvent.MOUSE_DOWN, onClick);
@@ -422,6 +422,10 @@ class Canvas extends Sprite {
     currentTool.mouseUpAction(this, event);
   }
 
+  private function onTouchOut(event:TouchEvent) {
+    currentTool.mouseUpAction(this, event);
+  }
+
   private function onTouchBegin(event:TouchEvent) {
     if (Registry.touchManager.touchCount < 2) {
       originPoint.x = event.stageX;
@@ -442,6 +446,7 @@ class Canvas extends Sprite {
         currentTool.mouseMoveAction(this, cast(event, MouseEvent));
       }
       else {
+        // TODO: Might want to find another way of doing this if I get too annoyed with it
         if (Point.distance(originPoint, new Point(event.stageX, event.stageY)) > threshold) {
           allowDraw = true;
           currentTool.mouseDownAction(this, cast(event, MouseEvent));

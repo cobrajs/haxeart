@@ -51,6 +51,7 @@ class PaletteBox extends ScrollBox {
 
   public function addColor(color:Int) {
     var colorBox = new SimpleButton<String>("");
+    colorBox.borderWidth = 0;
     colorBox.background = new Color(color);
     colorsHash.set(color, colorBox);
     colorBox.onClick = function(e:MouseEvent) {

@@ -20,6 +20,7 @@ import ui.Canvas;
 import ui.Cursor;
 import ui.Navigator;
 import ui.PaletteBox;
+import ui.ThemeFactory;
 import ui.Toolbox;
 import ui.TouchManager;
 
@@ -121,6 +122,8 @@ class Main extends Sprite {
     Registry.touchManager = new TouchManager();
 
     Registry.prefs = new Preferences();
+
+    Component.themeFactory = new ThemeFactory("default.theme");
 
     //
     // Add Events for Stage
@@ -260,9 +263,10 @@ class Main extends Sprite {
     filePopup = new FilePopup(0.8, 0.85);
     colorPicker = new ColorPicker(new Color(0xFF0000));
 
+    // Menu popup
     menuPopup = new MenuPopup();
     var tempButton = new SimpleButton<String>("New");
-    tempButton.borderWidth = 2;
+    //tempButton.borderWidth = 2;
     tempButton.onClick = function(event:MouseEvent) {
       newPopup.popup();
       menuPopup.hide();
@@ -270,7 +274,7 @@ class Main extends Sprite {
     menuPopup.addComponent(tempButton);
 
     tempButton = new SimpleButton<String>("Clear");
-    tempButton.borderWidth = 2;
+    //tempButton.borderWidth = 2;
     tempButton.onClick = function(event:MouseEvent) {
       Registry.canvas.canvasModified();
       Registry.canvas.clearCanvas();
@@ -279,10 +283,18 @@ class Main extends Sprite {
     menuPopup.addComponent(tempButton);
 
     tempButton = new SimpleButton<String>("Files");
-    tempButton.borderWidth = 2;
+    //tempButton.borderWidth = 2;
     tempButton.onClick = function(event:MouseEvent) {
       menuPopup.hide();
       filePopup.popup();
+    };
+    menuPopup.addComponent(tempButton);
+
+    tempButton = new SimpleButton<String>("Blah");
+    //tempButton.borderWidth = 2;
+    tempButton.onClick = function(event:MouseEvent) {
+      menuPopup.hide();
+      colorPicker.popup();
     };
     menuPopup.addComponent(tempButton);
     menuPopup.layout.pack();

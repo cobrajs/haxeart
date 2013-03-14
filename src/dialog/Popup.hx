@@ -53,7 +53,7 @@ class Popup extends Sprite {
     addChild(overlay);
 
     window = new Component();
-    window.borderWidth = 2;
+    window.loadFromThemeFactory("window");
     addChild(window);
 
     this.visible = false;
@@ -70,8 +70,7 @@ class Popup extends Sprite {
     if (titleLabel != "" && titleLabel != null) {
       hasTitleBar = true;
       titleBar = new Label<String>(titleLabel);
-      titleBar.borderWidth = 2;
-      titleBar.background = new Color(0xAAAAAA);
+      titleBar.loadFromThemeFactory("titleBar");
       titleBar.hAlign = center;
       titleBar.y = -titleBarHeight;
       window.addChild(titleBar);

@@ -1,0 +1,17 @@
+component
+  background: #dddddd
+  foreground: #000000
+  border: #777777
+  borderWidth: 0
+  margin: 0
+
+button
+  clickBackground: #aaaaaa
+  borderWidth: 2
+
+window
+  borderWidth: 2
+
+titleBar
+  borderWidth: 2
+  background: #AAAAAA

@@ -15,10 +15,10 @@ import nme.events.MouseEvent;
 class MenuPopup extends Popup {
   public static var TYPE:String = "menupopup";
 
-  public function new() {
+  public function new(?sizeX:Int = 0, ?sizeY:Int = 1) {
     super(1, 0.3, "", BorderLayout.BOTTOM, false);
 
-    layout = new GridLayout(uWidth, uHeight, 0, 1);
+    layout = new GridLayout(uWidth, uHeight, 0, 2);
   }
 
   public function addComponent(c:Component) {

@@ -13,6 +13,7 @@ enum ButtonState {
 }
 
 class SimpleButton<T> extends Label<T> {
+  public static var defaultClickBackground:Int = 0x777777;
   public var state(default, setState):ButtonState;
   public var stickyState:Bool;
   public var flagged(default, setFlagged):Bool;
@@ -40,13 +41,28 @@ class SimpleButton<T> extends Label<T> {
     flagged = false;
     dirtyFlag = true;
 
-    clickBackground = new Color(0x777777);
+    if (Component.themeFactory == null) {
+      clickBackground = new Color(defaultClickBackground);
+    } else {
+      loadFromThemeFactory("button");
+    }
 
     addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
     addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
     addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
     if (Multitouch.supportsTouchEvents) {
       addEventListener(TouchEvent.TOUCH_OUT, onMouseOut);
+    }
+  }
+
+  override public function loadFromThemeFactory(name:String) {
+    super.loadFromThemeFactory(name);
+    
+    var tempClickBackground = Component.themeFactory.getColor(name, "clickBackground");
+    if (tempClickBackground != null) {
+      clickBackground = tempClickBackground;
+    } else if (clickBackground == null) {
+      clickBackground = new Color(defaultClickBackground);
     }
   }
 

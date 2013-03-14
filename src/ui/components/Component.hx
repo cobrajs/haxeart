@@ -1,14 +1,20 @@
 package ui.components;
 
-// TODO: Add indicator flag and render option for a selected component
-
 import graphics.Color;
+import ui.ThemeFactory;
 
 import nme.display.Sprite;
 import nme.events.Event;
 import nme.display.Graphics;
 
 class Component extends Sprite {
+  public static var themeFactory:ThemeFactory;
+
+  public static var defaultBackground:Int = 0xDDDDDD;
+  public static var defaultForeground:Int = 0x000000;
+  public static var defaultBorder:Int = 0x777777;
+  public static var defaultBorderWidth:Int = 0;
+
   public var uWidth(default, null):Float;
   public var uHeight(default, null):Float;
   public var margin(default, setMargin):Int;
@@ -32,11 +38,18 @@ class Component extends Sprite {
 
     isClickable = false;
 
-    background = new Color(0xDDDDDD);
-    foreground = new Color(0x000000);
-    
-    border = new Color(0x777777);
-    borderWidth = 0;
+    // Set a default since it can't be null
+    borderWidth = -1;
+
+    if (Component.themeFactory == null) {
+      background = new Color(defaultBackground);
+      foreground = new Color(defaultForeground);
+      
+      border = new Color(defaultBorder);
+      borderWidth = defaultBorderWidth;
+    } else {
+      loadFromThemeFactory("component");
+    }
 
     predraw = null;
 
@@ -44,6 +57,36 @@ class Component extends Sprite {
       ready = true;
       redraw();
     });
+  }
+
+  public function loadFromThemeFactory(name:String) {
+    var tempBackground = Component.themeFactory.getColor(name, "background");
+    if (tempBackground != null) {
+      background = tempBackground;
+    } else if (background == null) {
+      background = new Color(defaultBackground);
+    }
+
+    var tempForeground = Component.themeFactory.getColor(name, "foreground");
+    if (tempForeground != null) {
+      foreground = tempForeground;
+    } else if (foreground == null) {
+      foreground = new Color(defaultForeground);
+    }
+
+    var tempBorder = Component.themeFactory.getColor(name, "border");
+    if (tempBorder != null) {
+      border = tempBorder;
+    } else if (border == null) {
+      border = new Color(defaultBorder);
+    }
+
+    var tempBorderWidth = Component.themeFactory.getSizing(name, "borderWidth");
+    if (tempBorderWidth != -1) {
+      borderWidth = tempBorderWidth;
+    } else if (borderWidth == -1) {
+      borderWidth = defaultBorderWidth;
+    }
   }
 
   public function resize(width:Float, height:Float) {

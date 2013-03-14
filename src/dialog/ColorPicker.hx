@@ -68,7 +68,6 @@ class ColorPicker extends Popup {
       this.hide();
     };
     tempButton = new SimpleButton<String>("Enter Hex");
-    tempButton.borderWidth = 2;
     tempButton.onClick = function(event:MouseEvent) {
       var tempPopup = new PromptPopup(currentColor.toHexString());
       tempPopup.addAllowed(~/[A-Za-z0-9]/);
@@ -93,14 +92,12 @@ class ColorPicker extends Popup {
     buttons.addChild(tempButton);
     buttons.layout.addComponent(tempButton);
     tempButton = new SimpleButton<String>("Use Color");
-    tempButton.borderWidth = 2;
     tempButton.onClick = function(event:MouseEvent) {
       messageAndClose(true);
     };
     buttons.addChild(tempButton);
     buttons.layout.addComponent(tempButton);
     tempButton = new SimpleButton<String>("Cancel");
-    tempButton.borderWidth = 2;
     tempButton.onClick = function(event:MouseEvent) {
       messageAndClose(false);
     };

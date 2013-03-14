@@ -70,7 +70,6 @@ class Toolbox extends Sprite {
 
   public function addButton(name:String, action:MouseEvent->Void, image:Int, ?group:Int = 0, ?groupDefault = false) {
     var button = new SimpleButton(imageSet[image]);
-    button.borderWidth = 2;
     if (groupDefault) {
       button.flagged = true;
     }

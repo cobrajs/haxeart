@@ -92,10 +92,7 @@ class Color {
     } else if (Std.is(colorVal, String)) {
       this.colorInt = Color.lookupColor(colorVal);
       if (this.colorInt == -1) {
-        Color.stringToColor(colorVal);
-        if (this.colorInt == -1) {
-          throw "Invalid color name: " + colorVal;
-        }
+        this.colorInt = Color.stringToColor(colorVal);
       }
     } else {
       throw "Invalid type passed to Color. Should be Int or String";

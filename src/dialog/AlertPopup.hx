@@ -42,7 +42,6 @@ class AlertPopup extends Popup {
     };
     if (type == alert) {
       tempButton = new SimpleButton<String>("OK");
-      tempButton.borderWidth = 1;
       tempButton.onClick = function(event:MouseEvent) {
         messageAndClose("");
       }
@@ -50,14 +49,12 @@ class AlertPopup extends Popup {
       buttons.layout.addComponent(tempButton);
     } else if (type == confirm) {
       tempButton = new SimpleButton<String>("Yes");
-      tempButton.borderWidth = 1;
       tempButton.onClick = function(event:MouseEvent) {
         messageAndClose("yes");
       }
       buttons.addChild(tempButton);
       buttons.layout.addComponent(tempButton);
       tempButton = new SimpleButton<String>("No");
-      tempButton.borderWidth = 1;
       tempButton.onClick = function(event:MouseEvent) {
         messageAndClose("no");
       }
