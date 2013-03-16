@@ -1,12 +1,12 @@
 package dialog;
 
-import ui.components.SimpleButton;
-import ui.layouts.BorderLayout;
-import ui.layouts.GridLayout;
-import dialog.Popup;
+import cobraui.components.SimpleButton;
+import cobraui.graphics.Color;
+import cobraui.layouts.BorderLayout;
+import cobraui.layouts.GridLayout;
+import cobraui.popup.Popup;
 
 import graphics.BrushFactory;
-import graphics.Color;
 
 import nme.events.MouseEvent;
 import nme.display.BitmapData;

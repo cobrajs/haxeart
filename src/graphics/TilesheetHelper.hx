@@ -1,5 +1,7 @@
 package graphics;
 
+import cobraui.graphics.ImageOpts;
+
 import nme.display.Tilesheet;
 import nme.display.BitmapData;
 import nme.geom.Rectangle;

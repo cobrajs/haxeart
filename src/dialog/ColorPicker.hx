@@ -1,17 +1,18 @@
 package dialog;
 
-import graphics.Color;
+import cobraui.graphics.Color;
 
-import dialog.Popup;
-import dialog.DialogEvent;
+import cobraui.popup.Popup;
+import cobraui.popup.PopupEvent;
+import cobraui.popup.PromptPopup;
 
-import ui.components.Label;
-import ui.components.SimpleButton;
-import ui.components.Container;
-import ui.components.Slider;
+import cobraui.components.Label;
+import cobraui.components.SimpleButton;
+import cobraui.components.Container;
+import cobraui.components.Slider;
 
-import ui.layouts.GridLayout;
-import ui.layouts.BorderLayout;
+import cobraui.layouts.GridLayout;
+import cobraui.layouts.BorderLayout;
 
 import nme.events.Event;
 import nme.events.MouseEvent;
@@ -63,8 +64,8 @@ class ColorPicker extends Popup {
     buttons.layout = new GridLayout(10, 10, 0, 1);
     var tempButton:SimpleButton<String> = null;
     var messageAndClose = function(useColor:Bool) {
-      dispatchEvent(new DialogEvent(DialogEvent.MESSAGE, useColor ? Std.string(currentColor.colorInt) : "", this.id));
-      dispatchEvent(new DialogEvent(DialogEvent.CLOSED, TYPE, this.id));
+      dispatchEvent(new PopupEvent(PopupEvent.MESSAGE, useColor ? Std.string(currentColor.colorInt) : "", this.id));
+      dispatchEvent(new PopupEvent(PopupEvent.CLOSED, TYPE, this.id));
       this.hide();
     };
     tempButton = new SimpleButton<String>("Enter Hex");
@@ -74,20 +75,20 @@ class ColorPicker extends Popup {
       addChild(tempPopup);
       tempPopup.popup();
       var id = tempPopup.id;
-      var msgFnc:DialogEvent->Void = null;
-      msgFnc = function(e:DialogEvent) {
+      var msgFnc:PopupEvent->Void = null;
+      msgFnc = function(e:PopupEvent) {
         if (e.id == id) {
           if (e.message != "" && e.message != null) {
             currentColor.update(e.message);
             tempPopup.hide();
-            removeEventListener(DialogEvent.MESSAGE, msgFnc);
+            removeEventListener(PopupEvent.MESSAGE, msgFnc);
             removeChild(tempPopup);
             updateSliders();
           }
         }
       };
 
-      addEventListener(DialogEvent.MESSAGE, msgFnc);
+      addEventListener(PopupEvent.MESSAGE, msgFnc);
     };
     buttons.addChild(tempButton);
     buttons.layout.addComponent(tempButton);

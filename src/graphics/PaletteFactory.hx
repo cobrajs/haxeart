@@ -1,6 +1,6 @@
 package graphics;
 
-import graphics.Color;
+import cobraui.graphics.Color;
 
 import nme.Assets;
 

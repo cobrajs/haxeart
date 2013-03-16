@@ -1,6 +1,7 @@
 package graphics;
 
-import graphics.Color;
+import cobraui.graphics.Color;
+import cobraui.graphics.ImageOpts;
 
 import nme.display.Bitmap;
 import nme.display.BitmapData;

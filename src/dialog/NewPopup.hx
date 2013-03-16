@@ -1,13 +1,16 @@
 package dialog;
 
-import dialog.Popup;
-import ui.components.Component;
-import ui.components.Container;
-import ui.components.Label;
-import ui.components.SimpleButton;
-import ui.components.Slider;
-import ui.layouts.BorderLayout;
-import ui.layouts.GridLayout;
+import cobraui.popup.Popup;
+import cobraui.popup.PopupEvent;
+
+import cobraui.components.Component;
+import cobraui.components.Container;
+import cobraui.components.Label;
+import cobraui.components.SimpleButton;
+import cobraui.components.Slider;
+
+import cobraui.layouts.BorderLayout;
+import cobraui.layouts.GridLayout;
 
 import nme.events.MouseEvent;
 
@@ -63,7 +66,7 @@ class NewPopup extends Popup {
     buttonBar.addChild(tempButton);
     tempButton = new SimpleButton<String>("Ok");
     tempButton.onClick = function(event:MouseEvent) {
-      dispatchEvent(new DialogEvent(DialogEvent.CLOSED, TYPE, this.id));
+      dispatchEvent(new PopupEvent(PopupEvent.CLOSED, TYPE, this.id));
       Registry.canvas.newImage(widthSlider.value, heightSlider.value);
       this.hide();
     };

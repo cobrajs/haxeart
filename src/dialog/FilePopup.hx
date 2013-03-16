@@ -1,15 +1,18 @@
 package dialog;
 
 import util.FileManager;
-import dialog.Popup;
-import ui.ScrollBox;
-import ui.components.Component;
-import ui.components.Container;
-import ui.components.Label;
-import ui.components.SimpleButton;
-import ui.layouts.BorderLayout;
-import ui.layouts.GridLayout;
-import graphics.Tilesheet;
+
+import cobraui.popup.Popup;
+import cobraui.popup.PopupEvent;
+import cobraui.popup.PromptPopup;
+import cobraui.util.ScrollBox;
+import cobraui.components.Component;
+import cobraui.components.Container;
+import cobraui.components.Label;
+import cobraui.components.SimpleButton;
+import cobraui.layouts.BorderLayout;
+import cobraui.layouts.GridLayout;
+import cobraui.graphics.Tilesheet;
 
 import nme.display.BitmapData;
 import nme.display.Sprite;
@@ -79,20 +82,20 @@ class FilePopup extends Popup {
       addChild(tempPopup);
       tempPopup.popup();
       var id = tempPopup.id;
-      var msgFnc:DialogEvent->Void = null;
-      msgFnc = function(e:DialogEvent) {
+      var msgFnc:PopupEvent->Void = null;
+      msgFnc = function(e:PopupEvent) {
         if (e.id == id) {
           if (e.message != "" && e.message != null) {
             Registry.fileManager.saveFile(e.message, Registry.canvas.getCanvas());
             tempPopup.hide();
-            removeEventListener(DialogEvent.MESSAGE, msgFnc);
+            removeEventListener(PopupEvent.MESSAGE, msgFnc);
             removeChild(tempPopup);
             this.hide();
           }
         }
       };
 
-      addEventListener(DialogEvent.MESSAGE, msgFnc);
+      addEventListener(PopupEvent.MESSAGE, msgFnc);
     };
     buttonBar.layout.addComponent(tempButton);
     buttonBar.addChild(tempButton);

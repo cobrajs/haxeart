@@ -1,8 +1,8 @@
 package ui;
 
 // Project Files
+import cobraui.graphics.Color;
 import graphics.BrushFactory;
-import graphics.Color;
 import util.LineIter;
 import tools.ITool;
 import Registry;

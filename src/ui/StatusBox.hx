@@ -1,7 +1,7 @@
 package ui;
 
-import ui.components.SimpleButton;
-import graphics.Color;
+import cobraui.components.SimpleButton;
+import cobraui.graphics.Color;
 
 import nme.display.BitmapData;
 import nme.events.MouseEvent;

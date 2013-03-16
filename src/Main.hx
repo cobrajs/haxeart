@@ -4,41 +4,44 @@ package ;
 // TODO: Add palette modification popup
 // TODO: Add preferences box
 // TODO: Fix rotation of canvas
-// TODO: Update cobraui with new code
-// TODO: Update haxeart to use cobraui
+
+// CobraUI Elements
+import cobraui.components.Component;
+import cobraui.components.Label;
+import cobraui.components.Selector;
+import cobraui.components.SimpleButton;
+import cobraui.components.TextInput;
+
+import cobraui.util.Navigator;
+import cobraui.util.ThemeFactory;
+import cobraui.util.TouchManager;
+import cobraui.graphics.BitmapFont;
+
+// Popup Boxes
+import cobraui.popup.AlertPopup;
+import cobraui.popup.PopupEvent;
+import cobraui.popup.MenuPopup;
+import cobraui.popup.Popup;
+import cobraui.popup.PromptPopup;
+
+import cobraui.graphics.Color;
 
 // UI Elements
-import ui.components.Component;
-import ui.components.Button;
-import ui.components.Label;
-import ui.components.Selector;
-import ui.components.SimpleButton;
-import ui.components.TextInput;
 import ui.StatusBox;
-import ui.BitmapFont;
 import ui.Canvas;
 import ui.Cursor;
-import ui.Navigator;
 import ui.PaletteBox;
-import ui.ThemeFactory;
 import ui.Toolbox;
-import ui.TouchManager;
 
 // Dialog Boxes
-import dialog.AlertPopup;
 import dialog.BrushPopup;
 import dialog.ColorPicker;
-import dialog.DialogEvent;
 import dialog.FilePopup;
-import dialog.MenuPopup;
 import dialog.NewPopup;
-import dialog.Popup;
-import dialog.PromptPopup;
 
 // Graphical Helpers
 import graphics.BrushFactory;
 import graphics.PaletteFactory;
-import graphics.Color;
 
 // Tools
 import tools.Filler;
@@ -75,7 +78,6 @@ import nme.filesystem.File;
 class Main extends Sprite {
   private var toolboxWidth:Int;
 
-  private var buttons:Array<Button>;
   private var paletteBox:PaletteBox;
   private var statusBox:StatusBox;
   private var toolbox:Toolbox;
@@ -229,7 +231,9 @@ class Main extends Sprite {
 
     addChild(Registry.canvas);
 
-    Registry.font = new BitmapFont("profont_2x.png", 16, 8);
+    var tempFont = new BitmapFont("profont_2x.png", 16, 8);
+    Registry.font = tempFont;
+    Label.font = tempFont;
     //Registry.font.drawTextBitmap(Registry.canvas.getCanvas(), 10, 10, "ABCDE");
 
 
@@ -248,6 +252,8 @@ class Main extends Sprite {
     }
     paletteBox.doneAdding();
 
+    paletteBox.pickColor(brushFactory.mainColor.colorInt);
+
     addChild(paletteBox);
 
 
@@ -264,9 +270,8 @@ class Main extends Sprite {
     colorPicker = new ColorPicker(new Color(0xFF0000));
 
     // Menu popup
-    menuPopup = new MenuPopup();
+    menuPopup = new MenuPopup(2, 0);
     var tempButton = new SimpleButton<String>("New");
-    //tempButton.borderWidth = 2;
     tempButton.onClick = function(event:MouseEvent) {
       newPopup.popup();
       menuPopup.hide();
@@ -274,7 +279,6 @@ class Main extends Sprite {
     menuPopup.addComponent(tempButton);
 
     tempButton = new SimpleButton<String>("Clear");
-    //tempButton.borderWidth = 2;
     tempButton.onClick = function(event:MouseEvent) {
       Registry.canvas.canvasModified();
       Registry.canvas.clearCanvas();
@@ -283,15 +287,13 @@ class Main extends Sprite {
     menuPopup.addComponent(tempButton);
 
     tempButton = new SimpleButton<String>("Files");
-    //tempButton.borderWidth = 2;
     tempButton.onClick = function(event:MouseEvent) {
       menuPopup.hide();
       filePopup.popup();
     };
     menuPopup.addComponent(tempButton);
 
-    tempButton = new SimpleButton<String>("Blah");
-    //tempButton.borderWidth = 2;
+    tempButton = new SimpleButton<String>("Color Picker");
     tempButton.onClick = function(event:MouseEvent) {
       menuPopup.hide();
       colorPicker.popup();

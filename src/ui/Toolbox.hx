@@ -2,13 +2,13 @@ package ui;
 
 // TODO: Convert to Component to allow use with BorderLayout
 
-import ui.components.SimpleButton;
-import ui.components.Button;
-import ui.layouts.GridLayout;
-import ui.StatusBox;
-import graphics.Color;
-import graphics.Tilesheet;
+import cobraui.components.SimpleButton;
+import cobraui.layouts.GridLayout;
+import cobraui.graphics.Color;
+import cobraui.graphics.Tilesheet;
+
 import graphics.TilesheetHelper;
+import ui.StatusBox;
 
 import nme.display.Sprite;
 import nme.Assets;

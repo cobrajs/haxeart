@@ -1,10 +1,10 @@
 package ui;
 
-import ui.ScrollBox;
-import ui.components.SimpleButton;
-import ui.layouts.GridLayout;
+import cobraui.util.ScrollBox;
+import cobraui.components.SimpleButton;
+import cobraui.layouts.GridLayout;
 
-import graphics.Color;
+import cobraui.graphics.Color;
 
 import nme.display.Sprite;
 import nme.events.MouseEvent;

@@ -1,6 +1,6 @@
 package ui;
 
-import graphics.Color;
+import cobraui.graphics.Color;
 
 import nme.display.Sprite;
 import nme.display.Shape;

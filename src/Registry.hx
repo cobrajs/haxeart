@@ -1,9 +1,10 @@
 package ;
 
-import util.FileManager;
-import ui.BitmapFont;
+import cobraui.graphics.BitmapFont;
+import cobraui.util.TouchManager;
+
 import ui.Canvas;
-import ui.TouchManager;
+import util.FileManager;
 
 import nme.display.Stage;
 
