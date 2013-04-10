@@ -575,6 +575,8 @@ class Main extends Sprite {
         //navigator.clickNode();
       case Keyboard.P:
         colorPicker.popup();
+      case Keyboard.U:
+        Registry.canvas.undoStep();
     }
   }
 }

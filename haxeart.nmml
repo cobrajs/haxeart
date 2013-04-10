@@ -4,7 +4,7 @@
   <app
      file="haxeart"
      title="haxeart"
-     package="org.cobrajs.nme"
+     package="org.cobrajs.haxeart"
      version="1.0.0"
      company="nme" 
      main="Main"
