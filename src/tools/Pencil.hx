@@ -15,6 +15,8 @@ class Pencil implements ITool {
   public var name:String;
   public var canvasModifySet:Bool;
 
+  private var initiatedDraw:Bool;
+
   private var moved:Bool;
   private var switchColors:Bool;
 
@@ -22,6 +24,8 @@ class Pencil implements ITool {
     name = "pencil";
     imageIndex = 0;
     imageFile = "toolbox.png";
+
+    initiatedDraw = false;
 
     moved = false;
     switchColors = false;
@@ -50,10 +54,12 @@ class Pencil implements ITool {
     moved = false;
 
     canvas.drawDot(x, y);
+
+    initiatedDraw = true;
   }
 
   public function mouseMoveAction(canvas:Canvas, event:MouseEvent):Void {
-    if (event.buttonDown) {
+    if (event.buttonDown && initiatedDraw) {
       if (lastMousePoint.x >= 0 && lastMousePoint.y >= 0) {
         for (p in (new LineIter(
             Math.floor(event.localX / canvas.zoom), Math.floor(event.localY / canvas.zoom),
@@ -80,15 +86,19 @@ class Pencil implements ITool {
   }
 
   public function mouseUpAction(canvas:Canvas, event:MouseEvent):Void {
-    lastMousePoint.x = -1;
-    lastMousePoint.y = -1;
-    canvasModifySet = false;
-    if (!moved && switchColors) {
-      var x = Math.floor(event.localX / canvas.zoom);
-      var y = Math.floor(event.localY / canvas.zoom);
-      canvas.drawDot(x, y, true);
-      switchColors = false;
-      moved = false;
+    if (initiatedDraw) {
+      lastMousePoint.x = -1;
+      lastMousePoint.y = -1;
+      canvasModifySet = false;
+      if (!moved && switchColors) {
+        var x = Math.floor(event.localX / canvas.zoom);
+        var y = Math.floor(event.localY / canvas.zoom);
+        canvas.drawDot(x, y, true);
+        switchColors = false;
+        moved = false;
+      }
+
+      initiatedDraw = false;
     }
   }
 }
