@@ -21,4 +21,12 @@ class Utils {
 
     return array[Std.random(array.length)];
   }
+
+  public static function getTime() {
+#if (neko || cpp)
+    return Sys.time();
+#else
+    return Date.now().getTime() / 1000;
+#end
+  }
 }

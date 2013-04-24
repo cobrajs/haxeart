@@ -3,8 +3,12 @@ package ui;
 import cobraui.util.ScrollBox;
 import cobraui.components.SimpleButton;
 import cobraui.layouts.GridLayout;
+import cobraui.popup.PopupEvent;
 
 import cobraui.graphics.Color;
+
+import ui.components.HoldingButton;
+import dialog.ColorPicker;
 
 import nme.display.Sprite;
 import nme.events.MouseEvent;
@@ -15,7 +19,7 @@ class PaletteBox extends ScrollBox {
 
   private var clickFunction:Int->Void;
 
-  private var colorsHash:IntHash<SimpleButton<String>>;
+  private var colorsHash:IntHash<HoldingButton<String>>;
 
   public var uWidth:Int;
   public var uHeight:Int;
@@ -31,7 +35,7 @@ class PaletteBox extends ScrollBox {
     this.clickFunction = clickFunction;
 
     layout = new GridLayout(width, height, columns, rows);
-    colorsHash = new IntHash<SimpleButton<String>>();
+    colorsHash = new IntHash<HoldingButton<String>>();
     
     uWidth = width;
     uHeight = height;
@@ -50,7 +54,7 @@ class PaletteBox extends ScrollBox {
   }
 
   public function addColor(color:Int) {
-    var colorBox = new SimpleButton<String>("");
+    var colorBox = new HoldingButton<String>("", 1);
     colorBox.borderWidth = 0;
     colorBox.background = new Color(color);
     colorsHash.set(color, colorBox);
@@ -60,6 +64,27 @@ class PaletteBox extends ScrollBox {
         cast(box, SimpleButton<Dynamic>).flagged = false;
       }
       colorBox.flagged = true;
+    };
+    colorBox.onHold = function() {
+      var tempColorPicker = new ColorPicker(new Color(color));
+      stage.addChild(tempColorPicker);
+      tempColorPicker.popup();
+      var id = tempColorPicker.id;
+      var msgFnc:PopupEvent->Void = null;
+      msgFnc = function(e:PopupEvent) {
+        if (e.id == id) {
+          if (e.message != "" && e.message != null) {
+            var colorInt = Std.parseInt(e.message);
+            trace(colorInt);
+            //colorBox.background = new Color(colorInt);
+            //colorsHash.set(colorInt, colorBox);
+          }
+          tempColorPicker.hide();
+          stage.removeEventListener(PopupEvent.MESSAGE, msgFnc);
+          stage.removeChild(tempColorPicker);
+        }
+      };
+      stage.addEventListener(PopupEvent.MESSAGE, msgFnc);
     };
 
     layout.addComponent(colorBox);
