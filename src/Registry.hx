@@ -4,6 +4,7 @@ import cobraui.graphics.BitmapFont;
 import cobraui.util.TouchManager;
 
 import ui.Canvas;
+import ui.Cursor;
 import util.FileManager;
 
 import nme.display.Stage;
@@ -18,6 +19,7 @@ class Registry {
   public static var stage:Stage;
 
   public static var canvas:Canvas;
+  public static var cursor:Cursor;
 
   public static var stageWidth:Float;
   public static var stageHeight:Float;

@@ -101,7 +101,7 @@ class Cursor extends Sprite {
 #end
   }
 
-  public function changeZoom(zoom:Int) {
+  public function changeZoom(zoom:Float) {
 #if !mobile
     this.zoomLevel = zoom;
     if (useZoom.get(currentCursor)) {

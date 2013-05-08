@@ -11,22 +11,26 @@ import ui.components.HoldingButton;
 import dialog.ColorPicker;
 
 import nme.display.Sprite;
+import nme.events.Event;
 import nme.events.MouseEvent;
 
 class PaletteBox extends ScrollBox {
+  private static var index:Int = 1;
+
   private var columns:Int;
   private var rows:Int;
 
-  private var clickFunction:Int->Void;
+  private var clickFunction:Int->Bool->Void;
 
   private var colorsHash:IntHash<HoldingButton<String>>;
+  private var colorsIndexHash:IntHash<Int>;
 
   public var uWidth:Int;
   public var uHeight:Int;
   
   private var layout:GridLayout;
 
-  public function new(width:Int, height:Int,  columns:Int, rows:Int, clickFunction:Int->Void) {
+  public function new(width:Int, height:Int,  columns:Int, rows:Int, clickFunction:Int->Bool->Void) {
     super(width, height, 5);
 
     this.columns = columns;
@@ -36,9 +40,16 @@ class PaletteBox extends ScrollBox {
 
     layout = new GridLayout(width, height, columns, rows);
     colorsHash = new IntHash<HoldingButton<String>>();
+    colorsIndexHash = new IntHash<Int>();
     
     uWidth = width;
     uHeight = height;
+
+    addEventListener(Event.SCROLL, function(e:Event) {
+      for (box in layout.components) {
+        cast(box, HoldingButton<Dynamic>).softRelease();
+      }
+    });
 
     renderBackground();
   }
@@ -54,19 +65,21 @@ class PaletteBox extends ScrollBox {
   }
 
   public function addColor(color:Int) {
+    var index = PaletteBox.index++;
     var colorBox = new HoldingButton<String>("", 1);
     colorBox.borderWidth = 0;
     colorBox.background = new Color(color);
     colorsHash.set(color, colorBox);
+    colorsIndexHash.set(index, color);
     colorBox.onClick = function(e:MouseEvent) {
-      clickFunction(color);
+      clickFunction(colorsIndexHash.get(index), true);
       for (box in layout.components) {
         cast(box, SimpleButton<Dynamic>).flagged = false;
       }
       colorBox.flagged = true;
     };
     colorBox.onHold = function() {
-      var tempColorPicker = new ColorPicker(new Color(color));
+      var tempColorPicker = new ColorPicker(new Color(colorsIndexHash.get(index)));
       stage.addChild(tempColorPicker);
       tempColorPicker.popup();
       var id = tempColorPicker.id;
@@ -75,9 +88,11 @@ class PaletteBox extends ScrollBox {
         if (e.id == id) {
           if (e.message != "" && e.message != null) {
             var colorInt = Std.parseInt(e.message);
-            trace(colorInt);
-            //colorBox.background = new Color(colorInt);
-            //colorsHash.set(colorInt, colorBox);
+            colorBox.background = new Color(colorInt);
+            colorBox.redraw();
+            colorsHash.set(colorInt, colorBox);
+            colorsIndexHash.set(index, colorInt);
+            colorBox.clickButton();
           }
           tempColorPicker.hide();
           stage.removeEventListener(PopupEvent.MESSAGE, msgFnc);

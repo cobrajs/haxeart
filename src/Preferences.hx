@@ -8,6 +8,7 @@ class Preferences {
 
   public var undoSteps(default, setUndoSteps):Int;
   public var lastUsedBrush(default, setLastUsed):Int;
+  public var keepLastBrush(default, setKeepLastUsed):Bool;
 
   public function new() {
     so = SharedObject.getLocal("haxeart-prefs");
@@ -21,10 +22,16 @@ class Preferences {
     undoSteps = so.data.undoSteps;
 
     if (so.data.lastUsedBrush == null) {
-      so.data.lastUsedBrush = 2;
+      so.data.lastUsedBrush = 1;
       dirty = true;
     }
     lastUsedBrush = so.data.lastUsedBrush;
+
+    if (so.data.keepLastBrush == null) {
+      so.data.keepLastBrush = true;
+      dirty = true;
+    } 
+    keepLastBrush = so.data.keepLastBrush;
 
     if (dirty) {
       so.flush();
@@ -53,4 +60,11 @@ class Preferences {
     writePref('lastUsedBrush');
     return brush;
   }
+  
+  private function setKeepLastUsed(keepLast:Bool):Bool {
+    keepLastBrush = keepLast;
+    writePref('keepLastBrush');
+    return keepLast;
+  }
+  
 }

@@ -6,13 +6,14 @@ import cobraui.components.SimpleButton;
 
 import nme.events.MouseEvent;
 import nme.events.Event;
+import nme.geom.Point;
 
 class HoldingButton<T> extends SimpleButton<T> {
   private var holdLength:Float;
   private var lastUpdate:Float;
   private var timeLeft:Float;
 
-  private var held:Bool;
+  public var held:Bool;
 
   public var onHold:Void->Void;
 
@@ -39,8 +40,6 @@ class HoldingButton<T> extends SimpleButton<T> {
       timeLeft -= dt;
 
       if (timeLeft <= 0) {
-        timeLeft = 0;
-        held = false;
         releaseButton();
         if (onHold != null) {
           onHold();
@@ -56,13 +55,22 @@ class HoldingButton<T> extends SimpleButton<T> {
   }
 
   private function mouseUp(event:MouseEvent) {
-    held = false;
-    timeLeft = 0;
+    softRelease();
   }
 
   public function releaseButton() {
     var upEvent = new MouseEvent(MouseEvent.MOUSE_UP, true, false, width / 2, height / 2);
     dispatchEvent(upEvent);
+  }
+
+  public function softRelease() {
+    held = false;
+    timeLeft = 0;
+  }
+  
+  public function clickButton() {
+    dispatchEvent(new MouseEvent(MouseEvent.MOUSE_DOWN, true, false, width / 2, height / 2));
+    dispatchEvent(new MouseEvent(MouseEvent.MOUSE_UP, true, false, width / 2, height / 2));
   }
 
 }

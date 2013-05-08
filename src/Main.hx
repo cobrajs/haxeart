@@ -2,8 +2,8 @@ package ;
 
 // TODO: Fill in README.md
 // TODO: Add palette modification popup
-// TODO: Add preferences box
 // TODO: Fix rotation of canvas
+// TODO: Move double click movement out to main instead of being in the pencil tool
 
 // CobraUI Elements
 import cobraui.components.Component;
@@ -38,6 +38,7 @@ import dialog.BrushPopup;
 import dialog.ColorPicker;
 import dialog.FilePopup;
 import dialog.NewPopup;
+import dialog.PreferencesPopup;
 
 // Graphical Helpers
 import graphics.BrushFactory;
@@ -95,6 +96,7 @@ class Main extends Sprite {
   private var filePopup:FilePopup;
   private var menuPopup:MenuPopup;
   private var newPopup:NewPopup;
+  private var preferencesPopup:PreferencesPopup;
 
   private var filler:Filler;
   private var move:Move;
@@ -268,9 +270,10 @@ class Main extends Sprite {
     newPopup = new NewPopup(0.7, 0.7);
     filePopup = new FilePopup(0.8, 0.85);
     colorPicker = new ColorPicker(new Color(0xFF0000));
+    preferencesPopup = new PreferencesPopup();
 
     // Menu popup
-    menuPopup = new MenuPopup(2, 0);
+    menuPopup = new MenuPopup(3, 0);
     var tempButton = new SimpleButton<String>("New");
     tempButton.onClick = function(event:MouseEvent) {
       newPopup.popup();
@@ -293,10 +296,17 @@ class Main extends Sprite {
     };
     menuPopup.addComponent(tempButton);
 
-    tempButton = new SimpleButton<String>("Color Picker");
+    tempButton = new SimpleButton<String>("Preferences");
     tempButton.onClick = function(event:MouseEvent) {
       menuPopup.hide();
-      colorPicker.popup();
+      preferencesPopup.popup();
+    };
+    menuPopup.addComponent(tempButton);
+
+    tempButton = new SimpleButton<String>("Quit");
+    tempButton.onClick = function(event:MouseEvent) {
+      menuPopup.hide();
+      System.exit(0);
     };
     menuPopup.addComponent(tempButton);
     menuPopup.layout.pack();
@@ -375,6 +385,7 @@ class Main extends Sprite {
     addChild(newPopup);
     addChild(menuPopup);
     addChild(colorPicker);
+    addChild(preferencesPopup);
 
     /*
     alertPopup = new AlertPopup("You cool bro?", confirm);
@@ -395,7 +406,8 @@ class Main extends Sprite {
     //
     // Setup Cursor
     //
-    cursor = new Cursor();
+    Registry.cursor = new Cursor();
+    cursor = Registry.cursor;
     cursor.addTypeCursor("canvas", brushFactory.getBrushImage(), true);
     cursor.visible = false;
     addChild(cursor);
@@ -424,7 +436,7 @@ class Main extends Sprite {
     cursor.visible = false;
   }
 
-  private function setCanvasBrushColor(?color:Int):Void {
+  private function setCanvasBrushColor(?color:Int, ?fromPaletteBox:Bool = false):Void {
     if (color == null) {
       brushFactory.swapColors();
     } else {
@@ -432,7 +444,9 @@ class Main extends Sprite {
     }
     cursor.updateTypeCursor("canvas", brushFactory.getBrushImage());
     statusBox.forceRedraw();
-    paletteBox.pickColor(brushFactory.mainColor.colorInt);
+    if (!fromPaletteBox) {
+      paletteBox.pickColor(brushFactory.mainColor.colorInt);
+    }
   }
 
   private function drawLine():Void {
@@ -556,6 +570,9 @@ class Main extends Sprite {
         menuPopup.popup();
       case Keyboard.SPACE:
         promptPopup.popup();
+      case Keyboard.P:
+        preferencesPopup.popup();
+      /*
       case Keyboard.D:
         toolbox.resize(toolbox.uWidth + 20, toolbox.uHeight);
         paletteBox.resize(paletteBox.uWidth + 20, paletteBox.uHeight);
@@ -577,6 +594,7 @@ class Main extends Sprite {
         colorPicker.popup();
       case Keyboard.U:
         Registry.canvas.undoStep();
+      */
     }
   }
 }
