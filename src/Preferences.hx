@@ -10,6 +10,9 @@ class Preferences {
   public var lastUsedBrush(default, setLastUsed):Int;
   public var keepLastBrush(default, setKeepLastUsed):Bool;
 
+  public var paletteX(default, setPaletteX):Int;
+  public var paletteY(default, setPaletteY):Int;
+
   public function new() {
     so = SharedObject.getLocal("haxeart-prefs");
     dirty = false;
@@ -32,6 +35,18 @@ class Preferences {
       dirty = true;
     } 
     keepLastBrush = so.data.keepLastBrush;
+
+    if (so.data.paletteX == null) {
+      so.data.paletteX = 3;
+      dirty = true;
+    }
+    paletteX = so.data.paletteX;
+
+    if (so.data.paletteY == null) {
+      so.data.paletteY = 3;
+      dirty = true;
+    }
+    paletteY = so.data.paletteY;
 
     if (dirty) {
       so.flush();
@@ -65,6 +80,18 @@ class Preferences {
     keepLastBrush = keepLast;
     writePref('keepLastBrush');
     return keepLast;
+  }
+  
+  private function setPaletteX(x:Int):Int {
+    paletteX = x;
+    writePref('paletteX');
+    return paletteX;
+  }
+  
+  private function setPaletteY(y:Int):Int {
+    paletteY = y;
+    writePref('paletteY');
+    return paletteY;
   }
   
 }

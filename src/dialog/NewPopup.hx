@@ -67,7 +67,7 @@ class NewPopup extends Popup {
     tempButton = new SimpleButton<String>("Ok");
     tempButton.onClick = function(event:MouseEvent) {
       dispatchEvent(new PopupEvent(PopupEvent.CLOSED, TYPE, this.id));
-      Registry.canvas.newImage(widthSlider.value, heightSlider.value);
+      Registry.canvas.newImage(widthSlider.getValue(), heightSlider.getValue());
       this.hide();
     };
     buttonBar.addChild(tempButton);

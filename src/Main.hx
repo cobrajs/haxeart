@@ -4,6 +4,8 @@ package ;
 // TODO: Add palette modification popup
 // TODO: Fix rotation of canvas
 // TODO: Move double click movement out to main instead of being in the pencil tool
+// TODO: CobraUI: Labeled Component
+// TODO: Click Manager can allow repeating intervals actions
 
 // CobraUI Elements
 import cobraui.components.Component;
@@ -59,6 +61,7 @@ import util.FileManager;
 
 import Preferences;
 import Registry;
+import ClickManager;
 
 // Libraries
 import nme.display.Graphics;
@@ -110,6 +113,8 @@ class Main extends Sprite {
   private var alertPopup:AlertPopup;
   private var promptPopup:PromptPopup;
 
+  private var clickManager:ClickManager;
+
   public function new() {
     super();
 
@@ -117,6 +122,9 @@ class Main extends Sprite {
   }
 
   private function construct():Void {
+    clickManager = new ClickManager(stage);
+    Registry.mainWindow = this;
+
     Registry.fileManager = new FileManager();
 
     Registry.stage = stage;
@@ -231,6 +239,13 @@ class Main extends Sprite {
         Math.floor(stage.stageHeight / 2 - Registry.canvas.uHeight / 2)
     );
 
+    clickManager.registerComponent(Registry.canvas);
+    Registry.canvas.addEventListener(ClickEvent.HOLD_CLICK, function(e:ClickEvent) { 
+      trace("You've done it! " + e.stageX + ", " + e.stageY + "; " + e.localX + ", " + e.localY);
+      Registry.canvas.changeZoom(2);
+      cursor.changeZoom(Math.floor(Registry.canvas.zoom));
+    });
+
     addChild(Registry.canvas);
 
     var tempFont = new BitmapFont("profont_2x.png", 16, 8);
@@ -242,7 +257,7 @@ class Main extends Sprite {
     //
     // Setup Palette Box
     //
-    paletteBox = new PaletteBox(toolboxWidth, halfHeight - 50, 3, 4, setCanvasBrushColor);
+    paletteBox = new PaletteBox(toolboxWidth, halfHeight - 50, setCanvasBrushColor);
     paletteBox.x = 0;
     paletteBox.y = halfHeight + 50;
 
@@ -478,6 +493,7 @@ class Main extends Sprite {
       paletteBox.x = 0;
       paletteBox.y = halfHeight;
       paletteBox.resize(toolboxWidth, halfHeight);
+      paletteBox.resizeGrid(Registry.prefs.paletteX, Registry.prefs.paletteY);
       if (!initial) {
         Registry.canvas.moveTo(Registry.canvas.y, Registry.canvas.x);
       }
@@ -490,6 +506,7 @@ class Main extends Sprite {
       paletteBox.x = halfWidth;
       paletteBox.y = 0;
       paletteBox.resize(halfWidth, toolboxWidth);
+      paletteBox.resizeGrid(Registry.prefs.paletteY, Registry.prefs.paletteX);
       if (!initial) {
         Registry.canvas.moveTo(Registry.canvas.y, Registry.canvas.x);
       }

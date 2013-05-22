@@ -8,6 +8,7 @@ import ui.Cursor;
 import util.FileManager;
 
 import nme.display.Stage;
+import nme.display.Sprite;
 
 class Registry {
   public static var touchManager:TouchManager;
@@ -17,6 +18,7 @@ class Registry {
   public static var font:BitmapFont;
 
   public static var stage:Stage;
+  public static var mainWindow:Sprite;
 
   public static var canvas:Canvas;
   public static var cursor:Cursor;

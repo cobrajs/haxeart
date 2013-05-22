@@ -114,16 +114,16 @@ class ColorPicker extends Popup {
   }
 
   private function updateSliders() {
-    redSlider.value = currentColor.r;
-    greenSlider.value = currentColor.g;
-    blueSlider.value = currentColor.b;
+    redSlider.setValue(currentColor.r);
+    greenSlider.setValue(currentColor.g);
+    blueSlider.setValue(currentColor.b);
     updateLabel();
   }
 
   private function updateColor(?e:Event) {
-    currentColor.r = redSlider.value;
-    currentColor.g = greenSlider.value;
-    currentColor.b = blueSlider.value;
+    currentColor.r = redSlider.getValue();
+    currentColor.g = greenSlider.getValue();
+    currentColor.b = blueSlider.getValue();
     updateLabel();
   }
 

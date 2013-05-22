@@ -7,6 +7,7 @@ import cobraui.popup.PopupEvent;
 
 import cobraui.graphics.Color;
 
+import ui.CustomEvents;
 import ui.components.HoldingButton;
 import dialog.ColorPicker;
 
@@ -30,11 +31,24 @@ class PaletteBox extends ScrollBox {
   
   private var layout:GridLayout;
 
-  public function new(width:Int, height:Int,  columns:Int, rows:Int, clickFunction:Int->Bool->Void) {
+  public function new(width:Int, height:Int, clickFunction:Int->Bool->Void) {
     super(width, height, 5);
 
-    this.columns = columns;
-    this.rows = rows;
+    this.columns = Registry.prefs.paletteX;
+    this.rows = Registry.prefs.paletteY;
+
+    var added = false;
+    var addedFunction:Event->Void = null;
+    addedFunction = function(e:Event) {
+      if (!added) {
+        stage.addEventListener(CustomEvents.RESIZE_PALETTE, function(e) {
+          this.resizeGrid(Registry.prefs.paletteX, Registry.prefs.paletteY);
+        });
+        added = true;
+        removeEventListener(Event.ADDED_TO_STAGE, addedFunction);
+      }
+    };
+    addEventListener(Event.ADDED_TO_STAGE, addedFunction);
 
     this.clickFunction = clickFunction;
 
@@ -52,6 +66,15 @@ class PaletteBox extends ScrollBox {
     });
 
     renderBackground();
+  }
+
+  public function resizeGrid(sizeX:Int, sizeY:Int) {
+    columns = sizeX;
+    rows = sizeY;
+    layout.sizeX = sizeX;
+    layout.sizeY = sizeY;
+    layout.pack();
+    scrollTop();
   }
 
   private function renderBackground() {
@@ -80,7 +103,7 @@ class PaletteBox extends ScrollBox {
     };
     colorBox.onHold = function() {
       var tempColorPicker = new ColorPicker(new Color(colorsIndexHash.get(index)));
-      stage.addChild(tempColorPicker);
+      Registry.mainWindow.addChild(tempColorPicker);
       tempColorPicker.popup();
       var id = tempColorPicker.id;
       var msgFnc:PopupEvent->Void = null;
@@ -96,7 +119,7 @@ class PaletteBox extends ScrollBox {
           }
           tempColorPicker.hide();
           stage.removeEventListener(PopupEvent.MESSAGE, msgFnc);
-          stage.removeChild(tempColorPicker);
+          Registry.mainWindow.removeChild(tempColorPicker);
         }
       };
       stage.addEventListener(PopupEvent.MESSAGE, msgFnc);

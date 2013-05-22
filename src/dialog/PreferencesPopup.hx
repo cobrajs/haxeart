@@ -11,15 +11,21 @@ import cobraui.components.Slider;
 import cobraui.layouts.BorderLayout;
 import cobraui.layouts.GridLayout;
 
+import ui.CustomEvents;
+
 import nme.events.Event;
 import nme.events.MouseEvent;
 
 class PreferencesPopup extends Popup {
 
-  public static var numberOfPrefs:Int = 2;
+  public static var numberOfPrefs:Int = 4;
+
+  private var changedPalette:Bool;
 
   public function new() {
     super(0.8, 0.8, "Preferences", BorderLayout.MIDDLE, false);
+
+    changedPalette = false;
 
     layout = new BorderLayout(uWidth, uHeight);
 
@@ -37,7 +43,7 @@ class PreferencesPopup extends Popup {
 
     var tempSlider = new Slider(1, 20, Registry.prefs.undoSteps);
     tempSlider.addEventListener(Event.CHANGE, function(e:Event) {
-      Registry.prefs.undoSteps = tempSlider.value;
+      Registry.prefs.undoSteps = tempSlider.getValue();
     });
     tempContainer.layout.addComponent(tempSlider);
     tempContainer.addChild(tempSlider);
@@ -56,6 +62,36 @@ class PreferencesPopup extends Popup {
     tempContainer.layout.addComponent(tempSelector);
     tempContainer.addChild(tempSelector);
 
+    // Palette X
+
+    var tempLabel = new Label<String>("Palette X");
+    tempLabel.hAlign = center;
+    tempContainer.layout.addComponent(tempLabel);
+    tempContainer.addChild(tempLabel);
+
+    var tempSlider = new Slider(1, 6, Registry.prefs.paletteX);
+    tempSlider.addEventListener(Event.CHANGE, function(e:Event) {
+      Registry.prefs.paletteX = tempSlider.getValue();
+      changedPalette = true;
+    });
+    tempContainer.layout.addComponent(tempSlider);
+    tempContainer.addChild(tempSlider);
+
+    // Palette X
+
+    var tempLabel = new Label<String>("Palette Y");
+    tempLabel.hAlign = center;
+    tempContainer.layout.addComponent(tempLabel);
+    tempContainer.addChild(tempLabel);
+
+    var tempSlider = new Slider(1, 6, Registry.prefs.paletteY);
+    tempSlider.addEventListener(Event.CHANGE, function(e:Event) {
+      Registry.prefs.paletteY = tempSlider.getValue();
+      changedPalette = true;
+    });
+    tempContainer.layout.addComponent(tempSlider);
+    tempContainer.addChild(tempSlider);
+
     tempContainer.layout.pack();
 
     // Last button
@@ -63,11 +99,20 @@ class PreferencesPopup extends Popup {
     var tempButton = new SimpleButton<String>("Save");
     tempButton.onClick = function(event:MouseEvent) {
       this.hide();
+      if (changedPalette) {
+        stage.dispatchEvent(new CustomEvents(CustomEvents.RESIZE_PALETTE, ""));
+      }
     };
     layout.assignComponent(tempButton, BorderLayout.BOTTOM, 1, 0.2, percent);
     window.addChild(tempButton);
 
     layout.pack();
+  }
+
+  override public function popup() {
+    super.popup();
+
+    changedPalette = false;
   }
 
 }
