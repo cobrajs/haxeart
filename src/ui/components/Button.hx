@@ -1,15 +1,15 @@
 package ui.components;
 
-import nme.display.GradientType;
-import nme.display.Sprite;
-import nme.display.Bitmap;
-import nme.display.Graphics;
-import nme.events.Event;
-import nme.events.KeyboardEvent;
-import nme.events.MouseEvent;
-import nme.text.TextFormat;
-import nme.text.TextField;
-import nme.Assets;
+import flash.display.GradientType;
+import flash.display.Sprite;
+import flash.display.Bitmap;
+import flash.display.Graphics;
+import flash.events.Event;
+import flash.events.KeyboardEvent;
+import flash.events.MouseEvent;
+import flash.text.TextFormat;
+import flash.text.TextField;
+import openfl.Assets;
 
 class Button extends Sprite {
   public static var HOVERING:Int = 0;

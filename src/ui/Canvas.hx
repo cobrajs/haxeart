@@ -8,17 +8,17 @@ import tools.ITool;
 import Registry;
 
 // NME stuffs
-import nme.display.Sprite;
-import nme.display.Bitmap;
-import nme.display.BitmapData;
-import nme.display.Shape;
-import nme.display.LineScaleMode;
-import nme.events.MouseEvent;
-import nme.events.TouchEvent;
-import nme.geom.Rectangle;
-import nme.geom.Point;
-import nme.geom.ColorTransform;
-import nme.ui.Multitouch;
+import flash.display.Sprite;
+import flash.display.Bitmap;
+import flash.display.BitmapData;
+import flash.display.Shape;
+import flash.display.LineScaleMode;
+import flash.events.MouseEvent;
+import flash.events.TouchEvent;
+import flash.geom.Rectangle;
+import flash.geom.Point;
+import flash.geom.ColorTransform;
+import flash.ui.Multitouch;
 
 class Canvas extends Sprite {
   private var undoSteps:Array<BitmapData>;
@@ -45,8 +45,8 @@ class Canvas extends Sprite {
   public var currentTool:ITool;
   public var previousTool:ITool;
 
-  public var mainColor(getMainColor, null):Int;
-  public var alternateColor(getAlternateColor, null):Int;
+  public var mainColor (get, null):Int;
+  public var alternateColor (get, null):Int;
 
   public var ignoreMouse:Bool;
 
@@ -334,11 +334,11 @@ class Canvas extends Sprite {
   // Getters for color
   //
 
-  public function getMainColor():Int {
+  public function get_mainColor():Int {
     return brushFactory.mainColor.colorInt;
   }
 
-  public function getAlternateColor():Int {
+  public function get_alternateColor():Int {
     return brushFactory.alternateColor.colorInt;
   }
 

@@ -3,7 +3,7 @@ package tools;
 import tools.ITool;
 import ui.Canvas;
 
-import nme.events.MouseEvent;
+import flash.events.MouseEvent;
 
 class Zoom implements ITool {
   public var imageFile:String;

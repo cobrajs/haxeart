@@ -12,7 +12,7 @@ import cobraui.components.Slider;
 import cobraui.layouts.BorderLayout;
 import cobraui.layouts.GridLayout;
 
-import nme.events.MouseEvent;
+import flash.events.MouseEvent;
 
 class NewPopup extends Popup {
   public static var TYPE:String = "new";

@@ -13,8 +13,8 @@ import cobraui.layouts.GridLayout;
 
 import ui.CustomEvents;
 
-import nme.events.Event;
-import nme.events.MouseEvent;
+import flash.events.Event;
+import flash.events.MouseEvent;
 
 class PreferencesPopup extends Popup {
 
@@ -69,7 +69,7 @@ class PreferencesPopup extends Popup {
     tempContainer.layout.addComponent(tempLabel);
     tempContainer.addChild(tempLabel);
 
-    var tempSlider = new Slider(1, 6, Registry.prefs.paletteX);
+    var tempSlider = new Slider(1, 8, Registry.prefs.paletteX);
     tempSlider.addEventListener(Event.CHANGE, function(e:Event) {
       Registry.prefs.paletteX = tempSlider.getValue();
       changedPalette = true;
@@ -84,7 +84,7 @@ class PreferencesPopup extends Popup {
     tempContainer.layout.addComponent(tempLabel);
     tempContainer.addChild(tempLabel);
 
-    var tempSlider = new Slider(1, 6, Registry.prefs.paletteY);
+    var tempSlider = new Slider(1, 8, Registry.prefs.paletteY);
     tempSlider.addEventListener(Event.CHANGE, function(e:Event) {
       Registry.prefs.paletteY = tempSlider.getValue();
       changedPalette = true;

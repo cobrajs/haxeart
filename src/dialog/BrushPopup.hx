@@ -8,10 +8,10 @@ import cobraui.popup.Popup;
 
 import graphics.BrushFactory;
 
-import nme.events.MouseEvent;
-import nme.display.BitmapData;
-import nme.display.Graphics;
-import nme.geom.Rectangle;
+import flash.events.MouseEvent;
+import flash.display.BitmapData;
+import flash.display.Graphics;
+import flash.geom.Rectangle;
 
 class BrushPopup extends Popup {
   private var brushFactory:BrushFactory;

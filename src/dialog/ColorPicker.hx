@@ -14,8 +14,8 @@ import cobraui.components.Slider;
 import cobraui.layouts.GridLayout;
 import cobraui.layouts.BorderLayout;
 
-import nme.events.Event;
-import nme.events.MouseEvent;
+import flash.events.Event;
+import flash.events.MouseEvent;
 
 class ColorPicker extends Popup {
   public static var TYPE:String = "colorpicker";

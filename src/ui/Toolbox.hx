@@ -10,17 +10,17 @@ import cobraui.graphics.Tilesheet;
 import graphics.TilesheetHelper;
 import ui.StatusBox;
 
-import nme.display.Sprite;
-import nme.Assets;
-import nme.display.Bitmap;
-import nme.display.BitmapData;
-import nme.display.Shape;
-import nme.geom.Rectangle;
-import nme.events.MouseEvent;
+import flash.display.Sprite;
+import flash.display.Bitmap;
+import flash.display.BitmapData;
+import flash.display.Shape;
+import flash.geom.Rectangle;
+import flash.events.MouseEvent;
+import openfl.Assets;
 
 class Toolbox extends Sprite {
-  public var uWidth(default, null):Int;
-  public var uHeight(default, null):Int;
+  public var uWidth (default, null):Int;
+  public var uHeight (default, null):Int;
   private var columns:Int;
   private var rows:Int;
   private var commonBevel:Int;
@@ -29,7 +29,7 @@ class Toolbox extends Sprite {
   public var buttons:Array<SimpleButton<BitmapData>>;
   private var buttonGroups:Array<Int>;
   // Matches the button's name to the button's index
-  private var buttonNames:Hash<Int>;
+  private var buttonNames:Map<String,Int>;
 
   private var imageSet:Array<BitmapData>;
   private var background:Shape;
@@ -41,7 +41,7 @@ class Toolbox extends Sprite {
 
     buttons = new Array<SimpleButton<BitmapData>>();
     buttonGroups = new Array<Int>();
-    buttonNames = new Hash<Int>();
+    buttonNames = new Map<String,Int>();
 
     uWidth = width;
     uHeight = height;

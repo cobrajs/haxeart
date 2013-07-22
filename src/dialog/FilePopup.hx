@@ -14,13 +14,13 @@ import cobraui.layouts.BorderLayout;
 import cobraui.layouts.GridLayout;
 import cobraui.graphics.Tilesheet;
 
-import nme.display.BitmapData;
-import nme.display.Sprite;
-import nme.Assets;
+import flash.display.BitmapData;
+import flash.display.Sprite;
+import openfl.Assets;
 
-import nme.events.Event;
-import nme.events.KeyboardEvent;
-import nme.events.MouseEvent;
+import flash.events.Event;
+import flash.events.KeyboardEvent;
+import flash.events.MouseEvent;
 
 class FilePopup extends Popup {
   private var preview:Sprite;

@@ -7,8 +7,8 @@ import ui.Canvas;
 import ui.Cursor;
 import util.FileManager;
 
-import nme.display.Stage;
-import nme.display.Sprite;
+import flash.display.Stage;
+import flash.display.Sprite;
 
 class Registry {
   public static var touchManager:TouchManager;

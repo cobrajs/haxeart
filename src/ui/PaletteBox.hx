@@ -11,9 +11,9 @@ import ui.CustomEvents;
 import ui.components.HoldingButton;
 import dialog.ColorPicker;
 
-import nme.display.Sprite;
-import nme.events.Event;
-import nme.events.MouseEvent;
+import flash.display.Sprite;
+import flash.events.Event;
+import flash.events.MouseEvent;
 
 class PaletteBox extends ScrollBox {
   private static var index:Int = 1;
@@ -23,8 +23,8 @@ class PaletteBox extends ScrollBox {
 
   private var clickFunction:Int->Bool->Void;
 
-  private var colorsHash:IntHash<HoldingButton<String>>;
-  private var colorsIndexHash:IntHash<Int>;
+  private var colorsHash:Map<Int,HoldingButton<String>>;
+  private var colorsIndexHash:Map<Int,Int>;
 
   public var uWidth:Int;
   public var uHeight:Int;
@@ -53,8 +53,8 @@ class PaletteBox extends ScrollBox {
     this.clickFunction = clickFunction;
 
     layout = new GridLayout(width, height, columns, rows);
-    colorsHash = new IntHash<HoldingButton<String>>();
-    colorsIndexHash = new IntHash<Int>();
+    colorsHash = new Map<Int,HoldingButton<String>>();
+    colorsIndexHash = new Map<Int,Int>();
     
     uWidth = width;
     uHeight = height;

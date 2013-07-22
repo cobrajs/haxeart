@@ -3,17 +3,16 @@ package graphics;
 import cobraui.graphics.Color;
 import cobraui.graphics.ImageOpts;
 
-import nme.display.Bitmap;
-import nme.display.BitmapData;
-import nme.display.BitmapInt32;
-import nme.display.BlendMode;
+import flash.display.Bitmap;
+import flash.display.BitmapData;
+import flash.display.BlendMode;
 
-import nme.geom.ColorTransform;
-import nme.geom.Rectangle;
-import nme.geom.Point;
-import nme.geom.Matrix;
+import flash.geom.ColorTransform;
+import flash.geom.Rectangle;
+import flash.geom.Point;
+import flash.geom.Matrix;
 
-import nme.Assets;
+import openfl.Assets;
 
 class BrushFactory {
   private var brushBitmap:Bitmap;

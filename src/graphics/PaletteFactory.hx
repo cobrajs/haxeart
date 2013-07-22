@@ -2,7 +2,7 @@ package graphics;
 
 import cobraui.graphics.Color;
 
-import nme.Assets;
+import openfl.Assets;
 
 class PaletteFactory {
   private var colors:Array<Int>;

@@ -1,7 +1,7 @@
 package tools;
 
 import ui.Canvas;
-import nme.events.MouseEvent;
+import flash.events.MouseEvent;
 
 interface ITool {
   var imageFile:String;

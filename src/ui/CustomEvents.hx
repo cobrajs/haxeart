@@ -1,6 +1,6 @@
 package ui;
 
-import nme.events.Event;
+import flash.events.Event;
 
 class CustomEvents extends Event {
   public static var RESIZE_PALETTE:String = "ResizePaletteEvent";

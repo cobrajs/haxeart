@@ -1,7 +1,7 @@
 package util;
 
-import nme.filesystem.File;
-import nme.display.BitmapData;
+import flash.filesystem.File;
+import flash.display.BitmapData;
 
 typedef FileInfo = {
   var name:String;

@@ -3,7 +3,7 @@ package tools;
 import tools.ITool;
 import ui.Canvas;
 
-import nme.events.MouseEvent;
+import flash.events.MouseEvent;
 
 class Filler implements ITool {
   public var imageFile:String;
@@ -31,5 +31,4 @@ class Filler implements ITool {
   public function mouseUpAction(canvas:Canvas, event:MouseEvent):Void {
   }
 }
-
 

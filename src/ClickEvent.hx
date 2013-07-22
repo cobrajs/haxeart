@@ -1,6 +1,6 @@
 package ;
 
-import nme.events.Event;
+import flash.events.Event;
 
 class ClickEvent extends Event {
   public static var HOLD_CLICK:String = "HoldClick";

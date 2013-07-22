@@ -5,7 +5,9 @@ package ;
 // TODO: Fix rotation of canvas
 // TODO: Move double click movement out to main instead of being in the pencil tool
 // TODO: CobraUI: Labeled Component
-// TODO: Click Manager can allow repeating intervals actions
+// TODO: Add configuration option to allow putting palette and toolbox on sides
+// TODO: Add temp layer that will store data before committing to canvas
+// TODO: Configure palette box to use new click manager instead of needing holdingbutton
 
 // CobraUI Elements
 import cobraui.components.Component;
@@ -64,20 +66,27 @@ import Registry;
 import ClickManager;
 
 // Libraries
-import nme.display.Graphics;
-import nme.display.Sprite;
-import nme.events.Event;
-import nme.events.KeyboardEvent;
-import nme.events.MouseEvent;
-import nme.events.TouchEvent;
-import nme.geom.Point;
-import nme.system.Capabilities;
-import nme.system.System;
-import nme.ui.Keyboard;
-import nme.ui.Mouse;
-import nme.ui.Multitouch;
+import flash.display.Graphics;
+import flash.display.Sprite;
+import flash.events.Event;
+import flash.events.KeyboardEvent;
+import flash.events.MouseEvent;
+import flash.events.TouchEvent;
+import flash.geom.Point;
+import flash.system.Capabilities;
+import flash.system.System;
+import flash.ui.Keyboard;
+import flash.ui.Mouse;
+import flash.ui.Multitouch;
 
-import nme.filesystem.File;
+import flash.filesystem.File;
+
+import openfl.events.JoystickEvent;
+
+enum Orientation {
+  portrait;
+  landscape;
+}
 
 class Main extends Sprite {
   private var toolboxWidth:Int;
@@ -115,6 +124,8 @@ class Main extends Sprite {
 
   private var clickManager:ClickManager;
 
+  private var orientation:Orientation;
+
   public function new() {
     super();
 
@@ -130,6 +141,8 @@ class Main extends Sprite {
     Registry.stage = stage;
     Registry.stageWidth = stage.stageWidth;
     Registry.stageHeight = stage.stageHeight;
+
+    orientation = (stage.stageWidth / stage.stageHeight > 1) ? landscape : portrait;
 
     Registry.touchManager = new TouchManager();
 
@@ -147,6 +160,17 @@ class Main extends Sprite {
     stage.addEventListener(MouseEvent.MOUSE_MOVE, stageMouseMove);
     stage.addEventListener(MouseEvent.MOUSE_UP, stageMouseUp);
     stage.addEventListener(MouseEvent.MOUSE_DOWN, stageMouseDown);
+
+    stage.addEventListener(JoystickEvent.BUTTON_DOWN, function(e:JoystickEvent) {
+      // Menu button
+      if (e.id == 16777234) {
+        menuPopup.popup();
+      } 
+      // Back button
+      else if (e.id == 27) {
+        System.exit(0);
+      }
+    });
 
     stage.addEventListener(MouseEvent.MOUSE_WHEEL, function(e:MouseEvent) {
       if (e.delta > 0) {
@@ -205,6 +229,7 @@ class Main extends Sprite {
     */
 
     var halfHeight = Math.floor(stage.stageHeight / 2);
+    var halfWidth = Math.floor(stage.stageWidth / 2);
     toolboxWidth = 200;
 
     brushFactory = new BrushFactory("brushes.png", 7, 4, 0xFF00FF);
@@ -231,19 +256,29 @@ class Main extends Sprite {
     // Setup Canvas
     //
     Registry.canvas = new Canvas(64, 64, brushFactory, pencil);
-    Registry.canvas.zoomRect.width = stage.stageWidth - 200;
-    Registry.canvas.zoomRect.x = 200;
-    Registry.canvas.originalPos = new Point(toolboxWidth, 0);
-    Registry.canvas.moveTo(
-        Math.floor(200 + ((stage.stageWidth - 200) / 2) - Registry.canvas.uWidth / 2), 
-        Math.floor(stage.stageHeight / 2 - Registry.canvas.uHeight / 2)
-    );
+    if (orientation == landscape) {
+      Registry.canvas.zoomRect.width -= toolboxWidth * 2;
+      Registry.canvas.zoomRect.x = toolboxWidth;
+      Registry.canvas.originalPos = new Point(toolboxWidth, 0);
+      Registry.canvas.moveTo(
+          Math.floor(toolboxWidth + ((stage.stageWidth - toolboxWidth) / 2) - Registry.canvas.uWidth / 2), 
+          Math.floor(stage.stageHeight / 2 - Registry.canvas.uHeight / 2)
+      );
+    } else {
+      Registry.canvas.zoomRect.height -= toolboxWidth * 2;
+      Registry.canvas.zoomRect.y = toolboxWidth;
+      Registry.canvas.originalPos = new Point(0, toolboxWidth * 2);
+      Registry.canvas.moveTo(
+          Math.floor(stage.stageWidth / 2 - Registry.canvas.uWidth / 2), 
+          Math.floor(toolboxWidth + ((stage.stageHeight - toolboxWidth * 2) / 2) - Registry.canvas.uHeight / 2)
+      );
+    }
 
-    clickManager.registerComponent(Registry.canvas);
+    clickManager.registerComponent(Registry.canvas, true);
     Registry.canvas.addEventListener(ClickEvent.HOLD_CLICK, function(e:ClickEvent) { 
-      trace("You've done it! " + e.stageX + ", " + e.stageY + "; " + e.localX + ", " + e.localY);
-      Registry.canvas.changeZoom(2);
-      cursor.changeZoom(Math.floor(Registry.canvas.zoom));
+      trace("You've done it! " , e.stageX , e.stageY , e.localX , e.localY);
+      //Registry.canvas.changeZoom(2);
+      //cursor.changeZoom(Math.floor(Registry.canvas.zoom));
     });
 
     addChild(Registry.canvas);
@@ -257,9 +292,15 @@ class Main extends Sprite {
     //
     // Setup Palette Box
     //
-    paletteBox = new PaletteBox(toolboxWidth, halfHeight - 50, setCanvasBrushColor);
-    paletteBox.x = 0;
-    paletteBox.y = halfHeight + 50;
+    if (orientation == landscape) {
+      paletteBox = new PaletteBox(toolboxWidth, stage.stageHeight, setCanvasBrushColor);
+      paletteBox.x = stage.stageWidth - toolboxWidth;
+      paletteBox.y = 0;
+    } else {
+      paletteBox = new PaletteBox(stage.stageWidth, toolboxWidth, setCanvasBrushColor);
+      paletteBox.x = 0;
+      paletteBox.y = stage.stageHeight - toolboxWidth;
+    }
 
     var paletteFactory = new PaletteFactory();
     paletteFactory.load("colors.dat");
@@ -329,12 +370,19 @@ class Main extends Sprite {
     //
     // Setup Toolbox
     //
-    toolbox = new Toolbox(toolboxWidth, halfHeight + 50,   3, 4);
+    if (orientation == landscape) {
+      toolbox = new Toolbox(toolboxWidth, stage.stageHeight,   2, 6);
+    } else {
+      toolbox = new Toolbox(stage.stageWidth, toolboxWidth,   6, 2);
+    }
     toolbox.x = 0;
     toolbox.y = 0;
 
     toolbox.setTilesheet("toolbox.png", 4, 4, 0xFF00FF);
-    var buttons = [
+    var buttons:Array<Dynamic> = [
+      ['popup', function(button):Void {
+        brushPopup.popup();
+      }, 9,                 null, null],
       ['pencil', function(button):Void { 
         Registry.canvas.currentTool = pencil; 
       }, pencil.imageIndex, 1,    true],
@@ -356,9 +404,6 @@ class Main extends Sprite {
       ['redo', function(button):Void {
         Registry.canvas.redoStep();
       }, 11,                null, null],
-      ['popup', function(button):Void {
-        brushPopup.popup();
-      }, 9,                 null, null],
       ['zoomin', function(button):Void {
         Registry.canvas.changeZoom(2);
         cursor.changeZoom(Math.floor(Registry.canvas.zoom));
@@ -371,9 +416,6 @@ class Main extends Sprite {
         Registry.canvas.quickView();
         cursor.changeZoom(Math.floor(Registry.canvas.zoom));
       }, 12,                 null, null],
-
-      // The next two are pretty much just for testing stuff right now
-
       ['paldown', function(button) {
         menuPopup.popup();
       }, 4,                 null, null]
@@ -464,53 +506,37 @@ class Main extends Sprite {
     }
   }
 
-  private function drawLine():Void {
-    for (p in (new LineIter(10, 10, 100, 80))) {
-      Registry.canvas.drawDot(p[0], p[1]);
-    }
-  }
-
-  private function drawRedCircle():Void { drawCircle(0xFF0000); }
-  private function drawGreenCircle():Void { drawCircle(0x00FF00); }
-  private function drawBlueCircle():Void { drawCircle(0x0000FF); }
-  private function drawCircle(color:Int):Void {
-    var gfx = this.graphics;
-    var tempX = Math.random() * stage.stageWidth;
-    var tempY = Math.random() * (stage.stageHeight - 64);
-    gfx.beginFill(color);
-    gfx.drawCircle(tempX, tempY, 30);
-    gfx.endFill();
-  }
-
-  private function resizeComponents(?initial:Bool = false) {
+  private function resizeComponents(?initial:Bool = false):Orientation {
     var ratio = (stage.stageWidth / stage.stageHeight);
     if (ratio > 1) {
       var halfHeight = stage.stageHeight / 2;
       toolbox.x = 0;
       toolbox.y = 0;
-      toolbox.resize(toolboxWidth, halfHeight);
-      toolbox.resizeGrid(3, 4);
-      paletteBox.x = 0;
-      paletteBox.y = halfHeight;
-      paletteBox.resize(toolboxWidth, halfHeight);
+      toolbox.resize(toolboxWidth, stage.stageHeight);
+      toolbox.resizeGrid(2, 6);
+      paletteBox.x = stage.stageWidth - toolboxWidth;
+      paletteBox.y = 0;
+      paletteBox.resize(toolboxWidth, stage.stageHeight);
       paletteBox.resizeGrid(Registry.prefs.paletteX, Registry.prefs.paletteY);
       if (!initial) {
-        Registry.canvas.moveTo(Registry.canvas.y, Registry.canvas.x);
+        //Registry.canvas.moveTo(Registry.canvas.y, Registry.canvas.x);
       }
-    } else {
-      var halfWidth = stage.stageWidth / 2;
-      toolbox.x = 0;
-      toolbox.y = 0;
-      toolbox.resize(halfWidth, toolboxWidth);
-      toolbox.resizeGrid(4, 3);
-      paletteBox.x = halfWidth;
-      paletteBox.y = 0;
-      paletteBox.resize(halfWidth, toolboxWidth);
-      paletteBox.resizeGrid(Registry.prefs.paletteY, Registry.prefs.paletteX);
-      if (!initial) {
-        Registry.canvas.moveTo(Registry.canvas.y, Registry.canvas.x);
-      }
+      return landscape;
+    } 
+
+    var halfWidth = stage.stageWidth / 2;
+    toolbox.x = 0;
+    toolbox.y = 0;
+    toolbox.resize(stage.stageWidth, toolboxWidth);
+    toolbox.resizeGrid(6, 2);
+    paletteBox.x = 0;
+    paletteBox.y = stage.stageHeight - toolboxWidth;
+    paletteBox.resize(stage.stageWidth, toolboxWidth);
+    paletteBox.resizeGrid(Registry.prefs.paletteY, Registry.prefs.paletteX);
+    if (!initial) {
+      //Registry.canvas.moveTo(Registry.canvas.y, Registry.canvas.x);
     }
+    return portrait;
   }
 
 
@@ -523,9 +549,22 @@ class Main extends Sprite {
   }
 
   private function resize(event:Event):Void {
-    resizeComponents();
-    Registry.canvas.zoomRect.width = stage.stageWidth - toolboxWidth;
-    Registry.canvas.zoomRect.height = stage.stageHeight;
+    var orientation = resizeComponents();
+    if (orientation == landscape) {
+      Registry.canvas.zoomRect.x = toolboxWidth;
+      Registry.canvas.zoomRect.y = 0;
+      Registry.canvas.zoomRect.width = stage.stageWidth - toolboxWidth * 2;
+      Registry.canvas.zoomRect.height = stage.stageHeight;
+      Registry.canvas.originalPos.x = toolboxWidth;
+      Registry.canvas.originalPos.y = 0;
+    } else {
+      Registry.canvas.zoomRect.x = 0;
+      Registry.canvas.zoomRect.y = toolboxWidth;
+      Registry.canvas.zoomRect.width = stage.stageWidth;
+      Registry.canvas.zoomRect.height = stage.stageHeight - toolboxWidth * 2;
+      Registry.canvas.originalPos.x = 0;
+      Registry.canvas.originalPos.y = toolboxWidth;
+    }
     Registry.canvas.centerCanvas();
   }
 
@@ -567,7 +606,7 @@ class Main extends Sprite {
     }
 #end
     switch(keyCode) {
-      case Keyboard.ESCAPE:
+      case Keyboard.ESCAPE, Keyboard.Q:
         System.exit(0);
       case Keyboard.LEFT:
         Registry.canvas.x += 10 * Registry.canvas.zoom;

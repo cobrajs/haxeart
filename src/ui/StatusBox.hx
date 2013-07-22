@@ -3,9 +3,9 @@ package ui;
 import cobraui.components.SimpleButton;
 import cobraui.graphics.Color;
 
-import nme.display.BitmapData;
-import nme.events.MouseEvent;
-import nme.geom.Rectangle;
+import flash.display.BitmapData;
+import flash.events.MouseEvent;
+import flash.geom.Rectangle;
 
 class StatusBox extends SimpleButton<BitmapData> {
   public var imageData:BitmapData;
@@ -23,8 +23,8 @@ class StatusBox extends SimpleButton<BitmapData> {
           imageData = new BitmapData(Std.int(uWidth - inset), Std.int(uHeight - inset), true);
           var offset = Std.int(imageData.width * 0.2);
           var border = 2;
-          var mainColor = Color.getARGB(Registry.canvas.getMainColor(), 255);
-          var alternateColor = Color.getARGB(Registry.canvas.getAlternateColor(), 255);
+          var mainColor = Color.getARGB(Registry.canvas.get_mainColor(), 255);
+          var alternateColor = Color.getARGB(Registry.canvas.get_alternateColor(), 255);
 
           // Fill back with transparency
           imageData.fillRect(new Rectangle(0, 0, imageData.width, imageData.height), Color.transparent);

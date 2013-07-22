@@ -4,9 +4,9 @@ import util.Utils;
 
 import cobraui.components.SimpleButton;
 
-import nme.events.MouseEvent;
-import nme.events.Event;
-import nme.geom.Point;
+import flash.events.MouseEvent;
+import flash.events.Event;
+import flash.geom.Point;
 
 class HoldingButton<T> extends SimpleButton<T> {
   private var holdLength:Float;

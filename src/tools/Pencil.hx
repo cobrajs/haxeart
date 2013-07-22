@@ -5,8 +5,8 @@ import ui.Canvas;
 import util.LineIter;
 import util.Utils;
 
-import nme.events.MouseEvent;
-import nme.geom.Point;
+import flash.events.MouseEvent;
+import flash.geom.Point;
 
 class Pencil implements ITool {
   // Double click movement

@@ -31,8 +31,8 @@
   
   <assets path="assets" rename="assets" include="*" exclude="nme.svg" />
   
-  <haxelib name="nme" />
-  <haxelib name="actuate" />
+  <haxelib name="openfl" />
+  <!-- <haxelib name="actuate" /> -->
   <haxelib name="cobraui" />
   <!-- <icon name="icon.svg" /> -->
 

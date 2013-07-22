@@ -2,19 +2,19 @@ package ui;
 
 import cobraui.graphics.Color;
 
-import nme.display.Sprite;
-import nme.display.Shape;
-import nme.display.Bitmap;
-import nme.display.BitmapData;
-import nme.ui.Mouse;
-import nme.geom.Rectangle;
-import nme.geom.Matrix;
+import flash.display.Sprite;
+import flash.display.Shape;
+import flash.display.Bitmap;
+import flash.display.BitmapData;
+import flash.ui.Mouse;
+import flash.geom.Rectangle;
+import flash.geom.Matrix;
 
 class Cursor extends Sprite {
   private var image:Sprite;
 
-  private var images:Hash<BitmapData>;
-  private var useZoom:Hash<Bool>;
+  private var images:Map<String,BitmapData>;
+  private var useZoom:Map<String,Bool>;
 
   private var zoomLevel:Float;
 
@@ -24,8 +24,8 @@ class Cursor extends Sprite {
     super();
 #if !mobile
 
-    images = new Hash<BitmapData>();
-    useZoom = new Hash<Bool>();
+    images = new Map<String,BitmapData>();
+    useZoom = new Map<String,Bool>();
 
     image = new Sprite();
     addChild(image);

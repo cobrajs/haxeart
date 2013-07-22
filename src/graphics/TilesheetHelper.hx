@@ -2,11 +2,11 @@ package graphics;
 
 import cobraui.graphics.ImageOpts;
 
-import nme.display.Tilesheet;
-import nme.display.BitmapData;
-import nme.geom.Rectangle;
-import nme.geom.Point;
-import nme.Assets;
+import flash.display.BitmapData;
+import flash.geom.Rectangle;
+import flash.geom.Point;
+import openfl.display.Tilesheet;
+import openfl.Assets;
 
 // TODO: Keeping this around for now, but it is superceded by my Tilesheet override implementation
 

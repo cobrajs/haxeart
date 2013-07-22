@@ -4,29 +4,29 @@ import ClickEvent;
 
 import util.Utils;
 
-import nme.display.InteractiveObject;
-import nme.display.Stage;
-import nme.events.Event;
-import nme.events.MouseEvent;
-import nme.geom.Point;
+import flash.display.InteractiveObject;
+import flash.display.Stage;
+import flash.events.Event;
+import flash.events.MouseEvent;
+import flash.geom.Point;
 
 class ClickManager {
   public static var holdTime = 0.5;
   public static var maxTravel = 20;
-  private var data:Hash<HoldData>;
+  private var data:Map<String,HoldData>;
 
   private var lastUpdate:Float;
 
   public function new(stage:Stage) {
-    data = new Hash<HoldData>();
+    data = new Map<String,HoldData>();
 
     lastUpdate = Utils.getTime();
     stage.addEventListener(Event.ENTER_FRAME, update);
   }
 
-  public function registerComponent(component:InteractiveObject) {
+  public function registerComponent(component:InteractiveObject, ?multiple:Bool = false) {
     var name = component.name;
-    var tempData = new HoldData(component);
+    var tempData = new HoldData(component, multiple);
 
     component.addEventListener(MouseEvent.MOUSE_DOWN, function(e:MouseEvent) {
       tempData.held = true;
@@ -66,8 +66,12 @@ class ClickManager {
           tempData.component.dispatchEvent(new ClickEvent(ClickEvent.HOLD_CLICK, 
                 tempData.pos.x, tempData.pos.y,
                 tempData.localPos.x, tempData.localPos.y));
-          tempData.held = false;
-          tempData.usable = false;
+          if (tempData.multiple) {
+            tempData.time = 0;
+          } else {
+            tempData.held = false;
+            tempData.usable = false;
+          }
         }
       }
     }
@@ -82,9 +86,10 @@ class HoldData {
   public var pos:Point;
   public var localPos:Point;
   public var time:Float;
+  public var multiple:Bool;
   public var component:InteractiveObject;
 
-  public function new(component:InteractiveObject) {
+  public function new(component:InteractiveObject, ?multiple:Bool = false) {
     this.component = component;
 
     this.held = false;
@@ -95,5 +100,7 @@ class HoldData {
     this.localPos = new Point(0, 0);
     
     this.time = 0; 
+
+    this.multiple = multiple;
   }
 }
