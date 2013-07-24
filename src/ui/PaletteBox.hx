@@ -26,9 +26,6 @@ class PaletteBox extends ScrollBox {
   private var colorsHash:Map<Int,HoldingButton<String>>;
   private var colorsIndexHash:Map<Int,Int>;
 
-  public var uWidth:Int;
-  public var uHeight:Int;
-  
   private var layout:GridLayout;
 
   public function new(width:Int, height:Int, clickFunction:Int->Bool->Void) {
@@ -134,11 +131,9 @@ class PaletteBox extends ScrollBox {
   }
 
   override public function resize(width:Float, height:Float) {
-    uWidth = Std.int(width);
-    uHeight = Std.int(height);
     layout.resize(width, height);
 
-    super.resize(width, height);
+    resizeBox(width, height);
 
     renderBackground();
   }

@@ -15,6 +15,7 @@ import cobraui.components.Label;
 import cobraui.components.Selector;
 import cobraui.components.SimpleButton;
 import cobraui.components.TextInput;
+import cobraui.layouts.BorderLayout;
 
 import cobraui.util.Navigator;
 import cobraui.util.ThemeFactory;
@@ -91,6 +92,7 @@ enum Orientation {
 class Main extends Sprite {
   private var toolboxWidth:Int;
 
+  private var mainLayout:BorderLayout;
   private var paletteBox:PaletteBox;
   private var statusBox:StatusBox;
   private var toolbox:Toolbox;
@@ -290,32 +292,6 @@ class Main extends Sprite {
 
 
     //
-    // Setup Palette Box
-    //
-    if (orientation == landscape) {
-      paletteBox = new PaletteBox(toolboxWidth, stage.stageHeight, setCanvasBrushColor);
-      paletteBox.x = stage.stageWidth - toolboxWidth;
-      paletteBox.y = 0;
-    } else {
-      paletteBox = new PaletteBox(stage.stageWidth, toolboxWidth, setCanvasBrushColor);
-      paletteBox.x = 0;
-      paletteBox.y = stage.stageHeight - toolboxWidth;
-    }
-
-    var paletteFactory = new PaletteFactory();
-    paletteFactory.load("colors.dat");
-
-    for (color in paletteFactory.getColors()) {
-      paletteBox.addColor(color);
-    }
-    paletteBox.doneAdding();
-
-    paletteBox.pickColor(brushFactory.mainColor.colorInt);
-
-    addChild(paletteBox);
-
-
-    //
     // Popup Boxes
     //
     brushPopup = new BrushPopup(0.8, 0.7, brushFactory, function(picked:Int):Void {
@@ -366,17 +342,41 @@ class Main extends Sprite {
     };
     menuPopup.addComponent(tempButton);
     menuPopup.layout.pack();
+    
+
+
+    //
+    // Setup Main Layout for handling toolbox and palette box
+    //
+    mainLayout = new BorderLayout(stage.stageWidth, stage.stageHeight);
+
+    //
+    // Setup Palette Box
+    //
+    paletteBox = new PaletteBox(10, 10, setCanvasBrushColor);
+
+    var paletteFactory = new PaletteFactory();
+    paletteFactory.load("colors.dat");
+
+    for (color in paletteFactory.getColors()) {
+      paletteBox.addColor(color);
+    }
+    paletteBox.doneAdding();
+
+    paletteBox.pickColor(brushFactory.mainColor.colorInt);
+
+    addChild(paletteBox);
+
+    mainLayout.assignComponent(paletteBox, BorderLayout.RIGHT, 0.1, 1, percent);
 
     //
     // Setup Toolbox
     //
     if (orientation == landscape) {
-      toolbox = new Toolbox(toolboxWidth, stage.stageHeight,   2, 6);
+      toolbox = new Toolbox(10, 10, 2, 6);
     } else {
-      toolbox = new Toolbox(stage.stageWidth, toolboxWidth,   6, 2);
+      toolbox = new Toolbox(10, 10, 6, 2);
     }
-    toolbox.x = 0;
-    toolbox.y = 0;
 
     toolbox.setTilesheet("toolbox.png", 4, 4, 0xFF00FF);
     var buttons:Array<Dynamic> = [
@@ -435,6 +435,9 @@ class Main extends Sprite {
     toolbox.doneAdding();
 
     addChild(toolbox);
+    mainLayout.assignComponent(toolbox, BorderLayout.LEFT, 0.1, 1, percent);
+
+    mainLayout.pack();
 
     // Put Popup Boxes on Top
     addChild(brushPopup);
@@ -508,8 +511,10 @@ class Main extends Sprite {
 
   private function resizeComponents(?initial:Bool = false):Orientation {
     var ratio = (stage.stageWidth / stage.stageHeight);
+    mainLayout.resize(stage.stageWidth, stage.stageHeight);
     if (ratio > 1) {
       var halfHeight = stage.stageHeight / 2;
+      /*
       toolbox.x = 0;
       toolbox.y = 0;
       toolbox.resize(toolboxWidth, stage.stageHeight);
@@ -518,6 +523,7 @@ class Main extends Sprite {
       paletteBox.y = 0;
       paletteBox.resize(toolboxWidth, stage.stageHeight);
       paletteBox.resizeGrid(Registry.prefs.paletteX, Registry.prefs.paletteY);
+      */
       if (!initial) {
         //Registry.canvas.moveTo(Registry.canvas.y, Registry.canvas.x);
       }
@@ -525,6 +531,7 @@ class Main extends Sprite {
     } 
 
     var halfWidth = stage.stageWidth / 2;
+      /*
     toolbox.x = 0;
     toolbox.y = 0;
     toolbox.resize(stage.stageWidth, toolboxWidth);
@@ -533,6 +540,7 @@ class Main extends Sprite {
     paletteBox.y = stage.stageHeight - toolboxWidth;
     paletteBox.resize(stage.stageWidth, toolboxWidth);
     paletteBox.resizeGrid(Registry.prefs.paletteY, Registry.prefs.paletteX);
+      */
     if (!initial) {
       //Registry.canvas.moveTo(Registry.canvas.y, Registry.canvas.x);
     }

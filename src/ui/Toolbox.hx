@@ -1,7 +1,6 @@
 package ui;
 
-// TODO: Convert to Component to allow use with BorderLayout
-
+import cobraui.components.Container;
 import cobraui.components.SimpleButton;
 import cobraui.layouts.GridLayout;
 import cobraui.graphics.Color;
@@ -18,9 +17,7 @@ import flash.geom.Rectangle;
 import flash.events.MouseEvent;
 import openfl.Assets;
 
-class Toolbox extends Sprite {
-  public var uWidth (default, null):Int;
-  public var uHeight (default, null):Int;
+class Toolbox extends Container {
   private var columns:Int;
   private var rows:Int;
   private var commonBevel:Int;
@@ -32,9 +29,7 @@ class Toolbox extends Sprite {
   private var buttonNames:Map<String,Int>;
 
   private var imageSet:Array<BitmapData>;
-  private var background:Shape;
-
-  private var layout:GridLayout;
+  private var backgroundImg:Shape;
 
   public function new(width:Int, height:Int, columns:Int, rows:Int) {
     super();
@@ -50,15 +45,23 @@ class Toolbox extends Sprite {
 
     layout = new GridLayout(width - 1, height - 1, columns, rows);
 
-    background = new Shape();
+    backgroundImg = new Shape();
     renderBackground();
-    addChild(background);
+    addChild(backgroundImg);
+  }
+
+  override public function redraw() {
+    super.redraw();
+    if (ready) {
+      renderBackground();
+    }
   }
 
   public function resizeGrid(sizeX:Int, sizeY:Int) {
-    layout.sizeX = sizeX;
-    layout.sizeY = sizeY;
-    layout.pack();
+    var tempLayout = cast(layout, GridLayout);
+    tempLayout.sizeX = sizeX;
+    tempLayout.sizeY = sizeY;
+    tempLayout.pack();
   }
 
   public function setTilesheet(filename:String, tilesX:Int, tilesY:Int, ?transparentKey:Int) {
@@ -117,6 +120,7 @@ class Toolbox extends Sprite {
     button.dispatchEvent(upEvent);
   }
 
+  /*
   public function resize(width:Float, height:Float) {
     uWidth = Std.int(width);
     uHeight = Std.int(height);
@@ -124,9 +128,10 @@ class Toolbox extends Sprite {
 
     renderBackground();
   }
+  */
 
   private function renderBackground() {
-    var gfx = background.graphics;
+    var gfx = backgroundImg.graphics;
     gfx.clear();
     gfx.lineStyle(2, 0x555555);
     gfx.beginFill(0xAAAAAA);
