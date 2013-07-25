@@ -4,17 +4,16 @@ package ;
 // TODO: Add palette modification popup
 // TODO: Fix rotation of canvas
 // TODO: Move double click movement out to main instead of being in the pencil tool
-// TODO: CobraUI: Labeled Component
 // TODO: Add configuration option to allow putting palette and toolbox on sides
 // TODO: Add temp layer that will store data before committing to canvas
-// TODO: Configure palette box to use new click manager instead of needing holdingbutton
+// TODO: Add toolbox alternate view with alternate state/icon/action for every button
+// TODO: Add toolbox items for shifting, rotating, and flipping canvas
 
 // CobraUI Elements
 import cobraui.components.Component;
 import cobraui.components.Label;
-import cobraui.components.Selector;
+import cobraui.components.LabeledComponent;
 import cobraui.components.SimpleButton;
-import cobraui.components.TextInput;
 import cobraui.layouts.BorderLayout;
 
 import cobraui.util.Navigator;
@@ -55,11 +54,7 @@ import tools.Pencil;
 import tools.Picker;
 import tools.Move;
 
-// Iterators
-import util.LineIter;
-
 // Other Utils
-import util.Utils;
 import util.FileManager;
 
 import Preferences;
@@ -80,9 +75,9 @@ import flash.ui.Keyboard;
 import flash.ui.Mouse;
 import flash.ui.Multitouch;
 
-import flash.filesystem.File;
-
+#if (!flash && !js)
 import openfl.events.JoystickEvent;
+#end
 
 enum Orientation {
   portrait;
@@ -124,8 +119,6 @@ class Main extends Sprite {
   private var alertPopup:AlertPopup;
   private var promptPopup:PromptPopup;
 
-  private var clickManager:ClickManager;
-
   private var orientation:Orientation;
 
   public function new() {
@@ -135,7 +128,7 @@ class Main extends Sprite {
   }
 
   private function construct():Void {
-    clickManager = new ClickManager(stage);
+    Registry.clickManager = new ClickManager(stage);
     Registry.mainWindow = this;
 
     Registry.fileManager = new FileManager();
@@ -163,6 +156,9 @@ class Main extends Sprite {
     stage.addEventListener(MouseEvent.MOUSE_UP, stageMouseUp);
     stage.addEventListener(MouseEvent.MOUSE_DOWN, stageMouseDown);
 
+#if (!flash && !js)
+    //
+    // For Android
     stage.addEventListener(JoystickEvent.BUTTON_DOWN, function(e:JoystickEvent) {
       // Menu button
       if (e.id == 16777234) {
@@ -184,7 +180,6 @@ class Main extends Sprite {
       }
     });
 
-#if (!flash && !js)
     stage.addEventListener(MouseEvent.MIDDLE_MOUSE_DOWN, function(e:MouseEvent) {
       Registry.canvas.startDrag();
     });
@@ -276,7 +271,7 @@ class Main extends Sprite {
       );
     }
 
-    clickManager.registerComponent(Registry.canvas, true);
+    Registry.clickManager.registerComponent(Registry.canvas, null, true);
     Registry.canvas.addEventListener(ClickEvent.HOLD_CLICK, function(e:ClickEvent) { 
       trace("You've done it! " , e.stageX , e.stageY , e.localX , e.localY);
       //Registry.canvas.changeZoom(2);
@@ -367,7 +362,7 @@ class Main extends Sprite {
 
     addChild(paletteBox);
 
-    mainLayout.assignComponent(paletteBox, BorderLayout.RIGHT, 0.1, 1, percent);
+    mainLayout.assignComponent(paletteBox, BorderLayout.RIGHT, 0.2, 1, percent);
 
     //
     // Setup Toolbox
@@ -435,7 +430,7 @@ class Main extends Sprite {
     toolbox.doneAdding();
 
     addChild(toolbox);
-    mainLayout.assignComponent(toolbox, BorderLayout.LEFT, 0.1, 1, percent);
+    mainLayout.assignComponent(toolbox, BorderLayout.LEFT, 0.2, 1, percent);
 
     mainLayout.pack();
 
@@ -513,37 +508,17 @@ class Main extends Sprite {
     var ratio = (stage.stageWidth / stage.stageHeight);
     mainLayout.resize(stage.stageWidth, stage.stageHeight);
     if (ratio > 1) {
-      var halfHeight = stage.stageHeight / 2;
-      /*
-      toolbox.x = 0;
-      toolbox.y = 0;
-      toolbox.resize(toolboxWidth, stage.stageHeight);
+      mainLayout.updateComponent(toolbox, BorderLayout.LEFT, 0.2, 1, percent);
+      mainLayout.updateComponent(paletteBox, BorderLayout.RIGHT, 0.2, 1, percent);
       toolbox.resizeGrid(2, 6);
-      paletteBox.x = stage.stageWidth - toolboxWidth;
-      paletteBox.y = 0;
-      paletteBox.resize(toolboxWidth, stage.stageHeight);
       paletteBox.resizeGrid(Registry.prefs.paletteX, Registry.prefs.paletteY);
-      */
-      if (!initial) {
-        //Registry.canvas.moveTo(Registry.canvas.y, Registry.canvas.x);
-      }
       return landscape;
     } 
 
-    var halfWidth = stage.stageWidth / 2;
-      /*
-    toolbox.x = 0;
-    toolbox.y = 0;
-    toolbox.resize(stage.stageWidth, toolboxWidth);
+    mainLayout.updateComponent(toolbox, BorderLayout.TOP, 1, 0.2, percent);
+    mainLayout.updateComponent(paletteBox, BorderLayout.BOTTOM, 1, 0.2, percent);
     toolbox.resizeGrid(6, 2);
-    paletteBox.x = 0;
-    paletteBox.y = stage.stageHeight - toolboxWidth;
-    paletteBox.resize(stage.stageWidth, toolboxWidth);
     paletteBox.resizeGrid(Registry.prefs.paletteY, Registry.prefs.paletteX);
-      */
-    if (!initial) {
-      //Registry.canvas.moveTo(Registry.canvas.y, Registry.canvas.x);
-    }
     return portrait;
   }
 

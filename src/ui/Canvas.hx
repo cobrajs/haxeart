@@ -423,7 +423,7 @@ class Canvas extends Sprite {
   }
 
   private function onTouchOut(event:TouchEvent) {
-    currentTool.mouseUpAction(this, event);
+    currentTool.mouseUpAction(this, cast(event, MouseEvent));
   }
 
   private function onTouchBegin(event:TouchEvent) {

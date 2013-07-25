@@ -1,6 +1,8 @@
 package util;
 
+#if (!flash && !js)
 import flash.filesystem.File;
+#end
 import flash.display.BitmapData;
 
 typedef FileInfo = {
@@ -14,10 +16,12 @@ class FileManager {
 
   public function new(?defaultDir:String) {
     if (defaultDir == null) {
+#if (!flash && !js)
 #if linux 
       currentDir = File.userDirectory.nativePath;
 #elseif android
       currentDir = File.documentsDirectory.nativePath; 
+#end
 #end
     }
     else {

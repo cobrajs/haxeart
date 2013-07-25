@@ -28,6 +28,8 @@ class Registry {
 
   public static var prefs:Preferences;
 
+  public static var clickManager:ClickManager;
+
   // Ids for alerts and whatever else wants one
   private static var nextId:Int = 1;
   public static function getNextId():Int {

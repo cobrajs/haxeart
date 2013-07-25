@@ -33,7 +33,7 @@
   
   <haxelib name="openfl" />
   <!-- <haxelib name="actuate" /> -->
-  <!-- <haxelib name="cobraui" /> -->
+  <haxelib name="cobraui" /> 
   <!-- <icon name="icon.svg" /> -->
 
   <ndll name="std" />
