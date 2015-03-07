@@ -58,6 +58,10 @@ class Pencil implements ITool {
     return false;
   }
 
+  public function modifiesCanvas():Bool {
+    return true;
+  }
+
   public function mouseDownAction(canvas:Canvas, event:MouseEvent):Void {
     if (Utils.getTime() - doubleTime < doubleClickTime) {
       switchColors = false;
@@ -160,7 +164,7 @@ class Pencil implements ITool {
     if (canvasMoveMode) {
       if (canvasMoveType == CANVAS_MOVE) {
         canvas.stopDrag();
-      } else {
+        canvas.setCenter();
       }
 
       canvasMoveType = 0;

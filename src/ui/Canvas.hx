@@ -28,7 +28,14 @@ class Canvas extends Sprite {
   private var grid:Shape;
   private var zoomDisplayData:BitmapData;
   private var zoomDisplay:Bitmap;
+  
   public var originalPos:Point;
+  public var centerPos:Point;
+
+  private var tempData:BitmapData;
+  private var tempDisplay:Bitmap;
+  private var modifiedCanvas:Bool;
+  private var drawCanceled:Bool;
 
   public var zoomRect:Rectangle;
   private var lastMousePoint:Point;
@@ -67,24 +74,34 @@ class Canvas extends Sprite {
     uWidth = width;
     uHeight = height;
 
+    originalPos = new Point(0, 0);
+    centerPos = new Point(0, 0);
+
     zoom = 1;
     oldZoom = 1;
 
     brushSize = 5;
 
     data = new BitmapData(width, height);
+    tempData = new BitmapData(width, height, true);
     undoSteps = new Array<BitmapData>();
     redoSteps = new Array<BitmapData>();
 
+    modifiedCanvas = false;
+    drawCanceled = false;
+
     display = new Bitmap(data);
     display.smoothing = false;
+
+    tempDisplay = new Bitmap(tempData);
+    tempDisplay.smoothing = false;
 
     grid = new Shape();
     grid.visible = false;
     renderGrid();
 
     addChild(display);
-
+    addChild(tempDisplay);
     addChild(grid);
 
     zoomRect = new Rectangle(0, 0, Registry.stageWidth, Registry.stageHeight);
@@ -107,8 +124,7 @@ class Canvas extends Sprite {
       addEventListener(TouchEvent.TOUCH_END, onTouchEnd);
       addEventListener(TouchEvent.TOUCH_MOVE, onTouchMove);
       addEventListener(TouchEvent.TOUCH_OUT, onTouchOut);
-    }
-    else {
+    } else {
       addEventListener(MouseEvent.MOUSE_DOWN, onClick);
       addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
       addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
@@ -123,6 +139,10 @@ class Canvas extends Sprite {
 
     display.scaleX = 1;
     display.scaleY = 1;
+    tempDisplay.scaleX = 1;
+    tempDisplay.scaleY = 1;
+    grid.scaleX = 1;
+    grid.scaleY = 1;
     zoom = 1;
 
     data = new BitmapData(imageData.width, imageData.height);
@@ -143,9 +163,14 @@ class Canvas extends Sprite {
 
     display.scaleX = 1;
     display.scaleY = 1;
+    tempDisplay.scaleX = 1;
+    tempDisplay.scaleY = 1;
+    grid.scaleX = 1;
+    grid.scaleY = 1;
     zoom = 1;
 
     data = new BitmapData(width, height);
+    tempData = new BitmapData(width, height);
 
     display.bitmapData = data;
     undoSteps = new Array<BitmapData>();
@@ -184,14 +209,18 @@ class Canvas extends Sprite {
     }
   }
 
-  public function moveTo(x:Float, y:Float):Void {
+  public function moveTo(x:Float, y:Float, ?updateCenter:Bool = true):Void {
     this.x = x;
     this.y = y;
 
     checkBounds();
+
+    if (updateCenter) {
+      setCenter();
+    }
   }
 
-  public function moveBy(x:Float, y:Float):Void {
+  public function moveBy(x:Float, y:Float, ?updateCenter:Bool = true):Void {
     moveTo(this.x + x, this.y + y);
   }
 
@@ -199,7 +228,8 @@ class Canvas extends Sprite {
   // Drawing functions
   //
   public function drawDot(x:Int, y:Int, ?useAlternateColor:Bool = false) {
-    brushFactory.drawBrush(data, x, y, null, useAlternateColor);
+    brushFactory.drawBrush(tempData, x, y, null, useAlternateColor);
+    modifiedCanvas = true;
   }
 
   // Really bad line drawing. Really.
@@ -249,6 +279,7 @@ class Canvas extends Sprite {
     }
 
     data.lock();
+    tempData.lock();
     var queue = new List<SimplePoint>();
     var replaceColor:Int = data.getPixel(startX, startY);
     var dirs = [new SimplePoint(1, 0), new SimplePoint(0, 1), new SimplePoint(-1, 0), new SimplePoint(0, -1)];
@@ -257,8 +288,9 @@ class Canvas extends Sprite {
     while (queue.length > 0) {
       temp = queue.pop();
       if (temp.x >= 0 && temp.x < data.width && temp.y >= 0 && temp.y < data.height) {
-        if (cast(data.getPixel(temp.x, temp.y), Int) == replaceColor) {
-          data.setPixel(temp.x, temp.y, color);
+        if (cast(data.getPixel(temp.x, temp.y), Int) == replaceColor && 
+            cast(tempData.getPixel(temp.x, temp.y), Int) != color) {
+          tempData.setPixel(temp.x, temp.y, color);
           for (dir in dirs) {
             queue.push(new SimplePoint(temp.x + dir.x, temp.y + dir.y));
           }
@@ -266,6 +298,8 @@ class Canvas extends Sprite {
       }
     }
     data.unlock();
+    tempData.unlock();
+    modifiedCanvas = true;
   }
 
   public function quickView() {
@@ -292,10 +326,11 @@ class Canvas extends Sprite {
     oldPos = null;
   }
 
-  public function centerCanvas() {
+  public function centerCanvas(?updateCenter:Bool = true) {
     moveTo(
       zoomRect.x + (zoomRect.width / 2 - (uWidth * zoom) / 2), 
-      zoomRect.y + (zoomRect.height / 2 - (uHeight * zoom) / 2)
+      zoomRect.y + (zoomRect.height / 2 - (uHeight * zoom) / 2),
+      updateCenter
     );
   }
 
@@ -324,10 +359,46 @@ class Canvas extends Sprite {
     var tempY = originalPos.y + ((tempPoint.y - tempPoint.y * multiplier) - (originalPos.y - this.y));
     display.scaleX = zoom;
     display.scaleY = zoom;
+    tempDisplay.scaleX = zoom;
+    tempDisplay.scaleY = zoom;
     grid.scaleX = zoom;
     grid.scaleY = zoom;
     grid.visible = zoom >= 8;
     moveTo(tempX, tempY);
+  }
+
+  public function centerishCanvas() {
+    /*
+    trace("Center-ish-ing");
+    trace(centerPos.x * zoomRect.width, centerPos.y * zoomRect.height);
+    trace(
+      centerPos.x * zoomRect.width + (zoomRect.x + (zoomRect.width / 2)), 
+      centerPos.y * zoomRect.height + (zoomRect.y + (zoomRect.height / 2)) 
+    );
+    */
+
+    moveTo(
+      (zoomRect.x + (zoomRect.width / 2)) - centerPos.x * zoomRect.width, 
+      (zoomRect.y + (zoomRect.height / 2)) - centerPos.y * zoomRect.height, 
+      false
+    );
+  }
+
+  public function setCenter() {
+    centerPos.x = Math.floor((zoomRect.x + (zoomRect.width / 2) - x) / zoomRect.width * 10) / 10;
+    centerPos.y = Math.floor((zoomRect.y + (zoomRect.height / 2) - y) / zoomRect.height * 10) / 10;
+
+    /*
+    trace("Setting center");
+    trace(centerPos.x, centerPos.y);
+    trace(x, y);
+    trace(x - zoomRect.x + (zoomRect.width / 2), y - zoomRect.y + (zoomRect.height / 2));
+
+    moveTo(
+      zoomRect.x + (zoomRect.width / 2 - (uWidth * zoom) / 2), 
+      zoomRect.y + (zoomRect.height / 2 - (uHeight * zoom) / 2)
+    );
+    */
   }
 
   //
@@ -361,6 +432,21 @@ class Canvas extends Sprite {
 
   public function getCanvas():BitmapData {
     return data;
+  }
+
+  public function cancelDraw() {
+    drawCanceled = true;
+    tempData.fillRect(new Rectangle(0, 0, data.width, data.height), 0xFFFFFF00);
+    modifiedCanvas = false;
+  }
+
+  public function finishDraw() {
+    if (modifiedCanvas && !drawCanceled) {
+      data.copyPixels(tempData, new Rectangle(0, 0, data.width, data.height), new Point(0, 0), null, null, true);
+      tempData.fillRect(new Rectangle(0, 0, data.width, data.height), 0xFFFFFF);
+    }
+    modifiedCanvas = false;
+    drawCanceled = false;
   }
 
   // 
@@ -408,6 +494,9 @@ class Canvas extends Sprite {
   //
   public function onClick(event:MouseEvent) {
     currentTool.mouseDownAction(this, event);
+    if (currentTool.modifiesCanvas()) {
+      modifiedCanvas = true;
+    }
   }
 
   public function onMouseMove(event:MouseEvent) {
@@ -416,6 +505,9 @@ class Canvas extends Sprite {
 
   public function onMouseUp(event:MouseEvent) {
     currentTool.mouseUpAction(this, event);
+    if (currentTool.modifiesCanvas()) {
+      finishDraw();
+    }
   }
 
   private function onMouseOut(event:MouseEvent) {

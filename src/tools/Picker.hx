@@ -23,6 +23,10 @@ class Picker implements ITool {
     return true;
   }
 
+  public function modifiesCanvas():Bool {
+    return false;
+  }
+
   public function mouseDownAction(canvas:Canvas, event:MouseEvent):Void {
     var color:Int = canvas.getPoint(Math.floor(event.localX / canvas.zoom), Math.floor(event.localY / canvas.zoom));
     pickAction(color);

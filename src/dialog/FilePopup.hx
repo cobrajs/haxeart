@@ -129,6 +129,10 @@ class FilePopup extends Popup {
     //tempLabel.background = null;
     window.addChild(tempLabel);
     layout.assignComponent(tempLabel, BorderLayout.TOP_RIGHT, 0.5, 0.08, percent);
+
+    // Add scrollbox to layout
+    layout.assignComponent(scrollBox, BorderLayout.LEFT, 0.5, 1, percent);
+
     layout.pack();
 
     updateFileList();
@@ -137,7 +141,7 @@ class FilePopup extends Popup {
   override private function sizeToStage() {
     super.sizeToStage();
 
-    scrollBox.resize(Std.int(uWidth / 2), Std.int(uHeight));
+    //scrollBox.resize(Std.int(uWidth / 2), Std.int(uHeight));
     updateFileList();
   }
 

@@ -8,6 +8,9 @@ package ;
 // TODO: Add temp layer that will store data before committing to canvas
 // TODO: Add toolbox alternate view with alternate state/icon/action for every button
 // TODO: Add toolbox items for shifting, rotating, and flipping canvas
+// TODO: Fix fill tool
+// TODO: Fix issue with temp layer and loading images
+// TODO: Fix issue with grid not displaying right
 
 // CobraUI Elements
 import cobraui.components.Component;
@@ -145,6 +148,7 @@ class Main extends Sprite {
 
     Component.themeFactory = new ThemeFactory("default.theme");
 
+
     //
     // Add Events for Stage
     //
@@ -186,6 +190,7 @@ class Main extends Sprite {
     stage.addEventListener(MouseEvent.MIDDLE_MOUSE_UP, function(e:MouseEvent) {
       Registry.canvas.stopDrag();
       Registry.canvas.checkBounds();
+      Registry.canvas.setCenter();
     });
 #end
 
@@ -451,9 +456,11 @@ class Main extends Sprite {
     });
     */
 
+    /*
     promptPopup = new PromptPopup("test");
     promptPopup.addAllowed(~/[A-Za-z._-]/);
     addChild(promptPopup);
+    */
 
     //navigator = new Navigator(toolbox.getChildAt(0));
     //addChild(navigator);
@@ -467,7 +474,7 @@ class Main extends Sprite {
     cursor.visible = false;
     addChild(cursor);
 
-    trace(Capabilities.screenDPI);
+    //trace(Capabilities.screenDPI);
 
     //toolbox.clickButton(6);
 
@@ -475,6 +482,9 @@ class Main extends Sprite {
     Registry.canvas.addEventListener(MouseEvent.MOUSE_OUT, canvasMouseOut);
 
     resizeComponents(true);
+
+    //trace("Moving to center");
+    Registry.canvas.centerCanvas();
 
   }
 
@@ -532,23 +542,34 @@ class Main extends Sprite {
   }
 
   private function resize(event:Event):Void {
-    var orientation = resizeComponents();
-    if (orientation == landscape) {
-      Registry.canvas.zoomRect.x = toolboxWidth;
+    var newOrientation = resizeComponents();
+    if (newOrientation == landscape) {
+      Registry.canvas.zoomRect.x = toolbox.uWidth;
       Registry.canvas.zoomRect.y = 0;
-      Registry.canvas.zoomRect.width = stage.stageWidth - toolboxWidth * 2;
+      Registry.canvas.zoomRect.width = stage.stageWidth - toolbox.uWidth * 2;
       Registry.canvas.zoomRect.height = stage.stageHeight;
-      Registry.canvas.originalPos.x = toolboxWidth;
+      Registry.canvas.originalPos.x = toolbox.uWidth;
       Registry.canvas.originalPos.y = 0;
     } else {
       Registry.canvas.zoomRect.x = 0;
-      Registry.canvas.zoomRect.y = toolboxWidth;
+      Registry.canvas.zoomRect.y = toolbox.uHeight;
       Registry.canvas.zoomRect.width = stage.stageWidth;
-      Registry.canvas.zoomRect.height = stage.stageHeight - toolboxWidth * 2;
+      Registry.canvas.zoomRect.height = stage.stageHeight - toolbox.uHeight * 2;
       Registry.canvas.originalPos.x = 0;
-      Registry.canvas.originalPos.y = toolboxWidth;
+      Registry.canvas.originalPos.y = toolbox.uHeight;
     }
-    Registry.canvas.centerCanvas();
+    if (newOrientation != orientation) {
+      orientation = newOrientation;
+      //trace("changed orientation: ", orientation);
+      var temp = Registry.canvas.centerPos.x;
+      Registry.canvas.centerPos.x = Registry.canvas.centerPos.y;
+      Registry.canvas.centerPos.y = temp;
+      Registry.canvas.centerishCanvas();
+    } else {
+    //trace("orientation: ", orientation);
+    //Registry.canvas.centerCanvas(false);
+      Registry.canvas.centerishCanvas();
+    }
   }
 
   //
@@ -562,6 +583,8 @@ class Main extends Sprite {
   }
   
   private function stageMouseDown(event:MouseEvent):Void {
+    if (event.target == event.currentTarget || event.target == Registry.canvas) {
+    }
   }
 
   //
@@ -607,8 +630,6 @@ class Main extends Sprite {
 #end
       case Keyboard.ENTER:
         menuPopup.popup();
-      case Keyboard.SPACE:
-        promptPopup.popup();
       case Keyboard.P:
         preferencesPopup.popup();
       /*

@@ -55,14 +55,6 @@ class PaletteBox extends ScrollBox {
     uWidth = width;
     uHeight = height;
 
-    /*
-    addEventListener(Event.SCROLL, function(e:Event) {
-      for (box in layout.components) {
-        cast(box, SimpleButton<Dynamic>).softRelease();
-      }
-    });
-    */
-
     renderBackground();
   }
 

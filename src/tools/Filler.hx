@@ -20,6 +20,10 @@ class Filler implements ITool {
     return false;
   }
 
+  public function modifiesCanvas():Bool {
+    return true;
+  }
+
   public function mouseDownAction(canvas:Canvas, event:MouseEvent):Void {
     canvas.canvasModified();
     canvas.fill(Math.floor(event.localX / canvas.zoom), Math.floor(event.localY / canvas.zoom));

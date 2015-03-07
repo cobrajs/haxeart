@@ -24,6 +24,10 @@ class Move implements ITool {
     return revert;
   }
 
+  public function modifiesCanvas():Bool {
+    return false;
+  }
+
   public function mouseDownAction(canvas:Canvas, event:MouseEvent):Void {
     canvas.startDrag();
   }
@@ -33,6 +37,7 @@ class Move implements ITool {
 
   public function mouseUpAction(canvas:Canvas, event:MouseEvent):Void {
     canvas.stopDrag();
+    canvas.setCenter();
     if (revert) {
       revertAction();
       revert = false;

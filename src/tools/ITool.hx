@@ -9,6 +9,7 @@ interface ITool {
   var name:String;
 
   function isMomentary():Bool;
+  function modifiesCanvas():Bool;
   function mouseDownAction(canvas:Canvas, event:MouseEvent):Void;
   function mouseMoveAction(canvas:Canvas, event:MouseEvent):Void;
   function mouseUpAction(canvas:Canvas, event:MouseEvent):Void;
