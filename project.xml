@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+  <meta title="HaxeArt" package="org.cobrajs.haxeart" version="1.0.0" company="cobrasoft" />
+  <app main="Main" path="bin" file="HaxeArt" />
+  <source path="src" />
+  <haxelib name="openfl" />
+  <haxelib name="cobraui" />
+  <assets path="assets" rename="assets" exclude="*.svg" />
+</project>
